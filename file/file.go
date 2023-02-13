@@ -4,7 +4,10 @@ package file
 
 import (
 	"errors"
+	"io"
 	"os"
+
+	"github.com/vault-thirteen/errorz"
 )
 
 const (
@@ -78,4 +81,21 @@ func FolderExists(folderPath string) (ok bool, err error) {
 		return false, errors.New(ErrObjectIsNotFolder)
 	}
 	return false, err
+}
+
+// GetFileContents gets file's contents.
+func GetFileContents(filePath string) (contents []byte, err error) {
+	var f *os.File
+	f, err = os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		derr := f.Close()
+		if derr != nil {
+			err = errorz.Combine(err, derr)
+		}
+	}()
+
+	return io.ReadAll(f)
 }

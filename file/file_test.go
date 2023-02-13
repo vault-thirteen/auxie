@@ -17,6 +17,12 @@ const (
 	TestFolderThatDoesNotExist = "_test-temporary-xyz-folder-junky-town"
 )
 
+const (
+	TestFolder2          = "test"
+	TestFile2            = "Test.txt"
+	NonExistentTestFile2 = "NonExistentTest.txt"
+)
+
 func Test_CreateFolderSafely(t *testing.T) {
 	var aTest = tester.New(t)
 	var err error
@@ -156,4 +162,21 @@ func Test_FolderExists(t *testing.T) {
 	aTest.MustBeAnError(err)
 	aTest.MustBeEqual(err.Error(), "object is not a folder")
 	aTest.MustBeEqual(exists, false)
+}
+
+func Test_GetFileContents(t *testing.T) {
+	aTest := tester.New(t)
+	filePath := filepath.Join(TestFolder2, TestFile2)
+	var output []byte
+	var err error
+
+	// Test #1. Existing file.
+	output, err = GetFileContents(filePath)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(output, []byte("Test.\r\n"))
+
+	// Test #2. Non-existent file.
+	output, err = GetFileContents(NonExistentTestFile2)
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(output, ([]byte)(nil))
 }
