@@ -1,17 +1,15 @@
-// Reader_test.go.
-
 package reader
 
 import (
 	"bytes"
-	"io"
 	"testing"
 
+	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
 	"github.com/vault-thirteen/tester"
 )
 
 func Test_NewReader(t *testing.T) {
-	var reader io.Reader
+	var reader rs.ReaderSeeker
 	var result *Reader
 
 	reader = bytes.NewReader([]byte{})

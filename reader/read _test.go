@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	bt "github.com/vault-thirteen/auxie/BasicTypes"
+	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
 	"github.com/vault-thirteen/tester"
 )
 
@@ -13,7 +14,7 @@ func Test_ReadLineEndingWithCRLF(t *testing.T) {
 
 	var data []byte
 	var err error
-	var reader1 io.Reader
+	var reader1 rs.ReaderSeeker
 	var reader2 *Reader
 	var result []byte
 	var resultExpected []byte
@@ -97,7 +98,7 @@ func Test_ReadBytes(t *testing.T) {
 
 	var data []byte
 	var err error
-	var reader1 io.Reader
+	var reader1 rs.ReaderSeeker
 	var reader2 *Reader
 	var result []byte
 	var resultExpected []byte

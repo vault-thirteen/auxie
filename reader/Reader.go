@@ -4,6 +4,8 @@ package reader
 
 import (
 	"io"
+
+	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
 )
 
 // ASCII symbols.
@@ -13,11 +15,11 @@ const (
 )
 
 type Reader struct {
-	reader io.Reader
+	reader rs.ReaderSeeker
 }
 
 func NewReader(
-	reader io.Reader,
+	reader rs.ReaderSeeker,
 ) *Reader {
 	return &Reader{
 		reader: reader,
@@ -26,6 +28,10 @@ func NewReader(
 
 func (r *Reader) Read(dst []byte) (n int, err error) {
 	return r.reader.Read(dst)
+}
+
+func (r *Reader) Seek(offset int64, whence int) (int64, error) {
+	return r.reader.Seek(offset, whence)
 }
 
 func (r *Reader) GetInternalReader() io.Reader {
