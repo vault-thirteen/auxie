@@ -37,7 +37,7 @@ type UShort = uint16
 type SLong = int32
 
 // ULong means an unsigned long type.
-type ULong = int32
+type ULong = uint32
 
 // Float is a 32-bit floating point number.
 type Float = float32
