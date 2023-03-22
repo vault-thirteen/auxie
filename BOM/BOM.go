@@ -17,7 +17,7 @@ const (
 
 // GetEncoding tries to get all possible encodings for the stream.
 // Please note that some encodings have similar BOMs, that is why an array is
-// returned instead of a single value.
+// returned instead of a single value. The reader is reset after the reading.
 func GetEncoding(rs rs.ReaderSeeker) (result []Encoding, err error) {
 	result = make([]Encoding, 0)
 
