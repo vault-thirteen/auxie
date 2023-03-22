@@ -1,20 +1,12 @@
-// Reader.go.
-
 package reader
 
-// This Package provides is a convenient Reader for specific Purposes.
-
-// For Example, the built-in Go Language Library provides a Method to read
-// from a Reader a single Line ending either with ASCII CR Symbol or with a
-// Combination of CR with LF Symbols. It does not provide a Method to read a
-// Line which ends exactly with a Combination of CR with LF Symbols! This
-// Library helps to get rid of such Stupidity of the Developers of the Language.
+// This package provides is a convenient Reader for specific purposes.
 
 import (
 	"io"
 )
 
-// ASCII Symbols.
+// ASCII symbols.
 const (
 	CR = '\r'
 	LF = '\n'
@@ -27,12 +19,15 @@ type Reader struct {
 func NewReader(
 	reader io.Reader,
 ) *Reader {
+	return &Reader{
+		reader: reader,
+	}
+}
 
-	var result *Reader
+func (r *Reader) Read(dst []byte) (n int, err error) {
+	return r.reader.Read(dst)
+}
 
-	result = new(Reader)
-
-	result.reader = reader
-
-	return result
+func (r *Reader) GetInternalReader() io.Reader {
+	return r.reader
 }
