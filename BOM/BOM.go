@@ -104,7 +104,7 @@ func IsEncoding(rs rs.ReaderSeeker, enc Encoding) (isEncoding bool, err error) {
 
 // SkipBOMPrefix tries to skip BOM prefix from the data.
 // It reads the BOM and returns the reader.
-func SkipBOMPrefix(rs rs.ReaderSeeker, enc Encoding) (newRS io.Reader, err error) {
+func SkipBOMPrefix(rs rs.ReaderSeeker, enc Encoding) (newRS rs.ReaderSeeker, err error) {
 	rdr := reader.NewReader(rs)
 
 	switch enc {
