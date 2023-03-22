@@ -1,11 +1,9 @@
-// http-helper.go.
-
 package httphelper
 
 // HTTP Helper.
 
-// This Package contains various useful Functions which help in processing HTTP
-// Requests.
+// This package contains various useful functions which help in processing HTTP
+// requests.
 
 // Errors.
 const (

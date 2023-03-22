@@ -1,18 +1,14 @@
-// utf.go.
+package unicode
 
 // Unicode Symbols Processing.
-
-package unicode
 
 import (
 	"math"
 	"unicode/utf8"
 )
 
-// CreateValidUtf8Runes Function creates a full Set of available Unicode UTF-8
-// Symbols.
+// CreateValidUtf8Runes creates a full set of available UTF-8 Unicode symbols.
 func CreateValidUtf8Runes() []rune {
-
 	var r rune
 	var runes = make([]rune, 0)
 

@@ -1,6 +1,4 @@
-// generator_test.go.
-
-package rpofs //nolint:testpackage
+package rpofs
 
 import (
 	"strings"
@@ -9,7 +7,7 @@ import (
 	"github.com/vault-thirteen/tester"
 )
 
-func Test_NewGenerator(t *testing.T) { //nolint:funlen
+func Test_NewGenerator(t *testing.T) {
 	type TestData struct {
 		// Arguments.
 		PasswordFixedSize      int
@@ -89,7 +87,7 @@ func Test_NewGenerator(t *testing.T) { //nolint:funlen
 	}
 }
 
-func Test_CreatePassword(t *testing.T) { //nolint:funlen
+func Test_CreatePassword(t *testing.T) {
 	const (
 		PasswordLength  = 16
 		IterationsCount = 10
@@ -154,10 +152,7 @@ func Test_CreatePassword(t *testing.T) { //nolint:funlen
 	}
 }
 
-func stringContainsAllSymbolsFromSet(
-	s string,
-	symbolsSet []rune,
-) bool {
+func stringContainsAllSymbolsFromSet(s string, symbolsSet []rune) bool {
 	for _, symbol := range symbolsSet {
 		if !stringContainsSymbol(s, symbol) {
 			return false
@@ -167,9 +162,6 @@ func stringContainsAllSymbolsFromSet(
 	return true
 }
 
-func stringContainsSymbol(
-	s string,
-	symbol rune,
-) bool {
+func stringContainsSymbol(s string, symbol rune) bool {
 	return strings.Contains(s, string(symbol))
 }

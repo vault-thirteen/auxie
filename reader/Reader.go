@@ -1,10 +1,8 @@
 package reader
 
-// This package provides is a convenient Reader for specific purposes.
+// This package provides a convenient Reader-Seeker for specific purposes.
 
 import (
-	"io"
-
 	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
 )
 
@@ -15,25 +13,23 @@ const (
 )
 
 type Reader struct {
-	reader rs.ReaderSeeker
+	rs rs.ReaderSeeker
 }
 
-func NewReader(
-	reader rs.ReaderSeeker,
-) *Reader {
+func NewReader(rs rs.ReaderSeeker) *Reader {
 	return &Reader{
-		reader: reader,
+		rs: rs,
 	}
 }
 
 func (r *Reader) Read(dst []byte) (n int, err error) {
-	return r.reader.Read(dst)
+	return r.rs.Read(dst)
 }
 
 func (r *Reader) Seek(offset int64, whence int) (int64, error) {
-	return r.reader.Seek(offset, whence)
+	return r.rs.Seek(offset, whence)
 }
 
-func (r *Reader) GetInternalReader() io.Reader {
-	return r.reader
+func (r *Reader) GetInternalReader() rs.ReaderSeeker {
+	return r.rs
 }

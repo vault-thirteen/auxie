@@ -1,6 +1,4 @@
-// helper_test.go.
-
-package rpofs //nolint:testpackage
+package rpofs
 
 import (
 	"testing"

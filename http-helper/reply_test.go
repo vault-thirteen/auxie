@@ -1,5 +1,3 @@
-// reply_test.go.
-
 package httphelper
 
 import (

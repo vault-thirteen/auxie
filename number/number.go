@@ -1,15 +1,23 @@
 package number
 
-import "strconv"
+import (
+	"reflect"
+	"strconv"
+	"unsafe"
+)
 
 func ParseUint(s string) (u uint, err error) {
 	var tmp uint64
-	tmp, err = strconv.ParseUint(s, 10, 64)
+	tmp, err = strconv.ParseUint(s, 10, int(8*unsafe.Sizeof(reflect.Uint)))
 	if err != nil {
 		return 0, err
 	}
 
 	return uint(tmp), nil
+}
+
+func ParseUint64(s string) (u uint64, err error) {
+	return strconv.ParseUint(s, 10, 64)
 }
 
 func ParseUint32(s string) (u uint32, err error) {
@@ -44,12 +52,16 @@ func ParseUint8(s string) (u uint8, err error) {
 
 func ParseInt(s string) (i int, err error) {
 	var tmp int64
-	tmp, err = strconv.ParseInt(s, 10, 64)
+	tmp, err = strconv.ParseInt(s, 10, int(8*unsafe.Sizeof(reflect.Int)))
 	if err != nil {
 		return 0, err
 	}
 
 	return int(tmp), nil
+}
+
+func ParseInt64(s string) (i int64, err error) {
+	return strconv.ParseInt(s, 10, 64)
 }
 
 func ParseInt32(s string) (i int32, err error) {

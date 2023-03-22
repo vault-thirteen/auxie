@@ -31,7 +31,18 @@ var possibleEncodings = []Encoding{
 	EncodingGB18030,
 }
 
-// PossibleEncodings returns a list of possible encodings.
+// PossibleEncodings returns a list of possible encodings except the unknown
+// encoding.
 func PossibleEncodings() []Encoding {
 	return possibleEncodings
+}
+
+// IsKnown tells whether the encoding is known or not.
+func (e Encoding) IsKnown() bool {
+	return e != EncodingUnknown
+}
+
+// IsUnknown tells whether the encoding is unknown or not.
+func (e Encoding) IsUnknown() bool {
+	return e == EncodingUnknown
 }

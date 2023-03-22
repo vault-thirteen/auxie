@@ -1,5 +1,3 @@
-// boolean.go.
-
 package boolean
 
 import (
@@ -18,9 +16,7 @@ const (
 
 const ErrfBadBoolean = "bad boolean value: '%v'"
 
-func FromString(
-	s string,
-) (b bool, err error) {
+func FromString(s string) (b bool, err error) {
 	if len(s) == 0 {
 		return false, fmt.Errorf(ErrfBadBoolean, s)
 	}

@@ -1,5 +1,3 @@
-// receive.go.
-
 package httphelper
 
 import (
@@ -13,15 +11,11 @@ import (
 	"github.com/vault-thirteen/errorz"
 )
 
-// Functions which help in receiving Data from HTTP Requests.
+// Functions which help in receiving Data from HTTP requests.
 
-// ReceiveJSON Function receives an Object encoded with JSON Format from the
-// HTTP Request's Body.
-func ReceiveJSON(
-	r *http.Request,
-	receiver interface{},
-) (err error) {
-
+// ReceiveJSON function receives an object encoded with JSON format from the
+// HTTP request's body.
+func ReceiveJSON(r *http.Request, receiver interface{}) (err error) {
 	var bodyContents []byte
 	var jsonDecoder *json.Decoder
 
@@ -34,8 +28,7 @@ func ReceiveJSON(
 		return err
 	}
 	defer func() {
-		var derr error
-		derr = r.Body.Close()
+		derr := r.Body.Close()
 		err = errorz.Combine(err, derr)
 	}()
 

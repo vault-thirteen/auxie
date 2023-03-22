@@ -1,5 +1,3 @@
-// header_test.go.
-
 package httphelper
 
 import (
@@ -10,13 +8,10 @@ import (
 )
 
 func Test_FindHTTPHeader(t *testing.T) {
-
-	var aTest *tester.Test
+	var aTest = tester.New(t)
 	var err error
 	var headerName string
 	var request *http.Request
-
-	aTest = tester.New(t)
 
 	// Test #1. Null Request.
 	request = nil
@@ -63,12 +58,9 @@ func Test_FindHTTPHeader(t *testing.T) {
 }
 
 func Test_DeleteHTTPHeader(t *testing.T) {
-
-	var aTest *tester.Test
+	var aTest = tester.New(t)
 	var err error
 	var request *http.Request
-
-	aTest = tester.New(t)
 
 	// Test #1. Test of Entry into the 'FindHTTPHeader' Function.
 	request = nil

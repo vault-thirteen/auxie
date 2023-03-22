@@ -1,10 +1,8 @@
-// Bit.go.
-
 package bit
 
 const (
-	One  = true
-	Zero = false
+	One  = Bit(true)
+	Zero = Bit(false)
 )
 
 type Bit bool

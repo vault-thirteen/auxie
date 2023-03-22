@@ -18,7 +18,15 @@ const (
 // GetEncoding tries to get all possible encodings for the stream.
 // Please note that some encodings have similar BOMs, that is why an array is
 // returned instead of a single value. The reader is reset after the reading.
-func GetEncoding(rs rs.ReaderSeeker) (result []Encoding, err error) {
+//
+// The 'shouldIncludeUnknownEncoding' flag switches the way of result telling.
+// If the flag is true, the UnknownEncoding is always included into the result.
+// This is a pedantic way of telling the result for those who want a scientific
+// approach. If the flag is false, UnknownEncoding is not included into the
+// result. This means that if no encoding is found, the result will be an empty
+// array. This is a simplistic approach. Independently of the setting, the
+// result array is always null (nil) on reader's error.
+func GetEncoding(rs rs.ReaderSeeker, shouldIncludeUnknownEncoding bool) (result []Encoding, err error) {
 	result = make([]Encoding, 0)
 
 	var isEncoding bool
@@ -33,7 +41,9 @@ func GetEncoding(rs rs.ReaderSeeker) (result []Encoding, err error) {
 		}
 	}
 
-	result = append(result, EncodingUnknown)
+	if shouldIncludeUnknownEncoding {
+		result = append(result, EncodingUnknown)
+	}
 
 	return result, nil
 }

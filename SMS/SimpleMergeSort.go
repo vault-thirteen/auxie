@@ -13,18 +13,18 @@ type SimpleMergeSorter struct {
 
 // ValueType is the type of the sorted data.
 // If you change this, you will also need to make changes to the code.
-//type ValueType = int
+// type ValueType = int
 type ValueType = float64
 
 // New is a constructor of a simple merge sorter.
 func New(data ...[]ValueType) (sms *SimpleMergeSorter, err error) {
 	// Prepare the raw data.
-	// Remove the empty arrays (slices).
 	for i := range data {
 		//sort.Ints(data[i])
 		sort.Float64s(data[i])
 	}
 
+	// Remove the empty arrays (slices).
 	nonEmptyData := getNonEmptyArrays(data...)
 
 	if len(nonEmptyData) < 1 {

@@ -1,5 +1,3 @@
-// simple-test.go.
-
 package httphelper
 
 import (
@@ -8,16 +6,14 @@ import (
 	"net/http/httptest"
 )
 
-// HTTP Methods help in testing simple HTTP Request Handlers.
-
-// SimpleTest Type is a Type of a simple HTTP Test.
+// SimpleTest is a simple HTTP test.
 type SimpleTest struct {
 	Parameter      SimpleTestParameter
 	ResultExpected SimpleTestResult
 	ResultReceived SimpleTestResult
 }
 
-// SimpleTestParameter Type is a Parameter of a simple HTTP Test.
+// SimpleTestParameter is a parameter of a simple HTTP test.
 type SimpleTestParameter struct {
 	RequestMethod  string
 	RequestUrl     string
@@ -25,19 +21,16 @@ type SimpleTestParameter struct {
 	RequestHandler http.HandlerFunc
 }
 
-// SimpleTestResult Type is a Result of a simple HTTP Test.
+// SimpleTestResult is a result of a simple HTTP test.
 type SimpleTestResult struct {
 	ResponseStatusCode int
 	ResponseBodyString string
 }
 
-// PerformSimpleHttpTest Function performs the Simulation of a simple HTTP Test
-// Handler. Writes the received Results into the 'ResultReceived' Field of a
-// Test Object.
-func PerformSimpleHttpTest(
-	test *SimpleTest,
-) (err error) {
-
+// PerformSimpleHttpTest function performs the simulation of a simple HTTP test
+// handler. It writes the received results into the 'ResultReceived' field of a
+// test object.
+func PerformSimpleHttpTest(test *SimpleTest) (err error) {
 	var request *http.Request
 	var response *http.Response
 	var responseBody []byte
@@ -51,18 +44,18 @@ func PerformSimpleHttpTest(
 	)
 	responseRecorder = httptest.NewRecorder()
 
-	// Make a simulated Request to a HTTP Handler.
+	// Make a simulated Request to an HTTP Handler.
 	test.Parameter.RequestHandler(responseRecorder, request)
 
 	// Get the Response.
 	response = responseRecorder.Result()
 	responseBody, err = io.ReadAll(response.Body)
 	if err != nil {
-		return
+		return err
 	}
 	err = response.Body.Close()
 	if err != nil {
-		return
+		return err
 	}
 
 	// Set the Result.
@@ -70,5 +63,5 @@ func PerformSimpleHttpTest(
 		ResponseBodyString: string(responseBody),
 		ResponseStatusCode: response.StatusCode,
 	}
-	return
+	return nil
 }

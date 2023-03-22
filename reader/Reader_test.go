@@ -14,7 +14,7 @@ func Test_NewReader(t *testing.T) {
 
 	reader = bytes.NewReader([]byte{})
 	result = NewReader(reader)
-	if result.reader != reader {
+	if result.rs != reader {
 		t.FailNow()
 	}
 }
@@ -28,9 +28,9 @@ func Test_GetInternalReader(t *testing.T) {
 	x := r.GetInternalReader()
 	tst.MustBeEqual(x, internalReader)
 
-	// Try to move the cursor of internal reader.
+	// Try to move the cursor of internal reader-seeker.
 	var threeBytes = make([]byte, 3)
-	_, err := r.reader.Read(threeBytes)
+	_, err := r.rs.Read(threeBytes)
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(threeBytes, []byte{1, 2, 3})
 	xx := r.GetInternalReader()

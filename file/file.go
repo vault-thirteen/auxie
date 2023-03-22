@@ -1,5 +1,3 @@
-// file.go.
-
 package file
 
 import (
@@ -17,28 +15,20 @@ const (
 
 // CreateFolderSafely tries to create a folder ignoring an error if the folder
 // already exists.
-func CreateFolderSafely(
-	path string,
-	permissions os.FileMode,
-) (err error) {
-
+func CreateFolderSafely(path string, permissions os.FileMode) (err error) {
 	err = os.Mkdir(path, permissions)
 	if err != nil {
 		if os.IsExist(err) {
-			err = nil
-			return
+			return nil
 		}
-		return
+		return err
 	}
-
-	return
+	return nil
 }
 
 // Exists tries to get access to an object at the specified path – it may be a
 // file or a folder.
-func Exists(
-	path string,
-) (exists bool, err error) {
+func Exists(path string) (exists bool, err error) {
 	_, err = os.Stat(path)
 	if err == nil {
 		return true, nil
@@ -47,7 +37,7 @@ func Exists(
 		return false, nil
 	}
 	// We can not say whether it exists or not while it is not accessible.
-	// So, we return an Error.
+	// So, we return an error.
 	return exists, err
 }
 

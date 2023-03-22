@@ -12,7 +12,7 @@ import (
 
 const (
 	ExtZip  = "zip"
-	Ext7Zip = "7z" //TODO
+	Ext7Zip = "7z" //TODO: Golang does not have a built-in library for this, as usual ...
 )
 
 // CompressFileAsZip creates a single-file archive of ZIP format and puts the

@@ -1,5 +1,3 @@
-// utf_test.go.
-
 package unicode
 
 import (
@@ -10,8 +8,7 @@ import (
 )
 
 func Test_CreateUtf8Runes(t *testing.T) {
-
-	const tmpFileName = "D:\\Temp\\runes.tmp.txt"
+	const tmpFileName = "runes.tmp.txt"
 
 	var err error
 	var file *os.File
@@ -41,7 +38,7 @@ func Test_CreateUtf8Runes(t *testing.T) {
 		t.FailNow()
 	}
 
-	time.Sleep(time.Second * 1) // For manual Check.
+	time.Sleep(time.Second * 1) // For manual check.
 
 	err = os.Remove(tmpFileName)
 	if err != nil {

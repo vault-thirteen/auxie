@@ -19,10 +19,7 @@ const (
 )
 
 // Uint creates a new random unsigned Integer Number in the [min;max] Interval.
-func Uint(
-	min uint,
-	max uint,
-) (result uint, err error) {
+func Uint(min uint, max uint) (result uint, err error) {
 	// Fool Check.
 	if min >= max {
 		return 0, errors.New(ErrLimits)
@@ -55,9 +52,7 @@ func Uint(
 }
 
 // GenerateRandomBytes generates random bytes.
-func GenerateRandomBytes(
-	bytesCount int,
-) (bytes []byte, err error) {
+func GenerateRandomBytes(bytesCount int) (bytes []byte, err error) {
 	bytes = make([]byte, bytesCount)
 
 	_, err = crand.Read(bytes)
@@ -69,9 +64,7 @@ func GenerateRandomBytes(
 }
 
 // GenerateRandomBytesA1 generates random bytes using an alternative way.
-func GenerateRandomBytesA1(
-	bytesCount int,
-) (bytes []byte, err error) {
+func GenerateRandomBytesA1(bytesCount int) (bytes []byte, err error) {
 	var tmp = make([]byte, bytesCount*2)
 
 	_, err = crand.Read(tmp)

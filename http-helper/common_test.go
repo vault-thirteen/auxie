@@ -1,5 +1,3 @@
-// common_test.go.
-
 package httphelper
 
 const (

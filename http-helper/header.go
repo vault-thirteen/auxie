@@ -1,5 +1,3 @@
-// header.go.
-
 package httphelper
 
 import (
@@ -14,22 +12,18 @@ const (
 	ErrHTTPHeaderNameIsNotFound = "HTTP Header Name is not found"
 )
 
-// FindHTTPHeader Function tries to find the HTTP Header with Name similar to
-// the specified One. According to the Section 4.2 of RFC 2616, HTTP Header
-// Names are Case insensitive. On Success, returns 'nil' and the exact Header
-// Name which was found.
-func FindHTTPHeader(
-	r *http.Request,
-	headerNameAsked string,
-) (string, error) {
-
+// FindHTTPHeader function tries to find the HTTP header with name similar to
+// the specified one. According to the Section 4.2 of RFC 2616, HTTP header
+// names are case-insensitive. On success, returns 'nil' and the exact header
+// name which was found.
+func FindHTTPHeader(r *http.Request, headerNameAsked string) (hdr string, err error) {
 	var headerExists bool
 
 	if r == nil {
-		return "", errors.New(ErrNullPointer)
+		return hdr, errors.New(ErrNullPointer)
 	}
 	if len(headerNameAsked) == 0 {
-		return "", errors.New(ErrHTTPHeaderNameIsNotSet)
+		return hdr, errors.New(ErrHTTPHeaderNameIsNotSet)
 	}
 
 	// 1. Try the easy Way.
@@ -47,16 +41,11 @@ func FindHTTPHeader(
 		}
 	}
 
-	return "", errors.New(ErrHTTPHeaderNameIsNotFound)
+	return hdr, errors.New(ErrHTTPHeaderNameIsNotFound)
 }
 
-// DeleteHTTPHeader Function tries to delete a Header from the HTTP Request.
-func DeleteHTTPHeader(
-	r *http.Request,
-	headerNameToDelete string,
-) error {
-
-	var err error
+// DeleteHTTPHeader function tries to delete a header from the HTTP request.
+func DeleteHTTPHeader(r *http.Request, headerNameToDelete string) (err error) {
 	var headerNameExact string
 
 	// Find the Header.

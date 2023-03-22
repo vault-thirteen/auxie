@@ -1,5 +1,3 @@
-// boolean_test.go.
-
 package boolean
 
 import (

@@ -1,5 +1,3 @@
-// file_test.go.
-
 package file
 
 import (

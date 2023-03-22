@@ -1,5 +1,3 @@
-// simple-test_test.go.
-
 package httphelper
 
 import (
@@ -12,10 +10,8 @@ import (
 func Test_PerformSimpleHttpTest(t *testing.T) {
 
 	var aSimpleHttpTest SimpleTest
-	var aTest *tester.Test
+	var aTest = tester.New(t)
 	var err error
-
-	aTest = tester.New(t)
 
 	// Test #1. Positive.
 	aSimpleHttpTest = SimpleTest{

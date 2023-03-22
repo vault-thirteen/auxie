@@ -1,231 +1,237 @@
-// convert.go.
-
 package bit
 
 const BitsPerByte = 8
 
-// ConvertBitsToBytes converts the Array of Bits into an Array of Bytes.
-func ConvertBitsToBytes(
-	bits []Bit,
-) (result []byte, bitsCount int) {
-
-	var b byte
-	var byteBits [BitsPerByte]Bit
-	var bytesCount int
-	var collectorIdx int
-	var collectorIdxMax int
-	var idx int
-	var idxMax int
-	var lastByteBitIdx int
-	var lastByteBits [BitsPerByte]Bit
-	var lastByteIsFull bool
-
-	bitsCount = len(bits)
-	bytesCount = bitsCount / BitsPerByte
-	if bitsCount%BitsPerByte == 0 {
-		lastByteIsFull = true
-	} else {
-		bytesCount++
+// ConvertBitsToBytes converts the array of expectedBits into an array of bytes.
+func ConvertBitsToBytes(bits []Bit) (result []byte, bitsCount int) {
+	if len(bits)%BitsPerByte == 0 {
+		return convertBitsToFullBytes(bits)
 	}
+
+	return convertBitsToNonFullBytes(bits)
+}
+
+// convertBitsToFullBytes convert expectedBits into full bytes.
+// This function is optimized for speed.
+func convertBitsToFullBytes(bits []Bit) (result []byte, bitsCount int) {
+	bytesCount := len(bits) / BitsPerByte
 	result = make([]byte, bytesCount)
 
-	// If we have all the Bytes full, use a simple Algorithm.
-	if lastByteIsFull {
-		// Simply convert all Bits to all Bytes.
-		idxMax = bytesCount - 1
-		for idx = 0; idx <= idxMax; idx++ {
-			// Collect next 8 Bits and convert them into a Byte.
-			collectorIdx = idx * BitsPerByte
-			byteBits[0] = bits[collectorIdx]
-			collectorIdx++
-			byteBits[1] = bits[collectorIdx]
-			collectorIdx++
-			byteBits[2] = bits[collectorIdx]
-			collectorIdx++
-			byteBits[3] = bits[collectorIdx]
-			collectorIdx++
-			byteBits[4] = bits[collectorIdx]
-			collectorIdx++
-			byteBits[5] = bits[collectorIdx]
-			collectorIdx++
-			byteBits[6] = bits[collectorIdx]
-			collectorIdx++
-			byteBits[7] = bits[collectorIdx]
-			b = ConvertByteBitsToByte(byteBits)
+	cur := 0
+	var buf byte
+	for i := 0; i < bytesCount; i++ {
+		buf = 0
 
-			// Save the converted Byte into the Result.
-			result[idx] = b
+		if bits[cur] == One {
+			buf |= 1
 		}
-		return
+		cur++
+		if bits[cur] == One {
+			buf |= 2
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 4
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 8
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 16
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 32
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 64
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 128
+		}
+		cur++
+
+		result[i] = buf
 	}
 
-	// The last Byte in not full. Use a wise Algorithm.
-
-	// Part 1. Convert Bits to all Bytes except the last One.
-	idxMax = bytesCount - 2
-	for idx = 0; idx <= idxMax; idx++ {
-		// Collect next 8 Bits and convert them into a Byte.
-		collectorIdx = idx * BitsPerByte
-		byteBits[0] = bits[collectorIdx]
-		collectorIdx++
-		byteBits[1] = bits[collectorIdx]
-		collectorIdx++
-		byteBits[2] = bits[collectorIdx]
-		collectorIdx++
-		byteBits[3] = bits[collectorIdx]
-		collectorIdx++
-		byteBits[4] = bits[collectorIdx]
-		collectorIdx++
-		byteBits[5] = bits[collectorIdx]
-		collectorIdx++
-		byteBits[6] = bits[collectorIdx]
-		collectorIdx++
-		byteBits[7] = bits[collectorIdx]
-		b = ConvertByteBitsToByte(byteBits)
-
-		// Save the converted Byte into the Result.
-		result[idx] = b
-	}
-
-	// Part 2. Convert Bits to the last (partial) Byte.
-	idx = idxMax + 1
-	collectorIdx = idx * BitsPerByte
-	collectorIdxMax = bitsCount - 1
-	// Collect next available Bits.
-	lastByteBitIdx = 0
-	for collectorIdx <= collectorIdxMax {
-		// Collect a Bit.
-		lastByteBits[lastByteBitIdx] = bits[collectorIdx]
-		lastByteBitIdx++
-
-		// Take the next Bit.
-		collectorIdx++
-	}
-
-	// Collect next available Bits and convert them into a Byte.
-	b = ConvertByteBitsToByte(lastByteBits)
-
-	// Save the converted Byte into the Result.
-	result[idx] = b
-
-	return
+	return result, cur
 }
 
-// ConvertByteBitsToByte converts the eight Bits into a Byte.
-func ConvertByteBitsToByte(
-	bits [BitsPerByte]Bit,
-) (result byte) {
+// convertBitsToNonFullBytes convert expectedBits into mixed bytes, i.e. all bytes
+// except the last one are full.
+// This function is optimized for speed.
+func convertBitsToNonFullBytes(bits []Bit) (result []byte, bitsCount int) {
+	bytesCount := (len(bits) / BitsPerByte) + 1
+	result = make([]byte, bytesCount)
 
-	if bits[0] == One {
-		result = result | 1
-	}
-	if bits[1] == One {
-		result = result | 2
-	}
-	if bits[2] == One {
-		result = result | 4
-	}
-	if bits[3] == One {
-		result = result | 8
-	}
-	if bits[4] == One {
-		result = result | 16
-	}
-	if bits[5] == One {
-		result = result | 32
-	}
-	if bits[6] == One {
-		result = result | 64
-	}
-	if bits[7] == One {
-		result = result | 128
+	// Part 1. Convert expectedBits into all bytes except the last one.
+	iMax := bytesCount - 2
+	cur := 0
+	var buf byte
+	for i := 0; i <= iMax; i++ {
+		buf = 0
+
+		if bits[cur] == One {
+			buf |= 1
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 2
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 4
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 8
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 16
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 32
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 64
+		}
+		cur++
+		if bits[cur] == One {
+			buf |= 128
+		}
+		cur++
+
+		result[i] = buf
 	}
 
-	return
+	// Part 2. Convert expectedBits into the last (partial) byte.
+	buf = 0
+	curMax := len(bits) - 1
+	defer func() {
+		// Save the last byte.
+		result[len(result)-1] = buf
+	}()
+
+	if bits[cur] == One {
+		buf |= 1
+	}
+	cur++
+	if cur > curMax {
+		return result, cur
+	}
+	if bits[cur] == One {
+		buf |= 2
+	}
+	cur++
+	if cur > curMax {
+		return result, cur
+	}
+	if bits[cur] == One {
+		buf |= 4
+	}
+	cur++
+	if cur > curMax {
+		return result, cur
+	}
+	if bits[cur] == One {
+		buf |= 8
+	}
+	cur++
+	if cur > curMax {
+		return result, cur
+	}
+	if bits[cur] == One {
+		buf |= 16
+	}
+	cur++
+	if cur > curMax {
+		return result, cur
+	}
+	if bits[cur] == One {
+		buf |= 32
+	}
+	cur++
+	if cur > curMax {
+		return result, cur
+	}
+	if bits[cur] == One {
+		buf |= 64
+	}
+	cur++
+	if cur > curMax {
+		return result, cur
+	}
+	// The code below is not reachable. But, let it be here just for the beauty.
+	if bits[cur] == One {
+		buf |= 128
+	}
+	cur++
+	return result, cur
 }
 
-// ConvertBytesToBits converts the Array of Bytes into an Array of Bits.
-func ConvertBytesToBits(
-	bytes []byte,
-) (result []Bit) {
+// ConvertBytesToBits converts an array of bytes into an array of expectedBits.
+// This function is optimized for speed.
+func ConvertBytesToBits(bytes []byte) (result []Bit) {
+	result = make([]Bit, len(bytes)*BitsPerByte)
 
-	var b byte
-	var byteBits []Bit
-	var bytesCount int
-
-	bytesCount = len(bytes)
-	result = make([]Bit, 0, bytesCount*BitsPerByte)
-
-	for _, b = range bytes {
-		byteBits = ConvertByteToBits(b)
-		result = append(result, byteBits...)
+	cur := 0
+	for _, buf := range bytes {
+		if (buf & 1) == 1 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
+		if (buf & 2) == 2 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
+		if (buf & 4) == 4 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
+		if (buf & 8) == 8 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
+		if (buf & 16) == 16 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
+		if (buf & 32) == 32 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
+		if (buf & 64) == 64 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
+		if (buf & 128) == 128 {
+			result[cur] = One
+		} else {
+			result[cur] = Zero
+		}
+		cur++
 	}
 
-	return
-}
-
-// ConvertByteToBits converts the Byte into an Array of Bits.
-func ConvertByteToBits(
-	b byte,
-) (result []Bit) {
-
-	result = make([]Bit, BitsPerByte)
-
-	// Byte #1.
-	if (b & 1) == 1 {
-		result[0] = One
-	} else {
-		result[0] = Zero
-	}
-
-	// Byte #2.
-	if (b & 2) == 2 {
-		result[1] = One
-	} else {
-		result[1] = Zero
-	}
-
-	// Byte #3.
-	if (b & 4) == 4 {
-		result[2] = One
-	} else {
-		result[2] = Zero
-	}
-
-	// Byte #4.
-	if (b & 8) == 8 {
-		result[3] = One
-	} else {
-		result[3] = Zero
-	}
-
-	// Byte #5.
-	if (b & 16) == 16 {
-		result[4] = One
-	} else {
-		result[4] = Zero
-	}
-
-	// Byte #6.
-	if (b & 32) == 32 {
-		result[5] = One
-	} else {
-		result[5] = Zero
-	}
-
-	// Byte #7.
-	if (b & 64) == 64 {
-		result[6] = One
-	} else {
-		result[6] = Zero
-	}
-
-	// Byte #8.
-	if (b & 128) == 128 {
-		result[7] = One
-	} else {
-		result[7] = Zero
-	}
-
-	return
+	return result
 }

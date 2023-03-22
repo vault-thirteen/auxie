@@ -1,5 +1,3 @@
-// receive_test.go.
-
 package httphelper
 
 import (
@@ -19,9 +17,8 @@ func Test_ReceiveJSON(t *testing.T) {
 
 	var err error
 	var httpTest SimpleTest
-	var test *tester.Test
+	var test = tester.New(t)
 
-	test = tester.New(t)
 	httpTest = SimpleTest{
 		Parameter: SimpleTestParameter{
 			RequestMethod:  TestMethod,

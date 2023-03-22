@@ -4,9 +4,7 @@ package rpofs
 
 import "sort"
 
-func isSetOfUniqueSymbols(
-	set []rune,
-) (ok bool) {
+func isSetOfUniqueSymbols(set []rune) (ok bool) {
 	if len(set) < 1 {
 		return false
 	}

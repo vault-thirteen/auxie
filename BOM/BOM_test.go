@@ -2,6 +2,7 @@ package bom
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"testing"
 
@@ -13,80 +14,131 @@ func Test_GetEncoding(t *testing.T) {
 	tst := tester.New(t)
 	var err error
 	var result []Encoding
-	var unknownEnc = []Encoding{EncodingUnknown}
+	var resultEncodingUnknown = []Encoding{EncodingUnknown}
 	var r *bytes.Reader
 
-	// Test #1. Unknown encoding.
-	r = bytes.NewReader([]byte{})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, unknownEnc)
+	type TestData struct {
+		data           []byte
+		isPedanticTest bool
+		expectedResult []Encoding
+	}
 
-	// Test #2. UTF-8.
-	r = bytes.NewReader([]byte{0xEF, 0xBB, 0xBF})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF8, EncodingUnknown})
+	var testsv1 = []TestData{
+		// Test #1. Unknown encoding.
+		{
+			data:           []byte{},
+			isPedanticTest: true,
+			expectedResult: resultEncodingUnknown,
+		},
 
-	// Test #3. UTF-16 (BE).
-	r = bytes.NewReader([]byte{0xFE, 0xFF})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF16BE, EncodingUnknown})
+		// Test #2. UTF-8.
+		{
+			data:           []byte{0xEF, 0xBB, 0xBF},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF8, EncodingUnknown},
+		},
 
-	// Test #4. UTF-16 (LE).
-	r = bytes.NewReader([]byte{0xFF, 0xFE})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF16LE, EncodingUnknown})
+		// Test #3. UTF-16 (BE).
+		{
+			data:           []byte{0xFE, 0xFF},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF16BE, EncodingUnknown},
+		},
 
-	// Test #5. UTF-32 (BE).
-	r = bytes.NewReader([]byte{0x00, 0x00, 0xFE, 0xFF})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF32BE, EncodingUnknown})
+		// Test #4. UTF-16 (LE).
+		{
+			data:           []byte{0xFF, 0xFE},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF16LE, EncodingUnknown},
+		},
 
-	// Test #6. UTF-32 (LE).
-	r = bytes.NewReader([]byte{0xFF, 0xFE, 0x00, 0x00})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF16LE, EncodingUTF32LE, EncodingUnknown})
+		// Test #5. UTF-32 (BE).
+		{
+			data:           []byte{0x00, 0x00, 0xFE, 0xFF},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF32BE, EncodingUnknown},
+		},
 
-	// Test #7. UTF-7.
-	r = bytes.NewReader([]byte{0x2B, 0x2F, 0x76})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF7, EncodingUnknown})
+		// Test #6. UTF-32 (LE).
+		{
+			data:           []byte{0xFF, 0xFE, 0x00, 0x00},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF16LE, EncodingUTF32LE, EncodingUnknown},
+		},
 
-	// Test #8. UTF-1.
-	r = bytes.NewReader([]byte{0xF7, 0x64, 0x4C})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF1, EncodingUnknown})
+		// Test #7. UTF-7.
+		{
+			data:           []byte{0x2B, 0x2F, 0x76},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF7, EncodingUnknown},
+		},
 
-	// Test #9. UTF-EBCDIC.
-	r = bytes.NewReader([]byte{0xDD, 0x73, 0x66, 0x73})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingUTF_EBCDIC, EncodingUnknown})
+		// Test #8. UTF-1.
+		{
+			data:           []byte{0xF7, 0x64, 0x4C},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF1, EncodingUnknown},
+		},
 
-	// Test #10. SCSU.
-	r = bytes.NewReader([]byte{0x0E, 0xFE, 0xFF})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingSCSU, EncodingUnknown})
+		// Test #9. UTF-EBCDIC.
+		{
+			data:           []byte{0xDD, 0x73, 0x66, 0x73},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingUTF_EBCDIC, EncodingUnknown},
+		},
 
-	// Test #11. BOCU-1.
-	r = bytes.NewReader([]byte{0xFB, 0xEE, 0x28})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingBOCU1, EncodingUnknown})
+		// Test #10. SCSU.
+		{
+			data:           []byte{0x0E, 0xFE, 0xFF},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingSCSU, EncodingUnknown},
+		},
 
-	// Test #12. GB18030.
-	r = bytes.NewReader([]byte{0x84, 0x31, 0x95, 0x33})
-	result, err = GetEncoding(r)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, []Encoding{EncodingGB18030, EncodingUnknown})
+		// Test #11. BOCU-1.
+		{
+			data:           []byte{0xFB, 0xEE, 0x28},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingBOCU1, EncodingUnknown},
+		},
+
+		// Test #12. GB18030.
+		{
+			data:           []byte{0x84, 0x31, 0x95, 0x33},
+			isPedanticTest: true,
+			expectedResult: []Encoding{EncodingGB18030, EncodingUnknown},
+		},
+	}
+
+	// Add a second version of each test.
+	testsv2 := make([]TestData, 0, len(testsv1))
+
+	for _, test := range testsv1 {
+		testsv2 = append(testsv2, TestData{
+			data:           test.data,
+			isPedanticTest: false,
+			expectedResult: test_withoutEncoding(test.expectedResult, EncodingUnknown),
+		})
+	}
+
+	// Combine the tests.
+	tests := make([]TestData, 0, len(testsv1)+len(testsv2))
+	for _, tv1 := range testsv1 {
+		tests = append(tests, tv1)
+	}
+	for _, tv2 := range testsv2 {
+		tests = append(tests, tv2)
+	}
+
+	// Run the tests.
+	for i, test := range tests {
+		fmt.Print("[", i+1, "] ")
+
+		r = bytes.NewReader(test.data)
+		result, err = GetEncoding(r, test.isPedanticTest)
+		tst.MustBeNoError(err)
+		tst.MustBeEqual(result, test.expectedResult)
+	}
+	fmt.Println()
 }
 
 func Test_IsEncoding(t *testing.T) {
@@ -238,7 +290,7 @@ func Test_SkipBOMPrefix(t *testing.T) {
 		ExpectedData []byte
 	}
 
-	var tests = []TestData{
+	var testsv1 = []TestData{
 		{
 			Bytes:        []byte{0xEF, 0xBB, 0xBF},
 			Encoding:     EncodingUTF8,
@@ -296,10 +348,10 @@ func Test_SkipBOMPrefix(t *testing.T) {
 		},
 	}
 
-	// Add second version of each test.
-	testsv2 := make([]TestData, 0, len(tests))
+	// Add a second version of each test.
+	testsv2 := make([]TestData, 0, len(testsv1))
 	deltaBytes := []byte{'A', 'B', 'C'}
-	for _, test := range tests {
+	for _, test := range testsv1 {
 		testsv2 = append(testsv2, TestData{
 			Bytes:        append(test.Bytes, deltaBytes...),
 			Encoding:     test.Encoding,
@@ -307,7 +359,19 @@ func Test_SkipBOMPrefix(t *testing.T) {
 		})
 	}
 
-	for _, theTest := range tests {
+	// Combine the tests.
+	tests := make([]TestData, 0, len(testsv1)+len(testsv2))
+	for _, tv1 := range testsv1 {
+		tests = append(tests, tv1)
+	}
+	for _, tv2 := range testsv2 {
+		tests = append(tests, tv2)
+	}
+
+	// Run the tests.
+	for i, theTest := range tests {
+		fmt.Print("[", i+1, "] ")
+
 		r = bytes.NewReader(theTest.Bytes)
 		newRS, err = SkipBOMPrefix(r, theTest.Encoding)
 		tst.MustBeNoError(err)
@@ -315,6 +379,7 @@ func Test_SkipBOMPrefix(t *testing.T) {
 		tst.MustBeNoError(err)
 		tst.MustBeEqual(restBytes, theTest.ExpectedData)
 	}
+	fmt.Println()
 }
 
 // Test_ALL_GetBOM tests all 11 functions that get BOM, i.e.
@@ -480,4 +545,16 @@ func Test_ALL_GetBOM(t *testing.T) {
 		}
 		tst.MustBeEqual(result, theTest.ExpectedPrefix)
 	}
+}
+
+// test_withoutEncoding deletes an encoding from an array.
+func test_withoutEncoding(old []Encoding, del Encoding) (new []Encoding) {
+	new = make([]Encoding, 0, len(old))
+	for _, o := range old {
+		if o == del {
+			continue
+		}
+		new = append(new, o)
+	}
+	return new
 }

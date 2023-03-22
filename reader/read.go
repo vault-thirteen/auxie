@@ -10,40 +10,38 @@ import (
 
 const ErrUnexpectedDataSize = "unexpected data size: %v vs %v"
 
-// ReadLineEndingWithCRLF reads a Line ending exactly with the 'CR'+'LF'
-// Symbols Sequence. The two Symbols at the End of the Line (CR+LF) are
-// included into the returned Result.
-func (r *Reader) ReadLineEndingWithCRLF() ([]byte, error) {
-
-	var b [1]byte
-	var err error
-	var line []byte
+// ReadLineEndingWithCRLF reads a line ending exactly with the 'CR'+'LF'
+// symbols sequence. The two symbols at the end of the line (CR+LF) are
+// included into the returned result. On error, returns the last read sequence
+// of bytes, even if it does not have a correct ending.
+func (r *Reader) ReadLineEndingWithCRLF() (line []byte, err error) {
+	var b byte
 	var success bool
 
-	// We must find the exact Combination (Sequence) of CR and LF, where LF is
+	// We must find the exact combination (sequence) of CR and LF, where LF is
 	// right after the CR.
 
-	// Read the first Byte.
-	_, err = r.reader.Read(b[:])
+	// Read the first byte.
+	b, err = r.ReadByte()
 	if err != nil {
-		return []byte{}, err
+		return line, err
 	}
-	line = append(line, b[0])
+	line = append(line, b)
 
-	// Read next Bytes.
+	// Read next bytes.
 	for !success {
 
-		// Read a single Byte.
-		_, err = r.reader.Read(b[:])
+		// Read a single byte.
+		b, err = r.ReadByte()
 		if err != nil {
-			return []byte{}, err
+			return line, err
 		}
-		line = append(line, b[0])
+		line = append(line, b)
 
-		// LF?
-		if b[0] == '\n' {
-			// Previous Symbol must be CR to exit the Loop.
-			if line[len(line)-2] == '\r' {
+		// LF ?
+		if b == LF {
+			// Previous symbol must be CR to exit the loop.
+			if line[len(line)-2] == CR {
 				success = true
 			}
 		}
@@ -57,11 +55,11 @@ func (r *Reader) ReadBytes(size int) (bytes []byte, err error) {
 	bytes = make([]byte, size)
 	var n int
 	n, err = io.ReadFull(r, bytes)
-	if n != size {
-		return nil, fmt.Errorf(ErrUnexpectedDataSize, size, n)
-	}
 	if err != nil {
 		return nil, err
+	}
+	if n != size {
+		return nil, fmt.Errorf(ErrUnexpectedDataSize, size, n)
 	}
 
 	return bytes, nil
@@ -80,12 +78,13 @@ func (r *Reader) ReadByte() (ub byte, err error) {
 
 // ReadSByte reads one signed byte.
 func (r *Reader) ReadSByte() (sb int8, err error) {
-	err = binary.Read(r, binary.BigEndian, &sb)
+	var ub byte
+	ub, err = r.ReadByte()
 	if err != nil {
 		return sb, err
 	}
 
-	return sb, nil
+	return int8(ub), nil
 }
 
 // Read2Bytes reads two bytes.

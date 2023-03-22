@@ -1,5 +1,6 @@
 # SAAC
 
-## Simple Arithmetic Average Calculator
+### Simple Arithmetic Average Calculator
 
-This calculator uses the built-in golang's 'big' library and thus supports very big numbers.
+This calculator uses the built-in Golang's 'big' library and thus supports very 
+big numbers.

@@ -1,9 +1,7 @@
-// symbol.go.
-
 package unicode
 
-// SymbolIsRusLatLetter Function checks whether the specified Symbol is a Letter
-// of Russian or Latin Alphabets or not.
+// SymbolIsRusLatLetter checks whether the specified symbol is a letter of
+// Russian or Latin alphabets or not.
 func SymbolIsRusLatLetter(symbol rune) bool {
 	if SymbolIsLatLetter(symbol) {
 		return true
@@ -14,8 +12,8 @@ func SymbolIsRusLatLetter(symbol rune) bool {
 	return false
 }
 
-// SymbolIsLatLetter Function checks whether the specified Symbol is a Letter
-// of Latin Alphabet or not.
+// SymbolIsLatLetter checks whether the specified symbol is a letter of
+// Latin alphabet or not.
 func SymbolIsLatLetter(symbol rune) bool {
 	if (symbol >= 'a') && (symbol <= 'z') {
 		return true
@@ -26,8 +24,8 @@ func SymbolIsLatLetter(symbol rune) bool {
 	return false
 }
 
-// SymbolIsRusLetter Function checks whether the specified Symbol is a Letter
-// of Russian Alphabet or not.
+// SymbolIsRusLetter checks whether the specified symbol is a letter of
+// Russian alphabet or not.
 func SymbolIsRusLetter(symbol rune) bool {
 	if (symbol >= 'а') && (symbol <= 'я') {
 		return true
@@ -44,7 +42,7 @@ func SymbolIsRusLetter(symbol rune) bool {
 	return false
 }
 
-// SymbolIsNumber Function checks whether the specified Symbol is numeric.
+// SymbolIsNumber checks whether the specified symbol is numeric.
 func SymbolIsNumber(symbol rune) bool {
 	if (symbol >= '0') && (symbol <= '9') {
 		return true

@@ -27,6 +27,27 @@ func Test_ParseUint(t *testing.T) {
 	aTest.MustBeEqual(result, uint(0))
 }
 
+func Test_ParseUint64(t *testing.T) {
+	var aTest = tester.New(t)
+	var err error
+	var result uint64
+
+	// Test #1.
+	result, err = ParseUint64("123")
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(result, uint64(123))
+
+	// Test #2. Overflow.
+	result, err = ParseUint64("18446744073709551616")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, uint64(0xffffffffffffffff))
+
+	// Test #3. Not a number.
+	result, err = ParseUint64("not a number")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, uint64(0))
+}
+
 func Test_ParseUint32(t *testing.T) {
 	var aTest = tester.New(t)
 	var err error
@@ -109,6 +130,27 @@ func Test_ParseInt(t *testing.T) {
 	result, err = ParseInt("not a number")
 	aTest.MustBeAnError(err)
 	aTest.MustBeEqual(result, int(0))
+}
+
+func Test_ParseInt64(t *testing.T) {
+	var aTest = tester.New(t)
+	var err error
+	var result int64
+
+	// Test #1.
+	result, err = ParseInt64("123")
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(result, int64(123))
+
+	// Test #2. Overflow.
+	result, err = ParseInt64("9223372036854775808")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, int64(9223372036854775807))
+
+	// Test #3. Not a number.
+	result, err = ParseInt64("not a number")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, int64(0))
 }
 
 func Test_ParseInt32(t *testing.T) {

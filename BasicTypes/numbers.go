@@ -46,6 +46,4 @@ type Float = float32
 type Double = float64
 
 // Rational is a rational type.
-// Unfortunately Golang does not support unsigned rationals out-of-the-box, so
-// we will not define signed or unsigned variants of the type here.
 type Rational = *big.Rat

@@ -1,5 +1,3 @@
-// average-test.go.
-
 package httphelper
 
 import (
@@ -8,23 +6,21 @@ import (
 	"net/http/httptest"
 )
 
-// HTTP Methods help in testing simple HTTP Request Handlers.
-
-// An average Test can emulate an HTTP Request with HTTP Method, URL, HTTP
-// Headers and Body.
+// An average test can emulate an HTTP request with HTTP method, URL, HTTP
+// headers and body.
 //
-// It executes the HTTP Handler specified in the 'RequestHandler' Field,
-// provides the Results of this Execution in a Filed named 'ResultReceived'.
-// A User may then compare the received Results with the expected Ones.
+// It executes the HTTP handler specified in the 'RequestHandler' field,
+// provides the results of this execution in a field named 'ResultReceived'.
+// A user may then compare the received results with the expected ones.
 
-// AverageTest Type is a Type of a average HTTP Test.
+// AverageTest is an average HTTP test.
 type AverageTest struct {
 	Parameter      AverageTestParameter
 	ResultExpected AverageTestResult
 	ResultReceived AverageTestResult
 }
 
-// AverageTestParameter Type is a Parameter of a average HTTP Test.
+// AverageTestParameter is a parameter of an average HTTP test.
 type AverageTestParameter struct {
 	RequestMethod  string
 	RequestUrl     string
@@ -33,20 +29,17 @@ type AverageTestParameter struct {
 	RequestHandler http.HandlerFunc
 }
 
-// AverageTestResult Type is a Result of a average HTTP Test.
+// AverageTestResult is a result of an average HTTP test.
 type AverageTestResult struct {
 	ResponseStatusCode int
 	ResponseHeaders    http.Header
 	ResponseBody       []byte
 }
 
-// PerformAverageHttpTest Function performs the Simulation of an average HTTP Test
-// Handler. Writes the received Results into the 'ResultReceived' Field of a
-// Test Object.
-func PerformAverageHttpTest(
-	test *AverageTest,
-) (err error) {
-
+// PerformAverageHttpTest function performs the simulation of an average HTTP
+// test handler. It writes the received results into the 'ResultReceived' field
+// of a test object.
+func PerformAverageHttpTest(test *AverageTest) (err error) {
 	var request *http.Request
 	var response *http.Response
 	var responseBody []byte
@@ -68,11 +61,11 @@ func PerformAverageHttpTest(
 	response = responseRecorder.Result()
 	responseBody, err = io.ReadAll(response.Body)
 	if err != nil {
-		return
+		return err
 	}
 	err = response.Body.Close()
 	if err != nil {
-		return
+		return err
 	}
 
 	// Set the Result.
@@ -81,5 +74,5 @@ func PerformAverageHttpTest(
 		ResponseHeaders:    response.Header,
 		ResponseBody:       responseBody,
 	}
-	return
+	return nil
 }

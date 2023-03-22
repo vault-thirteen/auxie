@@ -1,5 +1,3 @@
-// reply.go.
-
 package httphelper
 
 import (
@@ -17,49 +15,33 @@ const (
 	ErrNullPointer = "null pointer"
 )
 
-// Functions which help in replying to HTTP Requests.
+// Functions which help in replying to HTTP requests.
 
-// ReplyTextWithCode Function replies to the HTTP Request with the specified
-// Text and HTTP Status Code.
-func ReplyTextWithCode(
-	w http.ResponseWriter,
-	httpStatusCode int,
-	replyText string,
-) {
-	var xerr error
-
+// ReplyTextWithCode function replies to the HTTP request with the specified
+// text and HTTP status code.
+func ReplyTextWithCode(w http.ResponseWriter, httpStatusCode int, replyText string) {
 	w.WriteHeader(httpStatusCode)
-	_, xerr = w.Write([]byte(replyText))
+	_, xerr := w.Write([]byte(replyText))
 	if xerr != nil {
 		log.Println(replyText)
 		log.Println(xerr)
 	}
 }
 
-// ReplyErrorWithCode Function replies to the HTTP Request with an Error and
-// the specified HTTP Status Code.
-func ReplyErrorWithCode(
-	w http.ResponseWriter,
-	httpStatusCode int,
-	err error,
-) {
+// ReplyErrorWithCode function replies to the HTTP request with an error and
+// the specified HTTP status code.
+func ReplyErrorWithCode(w http.ResponseWriter, httpStatusCode int, err error) {
 	ReplyTextWithCode(w, httpStatusCode, err.Error())
 }
 
-// ReplyErrorInternal Function replies to the HTTP Request with an Error and
-// 'Internal Server Error' HTTP Status Code.
-func ReplyErrorInternal(
-	w http.ResponseWriter,
-	err error,
-) {
+// ReplyErrorInternal function replies to the HTTP request with an error and
+// 'Internal Server Error' HTTP status code.
+func ReplyErrorInternal(w http.ResponseWriter, err error) {
 	ReplyErrorWithCode(w, http.StatusInternalServerError, err)
 }
 
-// ReplyJSON Function sends an Object in JSON Format to the HTTP Output Stream.
-func ReplyJSON(
-	w http.ResponseWriter,
-	replyObject interface{},
-) {
+// ReplyJSON function sends an object in JSON format to the HTTP output stream.
+func ReplyJSON(w http.ResponseWriter, replyObject interface{}) {
 	var err error
 	var response []byte
 
@@ -79,13 +61,10 @@ func ReplyJSON(
 	}
 }
 
-// ReplyJSONFast Function sends an Object in JSON Format to the HTTP Output
-// Stream using the faster but less secure Way than an ordinary 'ReplyJSON'
-// Method.
-func ReplyJSONFast(
-	w http.ResponseWriter,
-	replyObject interface{},
-) {
+// ReplyJSONFast function sends an object in JSON format to the HTTP output
+// stream using the faster but less secure way than an ordinary 'ReplyJSON'
+// method.
+func ReplyJSONFast(w http.ResponseWriter, replyObject interface{}) {
 	var err error
 	var jsonEncoder *json.Encoder
 

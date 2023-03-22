@@ -2,20 +2,18 @@ package reader
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"testing"
 
 	bt "github.com/vault-thirteen/auxie/BasicTypes"
-	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
 	"github.com/vault-thirteen/tester"
 )
 
 func Test_ReadLineEndingWithCRLF(t *testing.T) {
-
 	var data []byte
 	var err error
-	var reader1 rs.ReaderSeeker
-	var reader2 *Reader
+	var rdr *Reader
 	var result []byte
 	var resultExpected []byte
 	var tst *tester.Test
@@ -35,14 +33,13 @@ func Test_ReadLineEndingWithCRLF(t *testing.T) {
 	data = append(data, CR, LF)
 
 	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
+	rdr = NewReader(bytes.NewReader(data))
 	resultExpected = data[0:13]
-	result, err = reader2.ReadLineEndingWithCRLF()
+	result, err = rdr.ReadLineEndingWithCRLF()
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(result, resultExpected)
 	resultExpected = []byte("AB\r\n")
-	result, err = reader2.ReadLineEndingWithCRLF()
+	result, err = rdr.ReadLineEndingWithCRLF()
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(result, resultExpected)
 
@@ -56,12 +53,11 @@ func Test_ReadLineEndingWithCRLF(t *testing.T) {
 	data = append(data, []byte("5")...)
 	data = append(data, LF, CR)
 	data = append(data, []byte("67")...)
-	resultExpected = []byte{}
+	resultExpected = data[0:11]
 
 	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
-	result, err = reader2.ReadLineEndingWithCRLF()
+	rdr = NewReader(bytes.NewReader(data))
+	result, err = rdr.ReadLineEndingWithCRLF()
 	tst.MustBeAnError(err)
 	tst.MustBeEqual(err.Error(), io.EOF.Error())
 	tst.MustBeEqual(result, resultExpected)
@@ -70,12 +66,11 @@ func Test_ReadLineEndingWithCRLF(t *testing.T) {
 
 	// Prepare the Data.
 	data = []byte{}
-	resultExpected = []byte{}
+	resultExpected = []byte(nil)
 
 	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
-	result, err = reader2.ReadLineEndingWithCRLF()
+	rdr = NewReader(bytes.NewReader(data))
+	result, err = rdr.ReadLineEndingWithCRLF()
 	tst.MustBeAnError(err)
 	tst.MustBeEqual(err.Error(), io.EOF.Error())
 	tst.MustBeEqual(result, resultExpected)
@@ -84,91 +79,71 @@ func Test_ReadLineEndingWithCRLF(t *testing.T) {
 
 	// Prepare the Data.
 	data = []byte("A\rB\nC\n\rD\r\n")
-	resultExpected = data
+	resultExpected = data[:]
 
 	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
-	result, err = reader2.ReadLineEndingWithCRLF()
+	rdr = NewReader(bytes.NewReader(data))
+	result, err = rdr.ReadLineEndingWithCRLF()
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(result, resultExpected)
 }
 
 func Test_ReadBytes(t *testing.T) {
-
-	var data []byte
+	var tst = tester.New(t)
 	var err error
-	var reader1 rs.ReaderSeeker
-	var reader2 *Reader
+	var rdr *Reader
 	var result []byte
-	var resultExpected []byte
-	var tst *tester.Test
 
-	tst = tester.New(t)
+	type TestData struct {
+		Data                []byte
+		NumberOFBytesToRead int
+		ExpectedResult      []byte
+		ExpectedError       error
+	}
 
-	// Test #1. Normal Data.
+	tests := []TestData{
+		// Test #1. Normal Data.
+		{
+			Data:                []byte("ABCDEFG"),
+			NumberOFBytesToRead: 3,
+			ExpectedResult:      []byte("ABC"),
+			ExpectedError:       nil,
+		},
 
-	// Prepare the Data.
-	data = []byte("ABCDEFG")
-	resultExpected = []byte("ABC")
+		// Test #2. Data is not enough.
+		{
+			Data:                []byte("ABCDEFG"),
+			NumberOFBytesToRead: 100,
+			ExpectedResult:      []byte(nil),
+			ExpectedError:       io.ErrUnexpectedEOF,
+		},
 
-	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
-	result, err = reader2.ReadBytes(3)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, resultExpected)
+		// Test #3. Empty Data.
+		{
+			Data:                []byte{},
+			NumberOFBytesToRead: 3,
+			ExpectedResult:      []byte(nil),
+			ExpectedError:       io.EOF,
+		},
+	}
 
-	// Test #2. Data is not enough.
+	n := 1
+	for _, test := range tests {
+		fmt.Print("[", n, "] ")
 
-	// Prepare the Data.
-	data = []byte("ABCDEFG")
-	resultExpected = []byte(nil)
+		rdr = NewReader(bytes.NewReader(test.Data))
+		result, err = rdr.ReadBytes(test.NumberOFBytesToRead)
+		if test.ExpectedError == nil {
+			tst.MustBeNoError(err)
+		} else {
+			tst.MustBeAnError(err)
+			tst.MustBeEqual(err, test.ExpectedError)
+		}
+		tst.MustBeEqual(result, test.ExpectedResult)
 
-	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
-	result, err = reader2.ReadBytes(100)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(err.Error(), "unexpected data size: 100 vs 7")
-	tst.MustBeEqual(result, resultExpected)
-
-	// Test #3. Empty Data.
-
-	// Prepare the Data.
-	data = []byte{}
-	resultExpected = []byte(nil)
-
-	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
-	result, err = reader2.ReadBytes(3)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(err.Error(), "unexpected data size: 3 vs 0")
-	tst.MustBeEqual(result, resultExpected)
-
-	// Test #4. Normal Data. Combined Read.
-
-	// Prepare the Data.
-	data = []byte("ABC")
-	data = append(data, CR, LF)
-	data = append(data, []byte("1234567")...)
-
-	// Run the Test.
-	reader1 = bytes.NewReader(data)
-	reader2 = NewReader(reader1)
-
-	// Part 1.
-	resultExpected = []byte("ABC\r\n")
-	result, err = reader2.ReadLineEndingWithCRLF()
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, resultExpected)
-
-	// Part 2.
-	resultExpected = []byte("123")
-	result, err = reader2.ReadBytes(3)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(result, resultExpected)
+		n++
+	}
+	fmt.Println()
 }
 
 func Test_ReadByte(t *testing.T) {

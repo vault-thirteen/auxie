@@ -1,5 +1,3 @@
-// symbol_test.go.
-
 package unicode
 
 import (

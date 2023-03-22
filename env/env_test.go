@@ -1,5 +1,3 @@
-// env_test.go.
-
 package env
 
 import (
@@ -10,12 +8,9 @@ import (
 )
 
 func Test_GetEnv(t *testing.T) {
-
-	var aTest *tester.Test
+	var aTest = tester.New(t)
 	var err error
 	var result string
-
-	aTest = tester.New(t)
 
 	// Test #1. Normal Data.
 	err = os.Setenv("TEST_ENV_A", "XYZ")

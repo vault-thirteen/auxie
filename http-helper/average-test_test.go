@@ -1,5 +1,3 @@
-// average-test_test.go.
-
 package httphelper
 
 import (
@@ -12,7 +10,6 @@ import (
 )
 
 func Test_PerformAverageHttpTest(t *testing.T) {
-
 	const (
 		TestMethod        = "GET"
 		TestURL           = "http://example.org?x=123"
