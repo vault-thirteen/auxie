@@ -56,10 +56,10 @@ func (r *Reader) ReadBytes(size int) (bytes []byte, err error) {
 	var n int
 	n, err = io.ReadFull(r, bytes)
 	if err != nil {
-		return nil, err
+		return bytes, err
 	}
 	if n != size {
-		return nil, fmt.Errorf(ErrUnexpectedDataSize, size, n)
+		return bytes, fmt.Errorf(ErrUnexpectedDataSize, size, n)
 	}
 
 	return bytes, nil
@@ -118,7 +118,7 @@ func (r *Reader) ReadWord_LE() (w bt.Word, err error) {
 	var bytes []byte
 	bytes, err = r.Read2Bytes()
 	if err != nil {
-		return 0, err
+		return w, err
 	}
 
 	return binary.LittleEndian.Uint16(bytes), nil
@@ -129,7 +129,7 @@ func (r *Reader) ReadDWord_BE() (dw bt.DWord, err error) {
 	var bytes []byte
 	bytes, err = r.Read4Bytes()
 	if err != nil {
-		return 0, err
+		return dw, err
 	}
 
 	return binary.BigEndian.Uint32(bytes), nil
@@ -140,7 +140,7 @@ func (r *Reader) ReadDWord_LE() (dw bt.DWord, err error) {
 	var bytes []byte
 	bytes, err = r.Read4Bytes()
 	if err != nil {
-		return 0, err
+		return dw, err
 	}
 
 	return binary.LittleEndian.Uint32(bytes), nil

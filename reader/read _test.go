@@ -113,8 +113,8 @@ func Test_ReadBytes(t *testing.T) {
 		// Test #2. Data is not enough.
 		{
 			Data:                []byte("ABCDEFG"),
-			NumberOFBytesToRead: 100,
-			ExpectedResult:      []byte(nil),
+			NumberOFBytesToRead: 10,
+			ExpectedResult:      []byte{'A', 'B', 'C', 'D', 'E', 'F', 'G', 0, 0, 0},
 			ExpectedError:       io.ErrUnexpectedEOF,
 		},
 
@@ -122,7 +122,7 @@ func Test_ReadBytes(t *testing.T) {
 		{
 			Data:                []byte{},
 			NumberOFBytesToRead: 3,
-			ExpectedResult:      []byte(nil),
+			ExpectedResult:      []byte{0, 0, 0},
 			ExpectedError:       io.EOF,
 		},
 	}
@@ -197,7 +197,7 @@ func Test_Read2Bytes(t *testing.T) {
 	r = NewReader(bytes.NewReader([]byte{}))
 	result, err = r.Read2Bytes()
 	tst.MustBeAnError(err)
-	tst.MustBeEqual(result, []byte(nil))
+	tst.MustBeEqual(result, []byte{0, 0})
 }
 
 func Test_Read4Bytes(t *testing.T) {
@@ -215,7 +215,7 @@ func Test_Read4Bytes(t *testing.T) {
 	r = NewReader(bytes.NewReader([]byte{}))
 	result, err = r.Read4Bytes()
 	tst.MustBeAnError(err)
-	tst.MustBeEqual(result, []byte(nil))
+	tst.MustBeEqual(result, []byte{0, 0, 0, 0})
 }
 
 func Test_Read8Bytes(t *testing.T) {
@@ -233,7 +233,7 @@ func Test_Read8Bytes(t *testing.T) {
 	r = NewReader(bytes.NewReader([]byte{}))
 	result, err = r.Read8Bytes()
 	tst.MustBeAnError(err)
-	tst.MustBeEqual(result, []byte(nil))
+	tst.MustBeEqual(result, []byte{0, 0, 0, 0, 0, 0, 0, 0})
 }
 
 func Test_ReadWord_BE(t *testing.T) {
