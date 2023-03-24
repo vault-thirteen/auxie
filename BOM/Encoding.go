@@ -1,7 +1,6 @@
 package bom
 
 const (
-	EncodingUnknown    = Encoding(0)
 	EncodingUTF8       = Encoding(1)
 	EncodingUTF16BE    = Encoding(2)
 	EncodingUTF16LE    = Encoding(3)
@@ -35,14 +34,4 @@ var possibleEncodings = []Encoding{
 // encoding.
 func PossibleEncodings() []Encoding {
 	return possibleEncodings
-}
-
-// IsKnown tells whether the encoding is known or not.
-func (e Encoding) IsKnown() bool {
-	return e != EncodingUnknown
-}
-
-// IsUnknown tells whether the encoding is unknown or not.
-func (e Encoding) IsUnknown() bool {
-	return e == EncodingUnknown
 }

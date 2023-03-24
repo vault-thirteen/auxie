@@ -1,332 +1,163 @@
 package bom
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
 
-	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
 	"github.com/vault-thirteen/auxie/reader"
-	"github.com/vault-thirteen/errorz"
 )
 
 const (
 	ErrUnknownEncoding = "unknown encoding: %v"
 	ErrBOMIsNotFound   = "byte order mark is not found"
+	ErrDuplicateProbe  = "duplicate probe for encoding %v"
 )
 
-// GetEncoding tries to get all possible encodings for the stream.
-// Please note that some encodings have similar BOMs, that is why an array is
-// returned instead of a single value. The reader is reset after the reading.
-//
-// The 'shouldIncludeUnknownEncoding' flag switches the way of result telling.
-// If the flag is true, the UnknownEncoding is always included into the result.
-// This is a pedantic way of telling the result for those who want a scientific
-// approach. If the flag is false, UnknownEncoding is not included into the
-// result. This means that if no encoding is found, the result will be an empty
-// array. This is a simplistic approach. Independently of the setting, the
-// result array is always null (nil) on reader's error.
-func GetEncoding(rs rs.ReaderSeeker, shouldIncludeUnknownEncoding bool) (result []Encoding, err error) {
-	result = make([]Encoding, 0)
+var (
+	bomUTF8       = []byte{0xEF, 0xBB, 0xBF}
+	bomUTF16BE    = []byte{0xFE, 0xFF}
+	bomUTF16LE    = []byte{0xFF, 0xFE}
+	bomUTF32BE    = []byte{0x00, 0x00, 0xFE, 0xFF}
+	bomUTF32LE    = []byte{0xFF, 0xFE, 0x00, 0x00}
+	bomUTF7       = []byte{0x2B, 0x2F, 0x76}       // +/v
+	bomUTF1       = []byte{0xF7, 0x64, 0x4C}       //?dL
+	bomUTF_EBCDIC = []byte{0xDD, 0x73, 0x66, 0x73} // ?sfs
+	bomSCSU       = []byte{0x0E, 0xFE, 0xFF}
+	bomBOCU1      = []byte{0xFB, 0xEE, 0x28} // ??(
+	bomGB18030    = []byte{0x84, 0x31, 0x95, 0x33}
+)
 
-	var isEncoding bool
-	for _, pe := range possibleEncodings {
-		isEncoding, err = IsEncoding(rs, pe)
-		if err != nil {
-			return nil, err
-		}
+func BOMUTF8() []byte       { return bomUTF8 }
+func BOMUTF16BE() []byte    { return bomUTF16BE }
+func BOMUTF16LE() []byte    { return bomUTF16LE }
+func BOMUTF32BE() []byte    { return bomUTF32BE }
+func BOMUTF32LE() []byte    { return bomUTF32LE }
+func BOMUTF7() []byte       { return bomUTF7 }
+func BOMUTF1() []byte       { return bomUTF1 }
+func BOMUTF_EBCDIC() []byte { return bomUTF_EBCDIC }
+func BOMSCSU() []byte       { return bomSCSU }
+func BOMBOCU1() []byte      { return bomBOCU1 }
+func BOMGB18030() []byte    { return bomGB18030 }
 
-		if isEncoding {
-			result = append(result, pe)
-		}
-	}
-
-	if shouldIncludeUnknownEncoding {
-		result = append(result, EncodingUnknown)
-	}
-
-	return result, nil
+var boms = map[Encoding][]byte{
+	EncodingUTF8:       bomUTF8,
+	EncodingUTF16BE:    bomUTF16BE,
+	EncodingUTF16LE:    bomUTF16LE,
+	EncodingUTF32BE:    bomUTF32BE,
+	EncodingUTF32LE:    bomUTF32LE,
+	EncodingUTF7:       bomUTF7,
+	EncodingUTF1:       bomUTF1,
+	EncodingUTF_EBCDIC: bomUTF_EBCDIC,
+	EncodingSCSU:       bomSCSU,
+	EncodingBOCU1:      bomBOCU1,
+	EncodingGB18030:    bomGB18030,
 }
 
-// IsEncoding checks the beginning of the stream and compares it's BOM with the
-// BOM of the specified encoding. Simply, it tries to check whether the stream
-// has a BOM of the specified encoding or not. The reader is reset after the
-// reading.
-func IsEncoding(rs rs.ReaderSeeker, enc Encoding) (isEncoding bool, err error) {
-	var initialOffset int64
-	initialOffset, err = rs.Seek(0, io.SeekCurrent)
-	if err != nil {
-		return false, err
-	}
-
-	defer func() {
-		_, derr := rs.Seek(initialOffset, io.SeekStart)
-		if derr != nil {
-			err = errorz.Combine(err, derr)
-		}
-	}()
-
-	rdr := reader.NewReader(rs)
-
-	var getErr error
-	switch enc {
-	case EncodingUTF8:
-		_, getErr = GetBOMForEncodingUTF8(rdr)
-	case EncodingUTF16BE:
-		_, getErr = GetBOMForEncodingUTF16BE(rdr)
-	case EncodingUTF16LE:
-		_, getErr = GetBOMForEncodingUTF16LE(rdr)
-	case EncodingUTF32BE:
-		_, getErr = GetBOMForEncodingUTF32BE(rdr)
-	case EncodingUTF32LE:
-		_, getErr = GetBOMForEncodingUTF32LE(rdr)
-	case EncodingUTF7:
-		_, getErr = GetBOMForEncodingUTF7(rdr)
-	case EncodingUTF1:
-		_, getErr = GetBOMForEncodingUTF1(rdr)
-	case EncodingUTF_EBCDIC:
-		_, getErr = GetBOMForEncodingUTF_EBCDIC(rdr)
-	case EncodingSCSU:
-		_, getErr = GetBOMForEncodingSCSU(rdr)
-	case EncodingBOCU1:
-		_, getErr = GetBOMForEncodingBOCU1(rdr)
-	case EncodingGB18030:
-		_, getErr = GetBOMForEncodingGB18030(rdr)
-	default:
-		return false, fmt.Errorf(ErrUnknownEncoding, enc)
-	}
-	if getErr != nil {
-		return false, nil
-	}
-
-	return true, nil
+func BOMs() map[Encoding][]byte {
+	return boms
 }
 
-// SkipBOMPrefix tries to skip BOM prefix from the data.
-// It reads the BOM and returns the reader.
-func SkipBOMPrefix(rs rs.ReaderSeeker, enc Encoding) (newRS rs.ReaderSeeker, err error) {
-	rdr := reader.NewReader(rs)
-
-	switch enc {
-	case EncodingUTF8:
-		_, err = GetBOMForEncodingUTF8(rdr)
-	case EncodingUTF16BE:
-		_, err = GetBOMForEncodingUTF16BE(rdr)
-	case EncodingUTF16LE:
-		_, err = GetBOMForEncodingUTF16LE(rdr)
-	case EncodingUTF32BE:
-		_, err = GetBOMForEncodingUTF32BE(rdr)
-	case EncodingUTF32LE:
-		_, err = GetBOMForEncodingUTF32LE(rdr)
-	case EncodingUTF7:
-		_, err = GetBOMForEncodingUTF7(rdr)
-	case EncodingUTF1:
-		_, err = GetBOMForEncodingUTF1(rdr)
-	case EncodingUTF_EBCDIC:
-		_, err = GetBOMForEncodingUTF_EBCDIC(rdr)
-	case EncodingSCSU:
-		_, err = GetBOMForEncodingSCSU(rdr)
-	case EncodingBOCU1:
-		_, err = GetBOMForEncodingBOCU1(rdr)
-	case EncodingGB18030:
-		_, err = GetBOMForEncodingGB18030(rdr)
-	default:
+// ReadBOMOfEncoding tries to read the BOM of a specified encoding.
+// The prefix which was read from the stream is always returned.
+func ReadBOMOfEncoding(r io.Reader, enc Encoding) (prefix []byte, err error) {
+	bom, ok := boms[enc]
+	if !ok {
 		return nil, fmt.Errorf(ErrUnknownEncoding, enc)
 	}
-	if err != nil {
-		return nil, err
-	}
 
-	return rdr.GetInternalReader(), nil
-}
-
-// GetBOMForEncodingUTF8 tries to read the BOM of UTF-8 encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF8(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(3)
+	prefix = make([]byte, len(bom))
+	var n int
+	n, err = r.Read(prefix)
+	prefix = prefix[:n]
 	if err != nil {
 		return prefix, err
 	}
 
-	if (prefix[0] == 0xEF) && (prefix[1] == 0xBB) && (prefix[2] == 0xBF) {
+	if bytes.Equal(prefix, bom) {
 		return prefix, nil
 	}
 
 	return prefix, errors.New(ErrBOMIsNotFound)
 }
 
-// GetBOMForEncodingUTF16BE tries to read the BOM of UTF-16 [BE] encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF16BE(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(2)
+// SkipBOM tries to skip a BOM prefix of the specified encoding in the stream.
+// It reads the BOM, shifting the reader's "cursor".
+func SkipBOM(r io.Reader, enc Encoding) (err error) {
+	_, err = ReadBOMOfEncoding(r, enc)
 	if err != nil {
-		return prefix, err
+		return err
 	}
 
-	if (prefix[0] == 0xFE) && (prefix[1] == 0xFF) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
+	return nil
 }
 
-// GetBOMForEncodingUTF16LE tries to read the BOM of UTF-16 [LE] encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF16LE(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(2)
-	if err != nil {
-		return prefix, err
+// SearchForBOM searches the stream for BOM.
+// n = number of bytes read from the stream.
+func SearchForBOM(r io.Reader) (encodings []Encoding, n int, err error) {
+	encodings = make([]Encoding, 0)
+
+	// Prepare the lists of encodings.
+	accurateProbes := make(map[Encoding]*Probe) // Results.
+	encodingsToProbe := make(map[Encoding]bool) // Task-list.
+	for _, enc := range possibleEncodings {
+		encodingsToProbe[enc] = true
 	}
 
-	if (prefix[0] == 0xFF) && (prefix[1] == 0xFE) {
-		return prefix, nil
+	// Increase the accumulator size by one byte per loop and get accurate
+	// probes. Save accurate probes. Stop when all the probes are accurate.
+	mbs := getMaximumBOMSize(possibleEncodings)
+	var acc = make([]byte, 0, mbs)
+	var report *Report
+	var b byte
+	probeSize := 1
+	for ; probeSize <= mbs; probeSize++ {
+		// Get a byte.
+		b, err = reader.ReadByte(r)
+		if err != nil {
+			return encodings, probeSize - 1, err
+		}
+		acc = append(acc, b)
+
+		// Get a report and extract accurate probes.
+		report, err = GetEncodingsReport(acc, encodingsToProbe)
+		if err != nil {
+			return encodings, probeSize, err
+		}
+		tmp := report.GetAccurateProbes()
+		for _, p := range tmp {
+			_, isDuplicate := accurateProbes[p.Encoding]
+			if isDuplicate {
+				return encodings, probeSize, fmt.Errorf(ErrDuplicateProbe, p.Encoding)
+			}
+			accurateProbes[p.Encoding] = p
+			delete(encodingsToProbe, p.Encoding)
+		}
+		if report.IsAccurate() && len(encodingsToProbe) == 0 {
+			break
+		}
 	}
 
-	return prefix, errors.New(ErrBOMIsNotFound)
+	// Process the list of accurate probes.
+	for _, ap := range accurateProbes {
+		if ap.Probability.IsYes() {
+			encodings = append(encodings, ap.Encoding)
+		}
+	}
+
+	return encodings, probeSize, nil
 }
 
-// GetBOMForEncodingUTF32BE tries to read the BOM of UTF-32 [BE] encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF32BE(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(4)
-	if err != nil {
-		return prefix, err
+// getMaximumBOMSize returns the maximum BOM size of all possible encodings.
+func getMaximumBOMSize(encodings []Encoding) (mbs int) {
+	mbs = 0
+
+	for _, pe := range encodings {
+		if len(boms[pe]) > mbs {
+			mbs = len(boms[pe])
+		}
 	}
 
-	if (prefix[0] == 0x00) && (prefix[1] == 0x00) &&
-		(prefix[2] == 0xFE) && (prefix[3] == 0xFF) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
-}
-
-// GetBOMForEncodingUTF32LE tries to read the BOM of UTF-32 [LE] encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF32LE(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(4)
-	if err != nil {
-		return prefix, err
-	}
-
-	if (prefix[0] == 0xFF) && (prefix[1] == 0xFE) &&
-		(prefix[2] == 0x00) && (prefix[3] == 0x00) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
-}
-
-// GetBOMForEncodingUTF7 tries to read the BOM of UTF-7 encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF7(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(3)
-	if err != nil {
-		return prefix, err
-	}
-
-	if (prefix[0] == 0x2B) && (prefix[1] == 0x2F) && (prefix[2] == 0x76) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
-}
-
-// GetBOMForEncodingUTF1 tries to read the BOM of UTF-1 encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF1(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(3)
-	if err != nil {
-		return prefix, err
-	}
-
-	if (prefix[0] == 0xF7) && (prefix[1] == 0x64) && (prefix[2] == 0x4C) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
-}
-
-// GetBOMForEncodingUTF_EBCDIC tries to read the BOM of UTF-EBCDIC encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingUTF_EBCDIC(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(4)
-	if err != nil {
-		return prefix, err
-	}
-
-	if (prefix[0] == 0xDD) && (prefix[1] == 0x73) &&
-		(prefix[2] == 0x66) && (prefix[3] == 0x73) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
-}
-
-// GetBOMForEncodingSCSU tries to read the BOM of SCSU encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingSCSU(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(3)
-	if err != nil {
-		return prefix, err
-	}
-
-	if (prefix[0] == 0x0E) && (prefix[1] == 0xFE) && (prefix[2] == 0xFF) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
-}
-
-// GetBOMForEncodingBOCU1 tries to read the BOM of BOCU-1 encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingBOCU1(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(3)
-	if err != nil {
-		return prefix, err
-	}
-
-	if (prefix[0] == 0xFB) && (prefix[1] == 0xEE) && (prefix[2] == 0x28) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
-}
-
-// GetBOMForEncodingGB18030 tries to read the BOM of GB18030 encoding.
-// If the BOM is found, error is nil; otherwise it is not nil.
-// The prefix which was read from the stream is always returned as the first
-// returned value. The reader is not reset after the reading.
-func GetBOMForEncodingGB18030(r *reader.Reader) (prefix []byte, err error) {
-	prefix, err = r.ReadBytes(4)
-	if err != nil {
-		return prefix, err
-	}
-
-	if (prefix[0] == 0x84) && (prefix[1] == 0x31) &&
-		(prefix[2] == 0x95) && (prefix[3] == 0x33) {
-		return prefix, nil
-	}
-
-	return prefix, errors.New(ErrBOMIsNotFound)
+	return mbs
 }
