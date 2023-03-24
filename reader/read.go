@@ -51,10 +51,17 @@ func (r *Reader) ReadLineEndingWithCRLF() (line []byte, err error) {
 }
 
 // ReadBytes reads an exact number of bytes.
+// This method is different from the common 'Read' method of an 'io.Reader'
+// interface in that it returns the actual number of bytes read. In other
+// words, if the specified number of bytes is not available, only those bytes
+// which were available are returned. If there is no data available, an empty
+// array (slice) is returned. When there is no error – the full-size array
+// (slice) of bytes is returned.
 func (r *Reader) ReadBytes(size int) (bytes []byte, err error) {
 	bytes = make([]byte, size)
 	var n int
 	n, err = io.ReadFull(r, bytes)
+	bytes = bytes[:n]
 	if err != nil {
 		return bytes, err
 	}
@@ -107,7 +114,7 @@ func (r *Reader) ReadWord_BE() (w bt.Word, err error) {
 	var bytes []byte
 	bytes, err = r.Read2Bytes()
 	if err != nil {
-		return 0, err
+		return w, err
 	}
 
 	return binary.BigEndian.Uint16(bytes), nil
