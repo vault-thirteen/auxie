@@ -1,6 +1,5 @@
 # SMA
-
-## Simple Moving Average
+### Simple Moving Average
 
 This is an example of simple moving average calculator using the built-in 
 golang's list type.

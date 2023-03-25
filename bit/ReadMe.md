@@ -1,4 +1,4 @@
-# bit
+# Bit
 
 A simple library to work with bits in Go programming language.
 

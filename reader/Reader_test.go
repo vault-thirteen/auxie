@@ -2,19 +2,19 @@ package reader
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
-	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
 	"github.com/vault-thirteen/tester"
 )
 
 func Test_NewReader(t *testing.T) {
-	var reader rs.ReaderSeeker
+	var reader io.Reader
 	var result *Reader
 
 	reader = bytes.NewReader([]byte{})
 	result = NewReader(reader)
-	if result.rs != reader {
+	if result.r != reader {
 		t.FailNow()
 	}
 }
@@ -30,7 +30,7 @@ func Test_GetInternalReader(t *testing.T) {
 
 	// Try to move the cursor of internal reader-seeker.
 	var threeBytes = make([]byte, 3)
-	_, err := r.rs.Read(threeBytes)
+	_, err := r.r.Read(threeBytes)
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(threeBytes, []byte{1, 2, 3})
 	xx := r.GetInternalReader()

@@ -1,9 +1,7 @@
 package reader
 
-// This package provides a convenient Reader-Seeker for specific purposes.
-
 import (
-	rs "github.com/vault-thirteen/auxie/ReaderSeeker"
+	"io"
 )
 
 // ASCII symbols.
@@ -13,23 +11,17 @@ const (
 )
 
 type Reader struct {
-	rs rs.ReaderSeeker
+	r io.Reader
 }
 
-func NewReader(rs rs.ReaderSeeker) *Reader {
-	return &Reader{
-		rs: rs,
-	}
+func NewReader(r io.Reader) *Reader {
+	return &Reader{r: r}
 }
 
 func (r *Reader) Read(dst []byte) (n int, err error) {
-	return r.rs.Read(dst)
+	return r.r.Read(dst)
 }
 
-func (r *Reader) Seek(offset int64, whence int) (int64, error) {
-	return r.rs.Seek(offset, whence)
-}
-
-func (r *Reader) GetInternalReader() rs.ReaderSeeker {
-	return r.rs
+func (r *Reader) GetInternalReader() io.Reader {
+	return r.r
 }

@@ -1,3 +1,3 @@
-# boolean
+# Boolean
 
-Boolean to string parser.
+A boolean-to-string parser.
