@@ -97,9 +97,11 @@ func SkipBOM(r io.Reader, enc Encoding) (err error) {
 }
 
 // SearchForBOM searches the stream for BOM.
-// n = number of bytes read from the stream.
-func SearchForBOM(r io.Reader) (encodings []Encoding, n int, err error) {
+// acc = array (slice) of bytes read from the stream to detect the encoding.
+func SearchForBOM(r io.Reader) (encodings []Encoding, acc []byte, err error) {
 	encodings = make([]Encoding, 0)
+	mbs := getMaximumBOMSize(possibleEncodings)
+	acc = make([]byte, 0, mbs)
 
 	// Prepare the lists of encodings.
 	accurateProbes := make(map[Encoding]*Probe) // Results.
@@ -110,8 +112,6 @@ func SearchForBOM(r io.Reader) (encodings []Encoding, n int, err error) {
 
 	// Increase the accumulator size by one byte per loop and get accurate
 	// probes. Save accurate probes. Stop when all the probes are accurate.
-	mbs := getMaximumBOMSize(possibleEncodings)
-	var acc = make([]byte, 0, mbs)
 	var report *Report
 	var b byte
 	probeSize := 1
@@ -119,20 +119,20 @@ func SearchForBOM(r io.Reader) (encodings []Encoding, n int, err error) {
 		// Get a byte.
 		b, err = reader.ReadByte(r)
 		if err != nil {
-			return encodings, probeSize - 1, err
+			return encodings, acc, err
 		}
 		acc = append(acc, b)
 
 		// Get a report and extract accurate probes.
 		report, err = GetEncodingsReport(acc, encodingsToProbe)
 		if err != nil {
-			return encodings, probeSize, err
+			return encodings, acc, err
 		}
 		tmp := report.GetAccurateProbes()
 		for _, p := range tmp {
 			_, isDuplicate := accurateProbes[p.Encoding]
 			if isDuplicate {
-				return encodings, probeSize, fmt.Errorf(ErrDuplicateProbe, p.Encoding)
+				return encodings, acc, fmt.Errorf(ErrDuplicateProbe, p.Encoding)
 			}
 			accurateProbes[p.Encoding] = p
 			delete(encodingsToProbe, p.Encoding)
@@ -149,7 +149,7 @@ func SearchForBOM(r io.Reader) (encodings []Encoding, n int, err error) {
 		}
 	}
 
-	return encodings, probeSize, nil
+	return encodings, acc, nil
 }
 
 // getMaximumBOMSize returns the maximum BOM size of all possible encodings.

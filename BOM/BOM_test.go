@@ -215,13 +215,13 @@ func Test_SearchForBOM(t *testing.T) {
 	type TestData struct {
 		data              []byte
 		expectedEncodings []Encoding
-		expectedN         int
+		expectedAcc       []byte
 		expectedError     error
 	}
 
 	type Result struct {
 		encodings []Encoding
-		n         int
+		acc       []byte
 		err       error
 	}
 	var result Result
@@ -231,7 +231,7 @@ func Test_SearchForBOM(t *testing.T) {
 		{
 			data:              []byte{},
 			expectedEncodings: []Encoding{},
-			expectedN:         0,
+			expectedAcc:       []byte{},
 			expectedError:     io.EOF,
 		},
 
@@ -239,14 +239,14 @@ func Test_SearchForBOM(t *testing.T) {
 		{
 			data:              []byte{'A'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         1,
+			expectedAcc:       []byte{'A'},
 			expectedError:     nil,
 		},
 		// Test #3. One byte. Possibly a BOM.
 		{
 			data:              []byte{0xDD}, // It may be the UTF-EBCDIC BOM.
 			expectedEncodings: []Encoding{},
-			expectedN:         1,
+			expectedAcc:       []byte{0xDD},
 			expectedError:     io.EOF,
 		},
 
@@ -254,21 +254,21 @@ func Test_SearchForBOM(t *testing.T) {
 		{
 			data:              []byte{'A', 'B'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         1,
+			expectedAcc:       []byte{'A'},
 			expectedError:     nil,
 		},
 		// Test #5. Two bytes. Not a BOM from the second byte.
 		{
 			data:              []byte{0xDD, 'B'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         2,
+			expectedAcc:       []byte{0xDD, 'B'},
 			expectedError:     nil,
 		},
 		// Test #6. Two bytes. Mystery of colliding BOMs (0xFF 0xFE).
 		{
 			data:              []byte{0xFF, 0xFE}, // Mystery.
 			expectedEncodings: []Encoding{},
-			expectedN:         2,
+			expectedAcc:       []byte{0xFF, 0xFE},
 			expectedError:     io.EOF,
 		},
 
@@ -276,35 +276,35 @@ func Test_SearchForBOM(t *testing.T) {
 		{
 			data:              []byte{'A', 'B', 'C'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         1,
+			expectedAcc:       []byte{'A'},
 			expectedError:     nil,
 		},
 		// Test #8. Three bytes. Not a BOM from the second byte.
 		{
 			data:              []byte{0xDD, 'B', 'C'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         2,
+			expectedAcc:       []byte{0xDD, 'B'},
 			expectedError:     nil,
 		},
 		// Test #9. Three bytes. Two-byte BOM.
 		{
 			data:              []byte{0xFE, 0xFF, 'C'}, // BOM.
 			expectedEncodings: []Encoding{EncodingUTF16BE},
-			expectedN:         2,
+			expectedAcc:       []byte{0xFE, 0xFF},
 			expectedError:     nil,
 		},
 		// Test #10. Three bytes. Three-byte BOM.
 		{
 			data:              []byte{0xEF, 0xBB, 0xBF}, // BOM.
 			expectedEncodings: []Encoding{EncodingUTF8},
-			expectedN:         3,
+			expectedAcc:       []byte{0xEF, 0xBB, 0xBF},
 			expectedError:     nil,
 		},
 		// Test #11. Three bytes. Possibly a BOM.
 		{
 			data:              []byte{0x00, 0x00, 0xFE}, // It may be UTF-32 BE.
 			expectedEncodings: []Encoding{},
-			expectedN:         3,
+			expectedAcc:       []byte{0x00, 0x00, 0xFE},
 			expectedError:     io.EOF,
 		},
 
@@ -312,56 +312,56 @@ func Test_SearchForBOM(t *testing.T) {
 		{
 			data:              []byte{'A', 'B', 'C', 'D'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         1,
+			expectedAcc:       []byte{'A'},
 			expectedError:     nil,
 		},
 		// Test #13. Four bytes. Not a BOM from the second byte.
 		{
 			data:              []byte{0xDD, 'B', 'C', 'D'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         2,
+			expectedAcc:       []byte{0xDD, 'B'},
 			expectedError:     nil,
 		},
 		// Test #14. Four bytes. Not a BOM from the third byte.
 		{
 			data:              []byte{0xEF, 0xBB, 'C', 'D'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         3,
+			expectedAcc:       []byte{0xEF, 0xBB, 'C'},
 			expectedError:     nil,
 		},
 		// Test #15. Four bytes. Not a BOM from the fourth byte.
 		{
 			data:              []byte{0x00, 0x00, 0xFE, 'D'}, // Not a BOM, 100%.
 			expectedEncodings: []Encoding{},
-			expectedN:         4,
+			expectedAcc:       []byte{0x00, 0x00, 0xFE, 'D'},
 			expectedError:     nil,
 		},
 		// Test #16. Four bytes. Two-byte BOM.
 		{
 			data:              []byte{0xFF, 0xFE, 'C', 'D'}, // BOM.
 			expectedEncodings: []Encoding{EncodingUTF16LE},
-			expectedN:         3,
+			expectedAcc:       []byte{0xFF, 0xFE, 'C'},
 			expectedError:     nil,
 		},
 		// Test #17. Four bytes. Mystery.
 		{
 			data:              []byte{0xFF, 0xFE, 0x00, 0x00}, // Two colliding BOMs.
 			expectedEncodings: []Encoding{EncodingUTF16LE, EncodingUTF32LE},
-			expectedN:         4,
+			expectedAcc:       []byte{0xFF, 0xFE, 0x00, 0x00},
 			expectedError:     nil,
 		},
 		// Test #18. Four bytes. Three-byte BOM.
 		{
 			data:              []byte{0xEF, 0xBB, 0xBF, 'D'}, // BOM.
 			expectedEncodings: []Encoding{EncodingUTF8},
-			expectedN:         3,
+			expectedAcc:       []byte{0xEF, 0xBB, 0xBF},
 			expectedError:     nil,
 		},
 		// Test #18. Four bytes. Four-byte BOM.
 		{
 			data:              []byte{0x00, 0x00, 0xFE, 0xFF}, // BOM.
 			expectedEncodings: []Encoding{EncodingUTF32BE},
-			expectedN:         4,
+			expectedAcc:       []byte{0x00, 0x00, 0xFE, 0xFF},
 			expectedError:     nil,
 		},
 	}
@@ -371,7 +371,7 @@ func Test_SearchForBOM(t *testing.T) {
 		fmt.Print("[", i+1, "] ")
 
 		r := bytes.NewReader(test.data)
-		result.encodings, result.n, result.err = SearchForBOM(r)
+		result.encodings, result.acc, result.err = SearchForBOM(r)
 
 		if test.expectedError == nil {
 			tst.MustBeNoError(result.err)
@@ -379,7 +379,7 @@ func Test_SearchForBOM(t *testing.T) {
 			tst.MustBeAnError(result.err)
 			tst.MustBeEqual(result.err, test.expectedError)
 		}
-		tst.MustBeEqual(result.n, test.expectedN)
+		tst.MustBeEqual(result.acc, test.expectedAcc)
 
 		// Array items are randomly placed because they are taken from the map.
 		// We need to sort the result before checking it.
