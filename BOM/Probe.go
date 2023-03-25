@@ -13,9 +13,9 @@ const (
 	ErrNoData                     = "no data"
 )
 
-// Probe stores the result of probing the probes for the specified encoding.
-// In other words, it stores the probability of the probes to be of the specified
-// encoding.
+// Probe stores the result of probing the text for a specified encoding.
+// In other words, it stores the probability of the probes to be of the
+// specified encoding.
 type Probe struct {
 	// Encoding is the specified encoding which is searched in the probes.
 	Encoding Encoding
@@ -27,6 +27,8 @@ type Probe struct {
 	ReadBytesCount int
 }
 
+// IsAccurate tells whether the probe results are accurate or not.
+// Here by accuracy we mean the exact 'yes' or 'no' probability.
 func (p *Probe) IsAccurate() bool {
 	if p.Probability.IsYes() || p.Probability.IsNo() {
 		return true

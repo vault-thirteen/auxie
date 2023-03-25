@@ -15,18 +15,20 @@ const (
 	ErrDuplicateProbe  = "duplicate probe for encoding %v"
 )
 
+// Comments to the right side show printable symbols of the BOMs.
+// Unprintable symbols are shown as '?' question marks.
 var (
-	bomUTF8       = []byte{0xEF, 0xBB, 0xBF}
-	bomUTF16BE    = []byte{0xFE, 0xFF}
-	bomUTF16LE    = []byte{0xFF, 0xFE}
-	bomUTF32BE    = []byte{0x00, 0x00, 0xFE, 0xFF}
-	bomUTF32LE    = []byte{0xFF, 0xFE, 0x00, 0x00}
+	bomUTF8       = []byte{0xEF, 0xBB, 0xBF}       // ???
+	bomUTF16BE    = []byte{0xFE, 0xFF}             // ??
+	bomUTF16LE    = []byte{0xFF, 0xFE}             // ??
+	bomUTF32BE    = []byte{0x00, 0x00, 0xFE, 0xFF} // ????
+	bomUTF32LE    = []byte{0xFF, 0xFE, 0x00, 0x00} // ????
 	bomUTF7       = []byte{0x2B, 0x2F, 0x76}       // +/v
-	bomUTF1       = []byte{0xF7, 0x64, 0x4C}       //?dL
+	bomUTF1       = []byte{0xF7, 0x64, 0x4C}       // ?dL
 	bomUTF_EBCDIC = []byte{0xDD, 0x73, 0x66, 0x73} // ?sfs
-	bomSCSU       = []byte{0x0E, 0xFE, 0xFF}
-	bomBOCU1      = []byte{0xFB, 0xEE, 0x28} // ??(
-	bomGB18030    = []byte{0x84, 0x31, 0x95, 0x33}
+	bomSCSU       = []byte{0x0E, 0xFE, 0xFF}       // ???
+	bomBOCU1      = []byte{0xFB, 0xEE, 0x28}       // ??(
+	bomGB18030    = []byte{0x84, 0x31, 0x95, 0x33} // ????
 )
 
 func BOMUTF8() []byte       { return bomUTF8 }
@@ -55,6 +57,7 @@ var boms = map[Encoding][]byte{
 	EncodingGB18030:    bomGB18030,
 }
 
+// BOMs returns a map of BOMs.
 func BOMs() map[Encoding][]byte {
 	return boms
 }

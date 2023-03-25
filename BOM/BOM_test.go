@@ -11,6 +11,66 @@ import (
 	"github.com/vault-thirteen/tester"
 )
 
+func Test_BOMUTF8(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF8(), bomUTF8)
+}
+
+func Test_BOMUTF16BE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF16BE(), bomUTF16BE)
+}
+
+func Test_BOMUTF16LE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF16LE(), bomUTF16LE)
+}
+
+func Test_BOMUTF32BE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF32BE(), bomUTF32BE)
+}
+
+func Test_BOMUTF32LE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF32LE(), bomUTF32LE)
+}
+
+func Test_BOMUTF7(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF7(), bomUTF7)
+}
+
+func Test_BOMUTF1(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF1(), bomUTF1)
+}
+
+func Test_BOMUTF_EBCDIC(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMUTF_EBCDIC(), bomUTF_EBCDIC)
+}
+
+func Test_BOMSCSU(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMSCSU(), bomSCSU)
+}
+
+func Test_BOMBOCU1(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMBOCU1(), bomBOCU1)
+}
+
+func Test_BOMGB18030(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMGB18030(), bomGB18030)
+}
+
+func Test_BOMs(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMs(), boms)
+}
+
 func Test_ReadBOMOfEncoding(t *testing.T) {
 	tst := tester.New(t)
 

@@ -1,6 +1,6 @@
 package bom
 
-// Report stores the result of probing the probes for all possible encodings.
+// Report stores the result of making probes for all possible encodings.
 type Report struct {
 	probes map[Encoding]*Probe
 }
@@ -26,6 +26,7 @@ func GetEncodingsReport(data []byte, encodingsToProbe map[Encoding]bool) (report
 	return report, nil
 }
 
+// IsAccurate tells whether all the probes of the report are accurate or not.
 func (r *Report) IsAccurate() bool {
 	for _, p := range r.probes {
 		if !p.IsAccurate() {
@@ -36,6 +37,7 @@ func (r *Report) IsAccurate() bool {
 	return true
 }
 
+// GetAccurateProbes returns accurate probes of the report.
 func (r *Report) GetAccurateProbes() (accurateProbes []*Probe) {
 	accurateProbes = make([]*Probe, 0, len(r.probes))
 
