@@ -1,6 +1,7 @@
 package reader
 
 import (
+	"errors"
 	"fmt"
 	"io"
 
@@ -9,6 +10,7 @@ import (
 
 const (
 	ErrEncodingIsNotCertain = "encoding is not certain: %v"
+	ErrDataIsBuffered       = "data is buffered"
 )
 
 // Reader is a reader capable of guessing the encoding of a stream.
@@ -107,4 +109,14 @@ func (br *Reader) Read(dst []byte) (n int, err error) {
 		return fbLen + n, err
 	}
 	return fbLen + n, nil
+}
+
+// Close closes the reader.
+// It is a standard method for the 'io.Closer' interface.
+func (br *Reader) Close() (err error) {
+	if len(br.firstBytes) > 0 {
+		return errors.New(ErrDataIsBuffered)
+	}
+
+	return nil
 }

@@ -194,3 +194,19 @@ func Test_Read(t *testing.T) {
 	}
 	fmt.Println()
 }
+
+func Test_Close(t *testing.T) {
+	aTest := *tester.New(t)
+	var br *Reader
+	var err error
+
+	// Test #1.
+	br = &Reader{firstBytes: []byte{1}}
+	err = br.Close()
+	aTest.MustBeAnError(err)
+
+	// Test #2.
+	br = &Reader{firstBytes: []byte{}}
+	err = br.Close()
+	aTest.MustBeNoError(err)
+}
