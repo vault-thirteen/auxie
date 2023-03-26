@@ -14,12 +14,8 @@ type Reader struct {
 	r io.Reader
 }
 
-func NewReader(r io.Reader) *Reader {
-	return &Reader{r: r}
-}
-
-func (r *Reader) Read(dst []byte) (n int, err error) {
-	return r.r.Read(dst)
+func New(stream io.Reader) *Reader {
+	return &Reader{r: stream}
 }
 
 func (r *Reader) GetInternalReader() io.Reader {

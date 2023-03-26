@@ -1,3 +1,3 @@
-# ReaderSeeker
+# Reader-Seeker
 
-An interface combining an `io.Reader` and `io.Seeker` interfaces.  
+An interface which combines `io.Reader` and `io.Seeker` interfaces.

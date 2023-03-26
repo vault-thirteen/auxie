@@ -10,6 +10,11 @@ import (
 
 const ErrUnexpectedDataSize = "unexpected data size: %v vs %v"
 
+// Read is the standard method of the 'io.Reader' interface.
+func (r *Reader) Read(dst []byte) (n int, err error) {
+	return r.r.Read(dst)
+}
+
 // ReadLineEndingWithCRLF reads a line ending exactly with the 'CR'+'LF'
 // symbols sequence. The two symbols at the end of the line (CR+LF) are
 // included into the returned result. On error, returns the last read sequence

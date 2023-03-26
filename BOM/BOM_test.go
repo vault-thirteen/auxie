@@ -7,7 +7,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/vault-thirteen/auxie/reader"
+	sr "github.com/vault-thirteen/auxie/reader/simple"
 	"github.com/vault-thirteen/tester"
 )
 
@@ -202,7 +202,7 @@ func Test_SkipBOM(t *testing.T) {
 			tst.MustBeEqual(result.err, test.expectedError)
 		}
 
-		result.b, result.err = reader.ReadByte(r)
+		result.b, result.err = sr.ReadByte(r)
 		tst.MustBeNoError(result.err)
 		tst.MustBeEqual(result.b, test.expectedNextByte)
 	}

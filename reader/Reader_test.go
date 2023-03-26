@@ -2,40 +2,40 @@ package reader
 
 import (
 	"bytes"
-	"io"
 	"testing"
 
 	"github.com/vault-thirteen/tester"
 )
 
-func Test_NewReader(t *testing.T) {
-	var reader io.Reader
+func Test_New(t *testing.T) {
 	var result *Reader
 
-	reader = bytes.NewReader([]byte{})
-	result = NewReader(reader)
-	if result.r != reader {
+	r := bytes.NewReader([]byte{})
+	result = New(r)
+	if result.r != r {
 		t.FailNow()
 	}
 }
 
 func Test_GetInternalReader(t *testing.T) {
-	tst := tester.New(t)
+	aTest := tester.New(t)
 	internalReader := bytes.NewReader([]byte{1, 2, 3, 4, 5})
-	r := NewReader(internalReader)
+	r := New(internalReader)
 
 	// Simple check.
 	x := r.GetInternalReader()
-	tst.MustBeEqual(x, internalReader)
+	aTest.MustBeEqual(x, internalReader)
 
-	// Try to move the cursor of internal reader-seeker.
+	// Try to move the cursor of internal reader.
 	var threeBytes = make([]byte, 3)
 	_, err := r.r.Read(threeBytes)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(threeBytes, []byte{1, 2, 3})
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(threeBytes, []byte{1, 2, 3})
+
+	// Check the rest bytes.
 	xx := r.GetInternalReader()
 	var restBytes = make([]byte, 2)
 	_, err = xx.Read(restBytes)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(restBytes, []byte{4, 5})
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(restBytes, []byte{4, 5})
 }

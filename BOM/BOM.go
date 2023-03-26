@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/vault-thirteen/auxie/reader"
+	sr "github.com/vault-thirteen/auxie/reader/simple"
 )
 
 const (
@@ -117,7 +117,7 @@ func SearchForBOM(r io.Reader) (encodings []Encoding, acc []byte, err error) {
 	probeSize := 1
 	for ; probeSize <= mbs; probeSize++ {
 		// Get a byte.
-		b, err = reader.ReadByte(r)
+		b, err = sr.ReadByte(r)
 		if err != nil {
 			return encodings, acc, err
 		}
