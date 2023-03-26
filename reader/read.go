@@ -61,7 +61,26 @@ func (r *Reader) ReadLineEndingWithCRLF() (line []byte, err error) {
 // words, if the specified number of bytes is not available, only those bytes
 // which were available are returned. If there is no data available, an empty
 // array (slice) is returned. When there is no error – the full-size array
-// (slice) of bytes is returned.
+// (slice) of bytes should be returned, but it is not going to happen because
+// modern Go language has bugs in several built-in libraries implementing the
+// 'io.Reader' interface:
+//
+//  1. bytes: return EOF early in Reader.Read #21852
+//     https://github.com/golang/go/issues/21852
+//     destel opened this issue on Sep 13, 2017
+//
+//  2. bytes: bytes.Reader returns EOF on zero-byte Read, which doesn't
+//     conform with io.Reader interface documentation #40385
+//     https://github.com/golang/go/issues/40385
+//     metala opened this issue on Jul 24, 2020
+//
+//  3. bytes: bytes.Reader violates the io.Reader and io.EOF main principle
+//     #59253
+//     https://github.com/golang/go/issues/59253
+//
+//  4. io: Documentation of the io package at website is contrary to its
+//     documentation in comments inside source code. #59254
+//     https://github.com/golang/go/issues/59254
 func (r *Reader) ReadBytes(size int) (bytes []byte, err error) {
 	bytes = make([]byte, size)
 	var n int
