@@ -10,8 +10,8 @@ github.com/vault-thirteen/MIME v1.4.2 h1:2YigCyvm/JhyjayVvqbzoa3GTZ7gNGKmfc0/qua
 github.com/vault-thirteen/MIME v1.4.2/go.mod h1:lAszpOP2si5ADX1891kbghxhrTnFOcB7BRJjijhLnKk=
 github.com/vault-thirteen/errorz v1.1.0 h1:ul4UsZfQWy5p6DZ4bAclQ14I/bm9YnGfAg3q++v5zxg=
 github.com/vault-thirteen/errorz v1.1.0/go.mod h1:EEqZH4OZWTXG14ZZSPFI7nzDqVMwWljDybNB9oY1zec=
-github.com/vault-thirteen/header v1.0.2 h1:L1R7f6J7qJAeSzCOb+jKO3l9+KTCzk3xz8UhV+XpRSg=
-github.com/vault-thirteen/header v1.0.2/go.mod h1:WtzokOuZ8S0lAbakhD/i/xoqYXiaWDBNm1SdiPoA/Zw=
+github.com/vault-thirteen/header v1.1.0 h1:1g0nDJP235AE+QG/GfFKfwhjd2ktNrRrgGcEz2q1Y2Y=
+github.com/vault-thirteen/header v1.1.0/go.mod h1:aoucRD0ranRxbyb+bv4iU/OCiSNAMmYYNMmTOj/wF4w=
 github.com/vault-thirteen/tester v1.1.0 h1:Fi2SHMjrNuAbUzbvnuKkh1uoaIxMvVNCU6WB3rpviHk=
 github.com/vault-thirteen/tester v1.1.0/go.mod h1:6bOUchlAxCIf0cp4K5waipXPa7RLSCivW8Gn61HTLfw=
 golang.org/x/time v0.3.0 h1:rg5rLMjNzMS1RkNLzCG38eapWhnYLFYXDXj2gOlr8j4=
