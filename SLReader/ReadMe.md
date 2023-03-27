@@ -9,3 +9,4 @@ Main features of this reader are following.
 * Speed limit changes are in their turn limited by the special ratio set in the 
 constructor. 
 * Zero speed limit is forbidden as it is nonsense.
+* Reader implements `io.Closer` interface.

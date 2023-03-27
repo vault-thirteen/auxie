@@ -221,3 +221,11 @@ func Test_Read(t *testing.T) {
 	}
 	fmt.Println()
 }
+
+func Test_Close(t *testing.T) {
+	aTest := *tester.New(t)
+	var err error
+	var slr = &SLReader{}
+	err = slr.Close()
+	aTest.MustBeNoError(err)
+}

@@ -117,3 +117,9 @@ func (slr *SLReader) Read(dst []byte) (n int, err error) {
 
 	return n, nil
 }
+
+// Close closes the reader.
+// It is a standard method for the 'io.Closer' interface.
+func (slr *SLReader) Close() (err error) {
+	return nil
+}
