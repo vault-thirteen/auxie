@@ -3,7 +3,7 @@ module github.com/vault-thirteen/auxie
 go 1.19
 
 require (
-	github.com/vault-thirteen/MIME v1.6.0
+	github.com/vault-thirteen/MIME v1.7.0
 	github.com/vault-thirteen/errorz v1.1.0
 	github.com/vault-thirteen/header v1.1.0
 	github.com/vault-thirteen/tester v1.1.0
