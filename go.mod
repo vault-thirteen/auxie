@@ -1,12 +1,12 @@
 module github.com/vault-thirteen/auxie
 
-go 1.19
+go 1.20
 
 require (
-	github.com/vault-thirteen/MIME v1.7.0
-	github.com/vault-thirteen/errorz v1.1.0
-	github.com/vault-thirteen/header v1.2.0
-	github.com/vault-thirteen/tester v1.1.0
+	github.com/vault-thirteen/MIME v1.8.0
+	github.com/vault-thirteen/errorz v1.2.0
+	github.com/vault-thirteen/header v1.3.0
+	github.com/vault-thirteen/tester v1.2.0
 	golang.org/x/time v0.3.0
 )
 
