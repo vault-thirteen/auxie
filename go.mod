@@ -7,7 +7,7 @@ require (
 	github.com/vault-thirteen/errorz v1.2.0
 	github.com/vault-thirteen/header v1.3.0
 	github.com/vault-thirteen/tester v1.2.0
-	golang.org/x/time v0.3.0
+	golang.org/x/time v0.4.0
 )
 
 require (
