@@ -215,3 +215,45 @@ func Test_ParseInt8(t *testing.T) {
 	aTest.MustBeAnError(err)
 	aTest.MustBeEqual(result, int8(0))
 }
+
+func Test_ParseFloat64(t *testing.T) {
+	var aTest = tester.New(t)
+	var err error
+	var result float64
+
+	// Test #1.
+	result, err = ParseFloat64("1.0")
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(result, float64(1.0))
+
+	// Test #2. Overflow.
+	result, err = ParseFloat64("1.8e+308")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, float64(0))
+
+	// Test #3. Not a number.
+	result, err = ParseFloat64("not a number")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, float64(0))
+}
+
+func Test_ParseFloat32(t *testing.T) {
+	var aTest = tester.New(t)
+	var err error
+	var result float32
+
+	// Test #1.
+	result, err = ParseFloat32("1.0")
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(result, float32(1.0))
+
+	// Test #2. Overflow.
+	result, err = ParseFloat32("3.5e+38")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, float32(0))
+
+	// Test #3. Not a number.
+	result, err = ParseFloat32("not a number")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(result, float32(0))
+}

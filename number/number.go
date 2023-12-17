@@ -93,3 +93,23 @@ func ParseInt8(s string) (i int8, err error) {
 
 	return int8(tmp), nil
 }
+
+func ParseFloat64(s string) (f64 float64, err error) {
+	var tmp float64
+	tmp, err = strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return tmp, nil
+}
+
+func ParseFloat32(s string) (f32 float32, err error) {
+	var tmp float64
+	tmp, err = strconv.ParseFloat(s, 32)
+	if err != nil {
+		return 0, err
+	}
+
+	return float32(tmp), nil
+}
