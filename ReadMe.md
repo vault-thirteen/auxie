@@ -37,6 +37,8 @@ and _Windows_.
 25. **Time Metadata** – [Time Metadata](time-metadata/ReadMe.md) – An auxiliary type for storing time of creation and time of update.
 26. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
 27. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
+28. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
+29. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
 
 ## Go language version
 
