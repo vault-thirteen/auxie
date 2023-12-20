@@ -12,13 +12,13 @@ type Repository struct {
 	api *API
 
 	// owner is an owner of a repository.
-	// If the repository is 'https://github.com/vault-thirteen/VCS',
+	// If the repository is 'https://github.com/vault-thirteen/ABC',
 	// then owner is 'vault-thirteen'.
 	owner string
 
 	// path is a path of a repository.
-	// If the repository is 'https://github.com/vault-thirteen/VCS',
-	// then path is 'VCS'.
+	// If the repository is 'https://github.com/vault-thirteen/ABC',
+	// then path is 'ABC'.
 	path string
 
 	tags []Tag

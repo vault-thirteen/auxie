@@ -29,7 +29,7 @@ func (pi *ProgramInfo) parseVCSVersion() (err error) {
 
 func (pi *ProgramInfo) getVCSType() (vcs string) {
 	// Normally 'Main.Path' field should look like:
-	// "github.com/vault-thirteen/Versioneer".
+	// "github.com/vault-thirteen/ABC".
 	parts := strings.Split(pi.buildInfo.Main.Path, `/`)
 	if len(parts) < 1 {
 		return vcs
@@ -50,7 +50,7 @@ func (pi *ProgramInfo) checkForUpdates() (err error) {
 
 func (pi *ProgramInfo) getGitHubRepositoryOwner() (owner, repo string, err error) {
 	// Normally 'Main.Path' field should look like:
-	// "github.com/vault-thirteen/Versioneer".
+	// "github.com/vault-thirteen/ABC".
 	parts := strings.Split(pi.buildInfo.Main.Path, `/`)
 	if len(parts) < 3 {
 		return owner, repo, errors.New(ErrGitHubRepositoryOwner)

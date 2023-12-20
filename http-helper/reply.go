@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/vault-thirteen/MIME"
-	"github.com/vault-thirteen/header"
+	"github.com/vault-thirteen/auxie/header"
 )
 
 // Errors.
