@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/vault-thirteen/errorz"
+	ae "github.com/vault-thirteen/auxie/errors"
 )
 
 const (
@@ -83,7 +83,7 @@ func GetFileContents(filePath string) (contents []byte, err error) {
 	defer func() {
 		derr := f.Close()
 		if derr != nil {
-			err = errorz.Combine(err, derr)
+			err = ae.Combine(err, derr)
 		}
 	}()
 

@@ -8,7 +8,7 @@ import (
 
 	iors "github.com/vault-thirteen/auxie/ReaderSeeker"
 	"github.com/vault-thirteen/auxie/reader"
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_New(t *testing.T) {

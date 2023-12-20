@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/vault-thirteen/errorz"
+	ae "github.com/vault-thirteen/auxie/errors"
 )
 
 // Functions which help in receiving Data from HTTP requests.
@@ -29,7 +29,7 @@ func ReceiveJSON(r *http.Request, receiver interface{}) (err error) {
 	}
 	defer func() {
 		derr := r.Body.Close()
-		err = errorz.Combine(err, derr)
+		err = ae.Combine(err, derr)
 	}()
 
 	jsonDecoder = json.NewDecoder(bytes.NewReader(bodyContents))

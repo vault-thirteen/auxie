@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 	"golang.org/x/time/rate"
 )
 

@@ -3,7 +3,7 @@ package time
 import (
 	"testing"
 
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_NewTimeStringRFC3339(t *testing.T) {

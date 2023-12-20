@@ -3,7 +3,7 @@ package bom
 import (
 	"testing"
 
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_PossibleEncodings(t *testing.T) {

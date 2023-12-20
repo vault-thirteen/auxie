@@ -3,7 +3,7 @@ package rng
 import (
 	"testing"
 
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_New(t *testing.T) {

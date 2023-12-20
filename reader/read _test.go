@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	bt "github.com/vault-thirteen/auxie/BasicTypes"
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_ReadLineEndingWithCRLF(t *testing.T) {

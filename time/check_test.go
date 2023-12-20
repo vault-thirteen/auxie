@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_IsEmpty(t *testing.T) {

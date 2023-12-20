@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/vault-thirteen/errorz"
+	ae "github.com/vault-thirteen/auxie/errors"
 )
 
 const (
@@ -30,7 +30,7 @@ func CompressFileAsZip(srcFilePath string, dstFolderPath string) (dstFilePath st
 	defer func() {
 		derr := srcFile.Close()
 		if derr != nil {
-			err = errorz.Combine(err, derr)
+			err = ae.Combine(err, derr)
 		}
 	}()
 
@@ -42,7 +42,7 @@ func CompressFileAsZip(srcFilePath string, dstFolderPath string) (dstFilePath st
 	defer func() {
 		derr := archive.Close()
 		if derr != nil {
-			err = errorz.Combine(err, derr)
+			err = ae.Combine(err, derr)
 		}
 	}()
 
@@ -50,7 +50,7 @@ func CompressFileAsZip(srcFilePath string, dstFolderPath string) (dstFilePath st
 	defer func() {
 		derr := zipWriter.Close()
 		if derr != nil {
-			err = errorz.Combine(err, derr)
+			err = ae.Combine(err, derr)
 		}
 	}()
 
@@ -82,7 +82,7 @@ func UnpackZipFile(zipFilePath string, dstFolderPath string) (dstFilePath string
 	defer func() {
 		derr := archive.Close()
 		if derr != nil {
-			err = errorz.Combine(err, derr)
+			err = ae.Combine(err, derr)
 		}
 	}()
 
@@ -111,7 +111,7 @@ func extractZipFile(af *zip.File, dstFilePath string) (err error) {
 	defer func() {
 		derr := dstFile.Close()
 		if derr != nil {
-			err = errorz.Combine(err, derr)
+			err = ae.Combine(err, derr)
 		}
 	}()
 
@@ -123,7 +123,7 @@ func extractZipFile(af *zip.File, dstFilePath string) (err error) {
 	defer func() {
 		derr := fileInArchive.Close()
 		if derr != nil {
-			err = errorz.Combine(err, derr)
+			err = ae.Combine(err, derr)
 		}
 	}()
 

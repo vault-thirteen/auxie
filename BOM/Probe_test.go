@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	tsb "github.com/vault-thirteen/auxie/TSB"
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_IsAccurate(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_NewFromBytes(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	sr "github.com/vault-thirteen/auxie/reader/simple"
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_BOMUTF8(t *testing.T) {

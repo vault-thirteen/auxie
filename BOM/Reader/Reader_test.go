@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	bom "github.com/vault-thirteen/auxie/BOM"
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_NewReader(t *testing.T) {
