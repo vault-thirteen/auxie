@@ -18,28 +18,29 @@ and _Windows_.
 6. **Env** – [Env](env/ReadMe.md) – A simple library to work with environment variables.
 7. **Errors** – [Errors](errors/ReadMe.md) – A simple library to work with built-in errors.
 8. **File** – [File](file/ReadMe.md) – A simple library to work with files and folders.
-9. **HTTP Helper** – [HTTP Helper](http-helper/ReadMe.md) – A package that helps in processing and testing _HTTP_ requests.
-10. **IPA** – [IPA](IPA/ReadMe.md) – Methods to work with Internet Protocol Addresses.
-11. **NTS** – [NTS](NTS/ReadMe.md) – Methods for processing null-terminated strings.
-12. **Number** – [Number](number/ReadMe.md) – A simple library to work with numbers in _Go_ programming language.
-13. **Random** – [Random](random/ReadMe.md) – A simple library to work with random integer numbers.
-14. **Range** – [Range](range/ReadMe.md) – Methods to work with ranges of floating point numbers.
-15. **Reader** – [Reader](reader/ReadMe.md) – Auxiliary methods and functions for reading.
-16. **ReaderSeeker** – [ReaderSeeker](ReaderSeeker/ReadMe.md) – An interface which combines _io.Reader_ and _io.Seeker_ interfaces.
-17. **RPoFS** – [RPoFS](rpofs/ReadMe.md) – Random Password of Fixed Size.
-18. **RS** – [RS](rs/ReadMe.md) – A Seeker extension to the reader package.
-19. **SAAC** – [SAAC](SAAC/ReadMe.md) – Simple Arithmetic Average Calculator.
-20. **SLReader** – [SLReader](SLReader/ReadMe.md) – A reader based on io.Reader and using speed limits.
-21. **SMA** – [SMA](SMA/ReadMe.md) – Simple Moving Average.
-22. **SMS** – [SMS](SMS/ReadMe.md) – Simple Merge Sorter.
-23. **Tester** – [Tester](tester/ReadMe.md) – Various useful functions to perform tests.
-24. **Time** – [Time](time/ReadMe.md) – A simple library to work with time in _Go_ programming language.
-25. **Time Metadata** – [Time Metadata](time-metadata/ReadMe.md) – An auxiliary type for storing time of creation and time of update.
-26. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
-27. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
-28. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
-29. **Versioneer** – [Versioneer](Versioneer/ReadMe.md) – Product and dependency version helper.
-30. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
+9. **Header** – [Header](header/ReadMe.md) – _IANA_ registered message header names.
+10. **HTTP Helper** – [HTTP Helper](http-helper/ReadMe.md) – A package that helps in processing and testing _HTTP_ requests.
+11. **IPA** – [IPA](IPA/ReadMe.md) – Methods to work with Internet Protocol Addresses.
+12. **NTS** – [NTS](NTS/ReadMe.md) – Methods for processing null-terminated strings.
+13. **Number** – [Number](number/ReadMe.md) – A simple library to work with numbers in _Go_ programming language.
+14. **Random** – [Random](random/ReadMe.md) – A simple library to work with random integer numbers.
+15. **Range** – [Range](range/ReadMe.md) – Methods to work with ranges of floating point numbers.
+16. **Reader** – [Reader](reader/ReadMe.md) – Auxiliary methods and functions for reading.
+17. **ReaderSeeker** – [ReaderSeeker](ReaderSeeker/ReadMe.md) – An interface which combines _io.Reader_ and _io.Seeker_ interfaces.
+18. **RPoFS** – [RPoFS](rpofs/ReadMe.md) – Random Password of Fixed Size.
+19. **RS** – [RS](rs/ReadMe.md) – A Seeker extension to the reader package.
+20. **SAAC** – [SAAC](SAAC/ReadMe.md) – Simple Arithmetic Average Calculator.
+21. **SLReader** – [SLReader](SLReader/ReadMe.md) – A reader based on io.Reader and using speed limits.
+22. **SMA** – [SMA](SMA/ReadMe.md) – Simple Moving Average.
+23. **SMS** – [SMS](SMS/ReadMe.md) – Simple Merge Sorter.
+24. **Tester** – [Tester](tester/ReadMe.md) – Various useful functions to perform tests.
+25. **Time** – [Time](time/ReadMe.md) – A simple library to work with time in _Go_ programming language.
+26. **Time Metadata** – [Time Metadata](time-metadata/ReadMe.md) – An auxiliary type for storing time of creation and time of update.
+27. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
+28. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
+29. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
+30. **Versioneer** – [Versioneer](Versioneer/ReadMe.md) – Product and dependency version helper.
+31. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
 
 ## Go language version
 
