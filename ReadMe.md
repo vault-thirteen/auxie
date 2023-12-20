@@ -38,7 +38,8 @@ and _Windows_.
 26. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
 27. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
 28. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
-29. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
+29. **Versioneer** – [Versioneer](Versioneer/ReadMe.md) – Product and dependency version helper.
+30. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
 
 ## Go language version
 
