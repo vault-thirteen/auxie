@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    command: --max-allowed-packet=64M
+    ports:
+      # A standard MySQL port is 3306.
+      - '3306:3306'
+    volumes:
+      - type: bind
+        # Path to the local (host) data folder.
+        source: /home/xxx/Docker/MySQL/mysql_data
+        target: /var/lib/mysql
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=xxx'

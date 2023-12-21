@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  postgresql:
+    image: postgres
+    container_name: postgresql
+    restart: always
+    ports:
+      # A standard PostgreSQL port is 5432.
+      - '5432:5432'
+    volumes:
+      - type: bind
+        # Path to the local (host) data folder.
+        source: /home/xxx/Docker/PostgreSQL/postgresql_data
+        target: /var/lib/postgresql/data
+    environment:
+      - 'POSTGRES_PASSWORD=xxx'
