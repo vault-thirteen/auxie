@@ -23,27 +23,28 @@ and _Windows_.
 11. **HTTP Helper** – [HTTP Helper](http-helper/ReadMe.md) – A package that helps in processing and testing _HTTP_ requests.
 12. **IPA** – [IPA](IPA/ReadMe.md) – Methods to work with Internet Protocol Addresses.
 13. **MIME** – [MIME](MIME/ReadMe.md) – MIME types and basic functions to work with them.
-14. **NTS** – [NTS](NTS/ReadMe.md) – Methods for processing null-terminated strings.
-15. **Number** – [Number](number/ReadMe.md) – A simple library to work with numbers in _Go_ programming language.
-16. **Random** – [Random](random/ReadMe.md) – A simple library to work with random integer numbers.
-17. **Range** – [Range](range/ReadMe.md) – Methods to work with ranges of floating point numbers.
-18. **Reader** – [Reader](reader/ReadMe.md) – Auxiliary methods and functions for reading.
-19. **ReaderSeeker** – [ReaderSeeker](ReaderSeeker/ReadMe.md) – An interface which combines _io.Reader_ and _io.Seeker_ interfaces.
-20. **RPoFS** – [RPoFS](rpofs/ReadMe.md) – Random Password of Fixed Size.
-21. **RS** – [RS](rs/ReadMe.md) – A Seeker extension to the reader package.
-22. **SAAC** – [SAAC](SAAC/ReadMe.md) – Simple Arithmetic Average Calculator.
-23. **SLReader** – [SLReader](SLReader/ReadMe.md) – A reader based on io.Reader and using speed limits.
-24. **SMA** – [SMA](SMA/ReadMe.md) – Simple Moving Average.
-25. **SMS** – [SMS](SMS/ReadMe.md) – Simple Merge Sorter.
-26. **SQL** – [SQL](SQL/ReadMe.md) – Various SQL helpers.
-27. **Tester** – [Tester](tester/ReadMe.md) – Various useful functions to perform tests.
-28. **Time** – [Time](time/ReadMe.md) – A simple library to work with time in _Go_ programming language.
-29. **Time Metadata** – [Time Metadata](time-metadata/ReadMe.md) – An auxiliary type for storing time of creation and time of update.
-30. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
-31. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
-32. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
-33. **Versioneer** – [Versioneer](Versioneer/ReadMe.md) – Product and dependency version helper.
-34. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
+14. **MySQL-IT** – [MySQL-IT](MySQL-IT/ReadMe.md) – A template for an application importing data into _MySQL_ database.
+15. **NTS** – [NTS](NTS/ReadMe.md) – Methods for processing null-terminated strings.
+16. **Number** – [Number](number/ReadMe.md) – A simple library to work with numbers in _Go_ programming language.
+17. **Random** – [Random](random/ReadMe.md) – A simple library to work with random integer numbers.
+18. **Range** – [Range](range/ReadMe.md) – Methods to work with ranges of floating point numbers.
+19. **Reader** – [Reader](reader/ReadMe.md) – Auxiliary methods and functions for reading.
+20. **ReaderSeeker** – [ReaderSeeker](ReaderSeeker/ReadMe.md) – An interface which combines _io.Reader_ and _io.Seeker_ interfaces.
+21. **RPoFS** – [RPoFS](rpofs/ReadMe.md) – Random Password of Fixed Size.
+22. **RS** – [RS](rs/ReadMe.md) – A Seeker extension to the reader package.
+23. **SAAC** – [SAAC](SAAC/ReadMe.md) – Simple Arithmetic Average Calculator.
+24. **SLReader** – [SLReader](SLReader/ReadMe.md) – A reader based on io.Reader and using speed limits.
+25. **SMA** – [SMA](SMA/ReadMe.md) – Simple Moving Average.
+26. **SMS** – [SMS](SMS/ReadMe.md) – Simple Merge Sorter.
+27. **SQL** – [SQL](SQL/ReadMe.md) – Various _SQL_ helpers.
+28. **Tester** – [Tester](tester/ReadMe.md) – Various useful functions to perform tests.
+29. **Time** – [Time](time/ReadMe.md) – A simple library to work with time in _Go_ programming language.
+30. **Time Metadata** – [Time Metadata](time-metadata/ReadMe.md) – An auxiliary type for storing time of creation and time of update.
+31. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
+32. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
+33. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
+34. **Versioneer** – [Versioneer](Versioneer/ReadMe.md) – Product and dependency version helper.
+35. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
 
 ## Go language version
 
