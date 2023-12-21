@@ -15,7 +15,7 @@ and _Windows_.
 3. **Bit** – [Bit](bit/ReadMe.md) – A simple library to work with bits in _Go_ programming language.
 4. **BOM** – [BOM](BOM/ReadMe.md) – Functions and methods to work with _Unicode_ byte order mark.
 5. **Boolean** – [Boolean](boolean/ReadMe.md) – A boolean-to-string parser.
-6. **dev-env** – [Dev Env](dev-env/ReadMe.md) – Various development infrastructure scripts.
+6. **dev-inf** – [Dev Inf](dev-inf/ReadMe.md) – Various development infrastructure scripts.
 7. **Env** – [Env](env/ReadMe.md) – A simple library to work with environment variables.
 8. **Errors** – [Errors](errors/ReadMe.md) – A simple library to work with built-in errors.
 9. **File** – [File](file/ReadMe.md) – A simple library to work with files and folders.
