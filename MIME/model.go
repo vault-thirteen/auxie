@@ -1,0 +1,50 @@
+package mime
+
+// Model.
+const (
+	TypeModel3mf                          = "model/3mf"                              // [http://www.3mf.io/specification][_3MF][Michael_Sweet]
+	TypeModelE57                          = "model/e57"                              // [ASTM]
+	TypeModelExample                      = "model/example"                          // [RFC4735]
+	TypeModelGltfBinary                   = "model/gltf-binary"                      // [Khronos][Saurabh_Bhatia]
+	TypeModelGltfJson                     = "model/gltf+json"                        // [Khronos][Uli_Klumpp]
+	TypeModelJT                           = "model/JT"                               // [ISO-TC_184-SC_4][Michael_Zink]
+	TypeModelIges                         = "model/iges"                             // [Curtis_Parks]
+	TypeModelMesh                         = "model/mesh"                             // [RFC2077]
+	TypeModelMtl                          = "model/mtl"                              // [DICOM_Standard_Committee][DICOM_WG_17][Carolyn_Hull]
+	TypeModelObj                          = "model/obj"                              // [DICOM_Standard_Committee][DICOM_WG_17][Carolyn_Hull]
+	TypeModelPrc                          = "model/prc"                              // [ISO-TC_171-SC_2][Betsy_Fanning]
+	TypeModelStep                         = "model/step"                             // [ISO-TC_184-SC_4][Dana_Tripp]
+	TypeModelStepXml                      = "model/step+xml"                         // [ISO-TC_184-SC_4][Dana_Tripp]
+	TypeModelStepZip                      = "model/step+zip"                         // [ISO-TC_184-SC_4][Dana_Tripp]
+	TypeModelStepXmlZip                   = "model/step-xml+zip"                     // [ISO-TC_184-SC_4][Dana_Tripp]
+	TypeModelStl                          = "model/stl"                              // [DICOM_Standard_Committee][DICOM_WG_17][Carolyn_Hull]
+	TypeModelU3d                          = "model/u3d"                              // [PDF_Association][Peter_Wyatt]
+	TypeModelVndBary                      = "model/vnd.bary"                         // [Displaced_Micro-Mesh_SDK_Support]
+	TypeModelVndCld                       = "model/vnd.cld"                          // [Robert_Monaghan]
+	TypeModelVndColladaXml                = "model/vnd.collada+xml"                  // [James_Riordon]
+	TypeModelVndDwf                       = "model/vnd.dwf"                          // [Jason_Pratt]
+	TypeModelVndFlatland3dml              = "model/vnd.flatland.3dml"                // [Michael_Powers]
+	TypeModelVndGdl                       = "model/vnd.gdl"                          // [Attila_Babits]
+	TypeModelVndGsGdl                     = "model/vnd.gs-gdl"                       // [Attila_Babits]
+	TypeModelVndGtw                       = "model/vnd.gtw"                          // [Yutaka_Ozaki]
+	TypeModelVndMomlXml                   = "model/vnd.moml+xml"                     // [Christopher_Brooks]
+	TypeModelVndMts                       = "model/vnd.mts"                          // [Boris_Rabinovitch]
+	TypeModelVndOpengex                   = "model/vnd.opengex"                      // [Eric_Lengyel]
+	TypeModelVndParasolidTransmitBinary   = "model/vnd.parasolid.transmit.binary"    // [Parasolid]
+	TypeModelVndParasolidTransmitText     = "model/vnd.parasolid.transmit.text"      // [Parasolid]
+	TypeModelVndPythaPyox                 = "model/vnd.pytha.pyox"                   // [Daniel_Flassig]
+	TypeModelVndRosetteAnnotatedDataModel = "model/vnd.rosette.annotated-data-model" // [Benson_Margulies]
+	TypeModelVndSapVds                    = "model/vnd.sap.vds"                      // [SAP_SE][Igor_Afanasyev]
+	TypeModelVndUsda                      = "model/vnd.usda"                         // [Sebastian_Grassia]
+	TypeModelVndUsdzZip                   = "model/vnd.usdz+zip"                     // [Sebastian_Grassia]
+	TypeModelVndValveSourceCompiledMap    = "model/vnd.valve.source.compiled-map"    // [Henrik_Andersson]
+	TypeModelVndVtu                       = "model/vnd.vtu"                          // [Boris_Rabinovitch]
+	TypeModelVrml                         = "model/vrml"                             // [RFC2077]
+	TypeModelX3dVrml                      = "model/x3d-vrml"                         // [Web3D][Web3D_X3D]
+	TypeModelX3dFastinfoset               = "model/x3d+fastinfoset"                  // [Web3D_X3D]
+	TypeModelX3dXml                       = "model/x3d+xml"                          // [Web3D][Web3D_X3D]
+)
+
+const (
+	TypeModelAny = "model/*"
+)

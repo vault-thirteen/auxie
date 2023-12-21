@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vault-thirteen/MIME"
+	"github.com/vault-thirteen/auxie/MIME"
 	"github.com/vault-thirteen/auxie/header"
 )
 

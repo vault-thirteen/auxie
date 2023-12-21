@@ -4,7 +4,6 @@ go 1.20
 
 require (
 	github.com/kr/pretty v0.3.1
-	github.com/vault-thirteen/MIME v1.12.0
 	golang.org/x/time v0.5.0
 )
 

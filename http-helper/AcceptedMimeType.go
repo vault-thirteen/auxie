@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	mime "github.com/vault-thirteen/MIME"
+	mime "github.com/vault-thirteen/auxie/MIME"
 	"github.com/vault-thirteen/auxie/number"
 )
 
