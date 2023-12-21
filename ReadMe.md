@@ -35,14 +35,15 @@ and _Windows_.
 23. **SLReader** – [SLReader](SLReader/ReadMe.md) – A reader based on io.Reader and using speed limits.
 24. **SMA** – [SMA](SMA/ReadMe.md) – Simple Moving Average.
 25. **SMS** – [SMS](SMS/ReadMe.md) – Simple Merge Sorter.
-26. **Tester** – [Tester](tester/ReadMe.md) – Various useful functions to perform tests.
-27. **Time** – [Time](time/ReadMe.md) – A simple library to work with time in _Go_ programming language.
-28. **Time Metadata** – [Time Metadata](time-metadata/ReadMe.md) – An auxiliary type for storing time of creation and time of update.
-29. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
-30. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
-31. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
-32. **Versioneer** – [Versioneer](Versioneer/ReadMe.md) – Product and dependency version helper.
-33. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
+26. **SQL** – [SQL](SQL/ReadMe.md) – Various SQL helpers.
+27. **Tester** – [Tester](tester/ReadMe.md) – Various useful functions to perform tests.
+28. **Time** – [Time](time/ReadMe.md) – A simple library to work with time in _Go_ programming language.
+29. **Time Metadata** – [Time Metadata](time-metadata/ReadMe.md) – An auxiliary type for storing time of creation and time of update.
+30. **TSB** – [TSB](TSB/ReadMe.md) – Tri-State Boolean.
+31. **Unicode** – [Unicode](unicode/ReadMe.md) – _Unicode_ symbols processing package.
+32. **VCS** – [VCS](VCS/ReadMe.md) – A collection of helpers for version control systems.
+33. **Versioneer** – [Versioneer](Versioneer/ReadMe.md) – Product and dependency version helper.
+34. **Zipper** – [Zipper](zipper/ReadMe.md) – Functions to work with compressed files.
 
 ## Go language version
 
