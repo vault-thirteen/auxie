@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+
+	"github.com/vault-thirteen/auxie/errors"
 )
 
 // An average test can emulate an HTTP request with HTTP method, URL, HTTP
@@ -40,39 +42,42 @@ type AverageTestResult struct {
 // test handler. It writes the received results into the 'ResultReceived' field
 // of a test object.
 func PerformAverageHttpTest(test *AverageTest) (err error) {
-	var request *http.Request
-	var response *http.Response
-	var responseBody []byte
-	var responseRecorder *httptest.ResponseRecorder
 
-	// Prepare Data.
-	request = httptest.NewRequest(
+	// Prepare data.
+	request := httptest.NewRequest(
 		test.Parameter.RequestMethod,
 		test.Parameter.RequestUrl,
 		test.Parameter.RequestBody,
 	)
 	request.Header = test.Parameter.RequestHeaders
-	responseRecorder = httptest.NewRecorder()
 
-	// Make a simulated Request to a HTTP Handler.
+	responseRecorder := httptest.NewRecorder()
+
+	// Make a simulated request to an HTTP handler.
 	test.Parameter.RequestHandler(responseRecorder, request)
 
-	// Get the Response.
-	response = responseRecorder.Result()
+	// Get the response.
+	response := responseRecorder.Result()
+
+	var responseBody []byte
 	responseBody, err = io.ReadAll(response.Body)
 	if err != nil {
 		return err
 	}
-	err = response.Body.Close()
-	if err != nil {
-		return err
-	}
 
-	// Set the Result.
+	defer func() {
+		derr := response.Body.Close()
+		if derr != nil {
+			err = errors.Combine(err, derr)
+		}
+	}()
+
+	// Set the result.
 	test.ResultReceived = AverageTestResult{
 		ResponseStatusCode: response.StatusCode,
 		ResponseHeaders:    response.Header,
 		ResponseBody:       responseBody,
 	}
+
 	return nil
 }

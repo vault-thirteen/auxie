@@ -9,6 +9,7 @@ import (
 )
 
 func Test_ReceiveJSON(t *testing.T) {
+	const TestedHttpBody = `{"age":12345,"name":"Decode me"}`
 
 	type TestObjectClass struct {
 		Age  int    `json:"age"`
@@ -23,7 +24,7 @@ func Test_ReceiveJSON(t *testing.T) {
 		Parameter: SimpleTestParameter{
 			RequestMethod:  TestMethod,
 			RequestUrl:     TestUrl,
-			RequestBody:    strings.NewReader(`{"age":12345,"name":"Decode me"}`),
+			RequestBody:    nil, // Is set below.
 			RequestHandler: nil, // Is set below.
 		},
 	}
@@ -32,30 +33,24 @@ func Test_ReceiveJSON(t *testing.T) {
 		Name: "Decode me",
 	}
 
-	// Test #1. Negative Test: Not a Pointer.
-	// This HTTP Handler receives an Object and checks it.
-	httpTest.Parameter.RequestHandler = func(w http.ResponseWriter, r *http.Request) {
-		var handlerError error
+	// Test #1. Negative test: Not a pointer.
+	// This HTTP handler receives an object and checks it.
+	httpTest.Parameter.RequestBody = strings.NewReader(TestedHttpBody)
+	httpTest.Parameter.RequestHandler = func(rw http.ResponseWriter, req *http.Request) {
 		var handlerObject TestObjectClass
-		handlerError = ReceiveJSON( // <- This HTTP Handler Function is being tested.
-			r,
-			handlerObject,
-		)
-		test.MustBeAnError(handlerError)
+		herr := ReceiveJSON(req, handlerObject)
+		test.MustBeAnError(herr)
 	}
 	err = PerformSimpleHttpTest(&httpTest)
 	test.MustBeNoError(err)
 
-	// Test #2. Positive Test.
-	// This HTTP Handler receives an Object and checks it.
-	httpTest.Parameter.RequestHandler = func(w http.ResponseWriter, r *http.Request) {
-		var handlerError error
+	// Test #2. Positive test.
+	// This HTTP handler receives an object and checks it.
+	httpTest.Parameter.RequestBody = strings.NewReader(TestedHttpBody)
+	httpTest.Parameter.RequestHandler = func(rw http.ResponseWriter, req *http.Request) {
 		var handlerObject TestObjectClass
-		handlerError = ReceiveJSON( // <- This HTTP Handler Function is being tested.
-			r,
-			&handlerObject,
-		)
-		test.MustBeNoError(handlerError)
+		herr := ReceiveJSON(req, &handlerObject)
+		test.MustBeNoError(herr)
 		test.MustBeEqual(handlerObject, objectExpected)
 	}
 	err = PerformSimpleHttpTest(&httpTest)

@@ -1,42 +1,14 @@
 package httphelper
 
 import (
-	"bytes"
 	"encoding/json"
-	"errors"
-	"io"
 	"net/http"
-	"reflect"
-
-	ae "github.com/vault-thirteen/auxie/errors"
 )
 
 // Functions which help in receiving Data from HTTP requests.
 
 // ReceiveJSON function receives an object encoded with JSON format from the
-// HTTP request's body.
+// HTTP request's body. The receiver must be a pointer.
 func ReceiveJSON(r *http.Request, receiver interface{}) (err error) {
-	var bodyContents []byte
-	var jsonDecoder *json.Decoder
-
-	if reflect.TypeOf(receiver).Kind() != reflect.Ptr {
-		return errors.New(ErrNotPointer)
-	}
-
-	bodyContents, err = io.ReadAll(r.Body)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		derr := r.Body.Close()
-		err = ae.Combine(err, derr)
-	}()
-
-	jsonDecoder = json.NewDecoder(bytes.NewReader(bodyContents))
-	err = jsonDecoder.Decode(receiver)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return json.NewDecoder(r.Body).Decode(receiver)
 }

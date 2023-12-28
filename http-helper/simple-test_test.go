@@ -30,9 +30,7 @@ func Test_PerformSimpleHttpTest(t *testing.T) {
 		var herr error
 		w.WriteHeader(http.StatusAccepted)
 		_, herr = w.Write([]byte("Hello"))
-		if herr != nil {
-			t.FailNow()
-		}
+		aTest.MustBeNoError(herr)
 	}
 	err = PerformSimpleHttpTest(&aSimpleHttpTest)
 	aTest.MustBeNoError(err)
@@ -55,9 +53,7 @@ func Test_PerformSimpleHttpTest(t *testing.T) {
 		var herr error
 		w.WriteHeader(http.StatusBadRequest)
 		_, herr = w.Write([]byte("Bye-bye"))
-		if herr != nil {
-			t.FailNow()
-		}
+		aTest.MustBeNoError(herr)
 	}
 	err = PerformSimpleHttpTest(&aSimpleHttpTest)
 	aTest.MustBeNoError(err)

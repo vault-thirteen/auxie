@@ -24,10 +24,9 @@ func Test_PerformAverageHttpTest(t *testing.T) {
 	)
 
 	var anAverageHttpTest AverageTest
-	var aTest *tester.Test
 	var err error
 
-	aTest = tester.New(t)
+	aTest := tester.New(t)
 
 	headersCommon := http.Header{}
 	headersCommon.Add(TestedHeaderName, TestedHeaderValue)
@@ -41,7 +40,7 @@ func Test_PerformAverageHttpTest(t *testing.T) {
 			RequestMethod:  TestMethod,
 			RequestUrl:     TestURL,
 			RequestHeaders: headersCommon,
-			RequestBody:    strings.NewReader(TestBodyString),
+			RequestBody:    nil, // Is set below.
 			RequestHandler: nil, // Is set below.
 		},
 		ResultExpected: AverageTestResult{
@@ -50,20 +49,21 @@ func Test_PerformAverageHttpTest(t *testing.T) {
 			ResponseHeaders:    responseHeadersExpected,
 		},
 	}
+
 	anAverageHttpTest.Parameter.RequestHandler = func(w http.ResponseWriter, r *http.Request) {
 
 		var herr error
 		var requestBody []byte
 		var requestURLFull string
 
-		// Verify the Request Method.
+		// Verify the request method.
 		aTest.MustBeEqual(r.Method, TestMethod)
 
 		// Verify the incoming URL.
 		requestURLFull = r.URL.Scheme + "://" + r.URL.Host + "?" + r.URL.RawQuery
 		aTest.MustBeEqual(requestURLFull, TestURL)
 
-		// Verify the incoming Header.
+		// Verify the incoming header.
 		inHdr := r.Header.Get(TestedHeaderName)
 		aTest.MustBeEqual(inHdr, TestedHeaderValue)
 
@@ -84,10 +84,11 @@ func Test_PerformAverageHttpTest(t *testing.T) {
 
 		// 3. Set the Reply Body.
 		_, herr = w.Write([]byte(ResponseBodyStringExpected))
-		if herr != nil {
-			t.FailNow()
-		}
+		aTest.MustBeNoError(herr)
 	}
+
+	anAverageHttpTest.Parameter.RequestBody = strings.NewReader(TestBodyString)
+
 	err = PerformAverageHttpTest(&anAverageHttpTest)
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(anAverageHttpTest.ResultReceived, anAverageHttpTest.ResultExpected)

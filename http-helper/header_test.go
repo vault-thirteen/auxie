@@ -7,78 +7,122 @@ import (
 	"github.com/vault-thirteen/auxie/tester"
 )
 
-func Test_FindHTTPHeader(t *testing.T) {
+func Test_FindHttpHeader(t *testing.T) {
 	var aTest = tester.New(t)
 	var err error
 	var headerName string
 	var request *http.Request
 
-	// Test #1. Null Request.
+	// Test #1. Null request.
 	request = nil
-	headerName, err = FindHTTPHeader(request, "abc")
+	headerName, err = FindHttpHeader(request, "abc")
 	aTest.MustBeAnError(err)
 
-	// Test #2. Empty Header Name.
+	// Test #2. Empty header name.
 	request = &http.Request{}
-	headerName, err = FindHTTPHeader(request, "")
+	headerName, err = FindHttpHeader(request, "")
 	aTest.MustBeAnError(err)
 
-	// Test #3. Existent Header with exact Name Match.
+	// Test #3. Difficult way.
 	request = &http.Request{
 		Header: map[string][]string{
-			"Content-Type": {"Intergalactic Message"},
+			"CoNtEnT-TyPe": {"Vandalised header"},
 		},
 	}
-	headerName, err = FindHTTPHeader(request, "Content-Type")
+	headerName, err = FindHttpHeader(request, "content-type")
 	aTest.MustBeNoError(err)
-	if headerName != "Content-Type" {
-		t.FailNow()
-	}
+	aTest.MustBeEqual(headerName, "CoNtEnT-TyPe")
 
-	// Test #4. Existent Header with similar Name.
+	// Test #4. Canonical way.
 	request = &http.Request{
 		Header: map[string][]string{
 			"Content-Type": {"Intergalactic Message"},
 		},
 	}
-	headerName, err = FindHTTPHeader(request, "content-type")
+	headerName, err = FindHttpHeader(request, "content-type")
 	aTest.MustBeNoError(err)
-	if headerName != "Content-Type" {
-		t.FailNow()
-	}
+	aTest.MustBeEqual(headerName, "Content-Type")
 
-	// Test #5. Non-existent Header.
+	// Test #5. Easy way.
 	request = &http.Request{
 		Header: map[string][]string{
-			"Content-Type": {"Intergalactic Message"},
+			"content-type": {"our keyboard is broken, no capital letters"},
 		},
 	}
-	headerName, err = FindHTTPHeader(request, "X-FakeHeader")
+	headerName, err = FindHttpHeader(request, "content-type")
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(headerName, "content-type")
+
+	// Test #6. Header is not found.
+	request = &http.Request{
+		Header: map[string][]string{
+			"X-FakeHeader": {"boo"},
+		},
+	}
+	headerName, err = FindHttpHeader(request, "content-type")
 	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(err.Error(), ErrHttpHeaderNameIsNotFound)
 }
 
-func Test_DeleteHTTPHeader(t *testing.T) {
+func Test_DeleteHttpHeader(t *testing.T) {
 	var aTest = tester.New(t)
 	var err error
 	var request *http.Request
 
-	// Test #1. Test of Entry into the 'FindHTTPHeader' Function.
+	// Test #1. Test of entry into the 'FindHttpHeader' function.
 	request = nil
-	err = DeleteHTTPHeader(request, "abc")
+	err = DeleteHttpHeader(request, "abc")
 	aTest.MustBeAnError(err)
 
-	// Test #2. Test of real Deletion.
+	// Test #2. Test of real deletion.
 	request = &http.Request{
 		Header: map[string][]string{
-			"Content-Type": {"Intergalactic Message"},
-			"X-Service":    {"Intergalactic Service"},
+			"Content-Type": []string{"1", "2", "3"},
+			"X-SeRvIcE":    {"JuNkY tOwN"},
 		},
 	}
-	err = DeleteHTTPHeader(request, "x-service")
+	err = DeleteHttpHeader(request, "x-service")
 	aTest.MustBeNoError(err)
-	if (len(request.Header) != 1) ||
-		(len(request.Header["Content-Type"]) != 1) ||
-		(request.Header["Content-Type"][0] != "Intergalactic Message") {
-		t.FailNow()
+	aTest.MustBeEqual(len(request.Header), 1)
+	aTest.MustBeEqual(len(request.Header["Content-Type"]), 3)
+	aTest.MustBeEqual(request.Header["Content-Type"][0], "1")
+}
+
+func Test_GetSingleHttpHeader(t *testing.T) {
+	var aTest = tester.New(t)
+	var err error
+	var headerName string
+	var request *http.Request
+
+	// Test #1. Multiple headers.
+	request = &http.Request{
+		Header: map[string][]string{
+			"Content-Type": []string{"1", "2", "3"},
+			"X-X":          {"(o.0)"},
+		},
 	}
+	headerName, err = GetSingleHttpHeader(request, "content-type")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(headerName, "")
+
+	// Test #2. No headers.
+	request = &http.Request{
+		Header: map[string][]string{
+			"X-X": {"(o.0)"},
+		},
+	}
+	headerName, err = GetSingleHttpHeader(request, "content-type")
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(headerName, "")
+
+	// Test #3. Single header.
+	request = &http.Request{
+		Header: map[string][]string{
+			"Hooeelo": {"0783 1505"},
+			"X-X":     {"(o.0)"},
+		},
+	}
+	headerName, err = GetSingleHttpHeader(request, "x-x")
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(headerName, "(o.0)")
 }
