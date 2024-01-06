@@ -9,10 +9,15 @@ This package contains _IANA_ registered message header names for:
 
 Each protocol is separated into a single file.  
 Headers in each file are separated by its status.  
-Each header name is followed by a commentary with an RFC reference where 
-applicable.    
+Each header name is followed by a commentary with an RFC reference where applicable.    
 
-**Time of Update**: 2023-11-13.
+## Update Time
+
+| Object        | Time       |
+|---------------|------------|
+| IANA database | 2023-12-20 |
+| Package       | 2024-01-06 |
+
 
 For more information visit the following page:
 > https://www.iana.org/assignments/message-headers/message-headers.xml
