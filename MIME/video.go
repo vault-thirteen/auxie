@@ -12,6 +12,7 @@ const (
 	TypeVideoCelB                          = "video/CelB"                             // [RFC3555]
 	TypeVideoDV                            = "video/DV"                               // [RFC6469]
 	TypeVideoEncaprtp                      = "video/encaprtp"                         // [RFC6849]
+	TypeVideoEvc                           = "video/evc"                              // [RFC-ietf-avtcore-rtp-evc-07]
 	TypeVideoExample                       = "video/example"                          // [RFC4735]
 	TypeVideoFFV1                          = "video/FFV1"                             // [RFC9043]
 	TypeVideoFlexfec                       = "video/flexfec"                          // [RFC8627]
