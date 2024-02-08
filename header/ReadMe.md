@@ -15,8 +15,8 @@ Each header name is followed by a commentary with an RFC reference where applica
 
 | Object        | Time       |
 |---------------|------------|
-| IANA database | 2023-12-20 |
-| Package       | 2024-01-06 |
+| IANA database | 2024-02-06 |
+| Package       | 2024-02-08 |
 
 
 For more information visit the following page:
