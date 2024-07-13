@@ -3,4 +3,4 @@
 # Exit on error.
 set -e
 
-docker inspect mysql | grep MYSQL_VERSION
+docker inspect mysql | grep VERSION

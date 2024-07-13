@@ -2,7 +2,7 @@ package mime
 
 // Text.
 const (
-	TypeText1dInterleavedParityfec        = "text/1d-interleaved-parityfec"         // [RFC6015]
+	TypeText1DInterleavedParityfec        = "text/1d-interleaved-parityfec"         // [RFC6015]
 	TypeTextCacheManifest                 = "text/cache-manifest"                   // [W3C][Robin_Berjon]
 	TypeTextCalendar                      = "text/calendar"                         // [RFC5545]
 	TypeTextCql                           = "text/cql"                              // [HL7][Bryn_Rhodes]
@@ -11,9 +11,9 @@ const (
 	TypeTextCss                           = "text/css"                              // [RFC2318]
 	TypeTextCsv                           = "text/csv"                              // [RFC4180][RFC7111]
 	TypeTextCsvSchema                     = "text/csv-schema"                       // [National_Archives_UK][David_Underdown]
-	TypeTextDirectory                     = "text/directory"                        // [RFC2425][RFC6350] N.B.: DEPRECATED by RFC6350.
+	TypeTextDirectory                     = "text/directory"                        // [RFC2425][RFC6350] DEPRECATED By RFC6350
 	TypeTextDns                           = "text/dns"                              // [RFC4027]
-	TypeTextEcmascript                    = "text/ecmascript"                       // [RFC9239] N.B.: OBSOLETED in favour of 'text/javascript'.
+	TypeTextEcmascript                    = "text/ecmascript"                       // [RFC9239] (OBSOLETED In Favor Of Text/Javascript)
 	TypeTextEncaprtp                      = "text/encaprtp"                         // [RFC6849]
 	TypeTextEnriched                      = "text/enriched"                         // [RFC1896]
 	TypeTextExample                       = "text/example"                          // [RFC4735]
@@ -74,7 +74,7 @@ const (
 	TypeTextVndGraphviz                   = "text/vnd.graphviz"                     // [John_Ellson]
 	TypeTextVndHans                       = "text/vnd.hans"                         // [Hill_Hanxv]
 	TypeTextVndHgl                        = "text/vnd.hgl"                          // [Heungsub_Lee]
-	TypeTextVndIn3d3dml                   = "text/vnd.in3d.3dml"                    // [Michael_Powers]
+	TypeTextVndIn3d3Dml                   = "text/vnd.in3d.3dml"                    // [Michael_Powers]
 	TypeTextVndIn3dSpot                   = "text/vnd.in3d.spot"                    // [Michael_Powers]
 	TypeTextVndIPTCNewsML                 = "text/vnd.IPTC.NewsML"                  // [IPTC]
 	TypeTextVndIPTCNITF                   = "text/vnd.IPTC.NITF"                    // [IPTC]
@@ -84,14 +84,16 @@ const (
 	TypeTextVndNet2phoneCommcenterCommand = "text/vnd.net2phone.commcenter.command" // [Feiyu_Xie]
 	TypeTextVndRadisysMsmlBasicLayout     = "text/vnd.radisys.msml-basic-layout"    // [RFC5707]
 	TypeTextVndSenxWarpscript             = "text/vnd.senx.warpscript"              // [Pierre_Papin]
-	TypeTextVndSiUricatalogue             = "text/vnd.si.uricatalogue"              // [Nicholas_Parks_Young] N.B.: OBSOLETED by request.
+	TypeTextVndSiUricatalogue             = "text/vnd.si.uricatalogue"              // [Nicholas_Parks_Young] (OBSOLETED By Request)
 	TypeTextVndSunJ2meAppDescriptor       = "text/vnd.sun.j2me.app-descriptor"      // [Gary_Adams]
 	TypeTextVndSosi                       = "text/vnd.sosi"                         // [Petter_Reinholdtsen]
 	TypeTextVndTrolltechLinguist          = "text/vnd.trolltech.linguist"           // [David_Lee_Lambert]
+	TypeTextVndVcf                        = "text/vnd.vcf"                          // [Anand_Jahagirdar]
 	TypeTextVndWapSi                      = "text/vnd.wap.si"                       // [WAP-Forum]
 	TypeTextVndWapSl                      = "text/vnd.wap.sl"                       // [WAP-Forum]
 	TypeTextVndWapWml                     = "text/vnd.wap.wml"                      // [Peter_Stark]
 	TypeTextVndWapWmlscript               = "text/vnd.wap.wmlscript"                // [Peter_Stark]
+	TypeTextVndZooKcl                     = "text/vnd.zoo.kcl"                      // [Jessie_Frazelle]
 	TypeTextVtt                           = "text/vtt"                              // [W3C][Silvia_Pfeiffer]
 	TypeTextWgsl                          = "text/wgsl"                             // [W3C][David_Neto]
 	TypeTextXml                           = "text/xml"                              // [RFC7303]

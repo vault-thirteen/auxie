@@ -2,7 +2,7 @@ package mime
 
 // Model.
 const (
-	TypeModel3mf                          = "model/3mf"                              // [http://www.3mf.io/specification][_3MF][Michael_Sweet]
+	TypeModel3Mf                          = "model/3mf"                              // [http://www.3mf.io/specification][_3MF][Michael_Sweet]
 	TypeModelE57                          = "model/e57"                              // [ASTM]
 	TypeModelExample                      = "model/example"                          // [RFC4735]
 	TypeModelGltfBinary                   = "model/gltf-binary"                      // [Khronos][Saurabh_Bhatia]
@@ -23,7 +23,7 @@ const (
 	TypeModelVndCld                       = "model/vnd.cld"                          // [Robert_Monaghan]
 	TypeModelVndColladaXml                = "model/vnd.collada+xml"                  // [James_Riordon]
 	TypeModelVndDwf                       = "model/vnd.dwf"                          // [Jason_Pratt]
-	TypeModelVndFlatland3dml              = "model/vnd.flatland.3dml"                // [Michael_Powers]
+	TypeModelVndFlatland3Dml              = "model/vnd.flatland.3dml"                // [Michael_Powers]
 	TypeModelVndGdl                       = "model/vnd.gdl"                          // [Attila_Babits]
 	TypeModelVndGsGdl                     = "model/vnd.gs-gdl"                       // [Attila_Babits]
 	TypeModelVndGtw                       = "model/vnd.gtw"                          // [Yutaka_Ozaki]

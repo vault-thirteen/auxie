@@ -14,5 +14,5 @@ This list may contain some old, deprecated and obsolete _MIME_ types.
 
 | Object        | Time       |
 |---------------|------------|
-| IANA database | 2024-02-05 |
-| Package       | 2024-02-08 |
+| IANA database | 2024-07-05 |
+| Package       | 2024-07-13 |
