@@ -16,7 +16,7 @@ const (
 	TypeMultipartRelated        = "multipart/related"           // [RFC2387]
 	TypeMultipartReport         = "multipart/report"            // [RFC6522]
 	TypeMultipartSigned         = "multipart/signed"            // [RFC1847]
-	TypeMultipartVndBintMedPlus = "multipart/vnd.bint.med-plus" // [Heinz-Peter_SchÃ¼tz]
+	TypeMultipartVndBintMedPlus = "multipart/vnd.bint.med-plus" // [Heinz-Peter_Schütz]
 	TypeMultipartVoiceMessage   = "multipart/voice-message"     // [RFC3801]
 	TypeMultipartXMixedReplace  = "multipart/x-mixed-replace"   // [W3C][Robin_Berjon]
 )
