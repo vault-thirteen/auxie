@@ -2,7 +2,9 @@ version: '2'
 
 services:
   postgresql:
-    image: postgres
+    # ACHTUNG
+    # Other images are heavily bugged !
+    image: postgres:16.2-alpine
     container_name: postgresql
     restart: always
     ports:

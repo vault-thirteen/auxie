@@ -4,11 +4,11 @@
 set -e
 
 # MySQL Stop.
-docker stop mysql
-docker rm mysql
+docker stop postgresql
+docker rm postgresql
 
 # Docker Image Update.
-docker pull mysql:8.0
+docker pull postgres:16.2-alpine
 
 # MySQL Start.
 docker compose up -d
