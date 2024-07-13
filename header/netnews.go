@@ -13,11 +13,11 @@ const (
 	NetnewsHeaderAlsoControl     = "Also-Control"      // [RFC1849][RFC5536]
 	NetnewsHeaderArticleNames    = "Article-Names"     // [RFC1849][RFC5536]
 	NetnewsHeaderArticleUpdates  = "Article-Updates"   // [RFC1849][RFC5536]
-	NetnewsHeaderDateReceived    = "Date-Received"     // [RFC0850][RFC5536]
+	NetnewsHeaderDateReceived    = "Date-Received"     // [RFC850][RFC5536]
 	NetnewsHeaderNNTPPostingDate = "NNTP-Posting-Date" // [RFC5536]
 	NetnewsHeaderNNTPPostingHost = "NNTP-Posting-Host" // [RFC2980][RFC5536]
-	NetnewsHeaderPostingVersion  = "Posting-Version"   // [RFC0850][RFC5536]
-	NetnewsHeaderRelayVersion    = "Relay-Version"     // [RFC0850][RFC5536]
+	NetnewsHeaderPostingVersion  = "Posting-Version"   // [RFC850][RFC5536]
+	NetnewsHeaderRelayVersion    = "Relay-Version"     // [RFC850][RFC5536]
 	NetnewsHeaderSeeAlso         = "See-Also"          // [RFC1849][RFC5536]
 )
 
