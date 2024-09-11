@@ -14,6 +14,9 @@ RUN apt-get -y install cmake
 RUN cmake --version
 
 RUN apt-get -y install xz-utils
+RUN xz --version
+
+RUN apt-get -y install lsb-release
 
 WORKDIR /home
 RUN mkdir emscripten

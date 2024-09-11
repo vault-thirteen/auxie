@@ -14,7 +14,7 @@ services:
     volumes:
       - type: bind
         # Path to the local (host) data folder.
-        source: /home/xxx/Docker/MySQL/mysql_data
+        source: /home/username/Docker/MySQL/mysql_data
         target: /var/lib/mysql
     environment:
       - 'MYSQL_ROOT_PASSWORD=xxx'

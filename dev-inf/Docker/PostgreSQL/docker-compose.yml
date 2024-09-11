@@ -13,7 +13,7 @@ services:
     volumes:
       - type: bind
         # Path to the local (host) data folder.
-        source: /home/xxx/Docker/PostgreSQL/postgresql_data
+        source: /home/username/Docker/PostgreSQL/postgresql_data
         target: /var/lib/postgresql/data
     environment:
       - 'POSTGRES_PASSWORD=xxx'
