@@ -10,7 +10,7 @@ require (
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.29.0
 	golang.org/x/text v0.18.0
-	golang.org/x/time v0.6.0
+	golang.org/x/time v0.7.0
 )
 
 require (
