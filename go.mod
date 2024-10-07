@@ -9,7 +9,7 @@ require (
 	github.com/prometheus/procfs v0.15.1
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.29.0
-	golang.org/x/text v0.18.0
+	golang.org/x/text v0.19.0
 	golang.org/x/time v0.6.0
 )
 
