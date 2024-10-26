@@ -7,6 +7,11 @@ import (
 	"github.com/vault-thirteen/auxie/tester"
 )
 
+const (
+	GitRepositoryOwner = "vault-thirteen"
+	GitRepositoryName  = "auxie"
+)
+
 func Test_NewRepository(t *testing.T) {
 	var aTest = tester.New(t)
 	var err error
@@ -34,7 +39,7 @@ func Test_ListTags(t *testing.T) {
 	var err error
 	var repo *Repository
 
-	repo, err = NewRepository("vault-thirteen", "VCS")
+	repo, err = NewRepository(GitRepositoryOwner, GitRepositoryName)
 	aTest.MustBeNoError(err)
 
 	var tags []*Tag
@@ -48,7 +53,7 @@ func Test_ListVersions(t *testing.T) {
 	var err error
 	var repo *Repository
 
-	repo, err = NewRepository("vault-thirteen", "VCS")
+	repo, err = NewRepository(GitRepositoryOwner, GitRepositoryName)
 	aTest.MustBeNoError(err)
 
 	var vers []*ver.Version
@@ -62,7 +67,7 @@ func Test_ListCleanVersions(t *testing.T) {
 	var err error
 	var repo *Repository
 
-	repo, err = NewRepository("vault-thirteen", "VCS")
+	repo, err = NewRepository(GitRepositoryOwner, GitRepositoryName)
 	aTest.MustBeNoError(err)
 
 	var cleanVersions []*ver.Version
