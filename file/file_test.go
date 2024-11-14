@@ -190,3 +190,15 @@ func Test_ListFileNames(t *testing.T) {
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(output, []string{TestFile2})
 }
+
+func Test_CountFiles(t *testing.T) {
+	aTest := tester.New(t)
+	folderPath := TestFolder2
+	var output int
+	var err error
+
+	// Test.
+	output, err = CountFiles(folderPath)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(output, 1)
+}
