@@ -89,3 +89,24 @@ func GetFileContents(filePath string) (contents []byte, err error) {
 
 	return io.ReadAll(f)
 }
+
+// ListFileNames lists names of all files in the folder.
+// Sub-folders are not used.
+func ListFileNames(folderPath string) (fileNames []string, err error) {
+	var des []os.DirEntry
+	des, err = os.ReadDir(folderPath)
+	if err != nil {
+		return nil, err
+	}
+
+	fileNames = []string{}
+	for _, de := range des {
+		if de.IsDir() {
+			continue
+		}
+
+		fileNames = append(fileNames, de.Name())
+	}
+
+	return fileNames, nil
+}

@@ -178,3 +178,15 @@ func Test_GetFileContents(t *testing.T) {
 	aTest.MustBeAnError(err)
 	aTest.MustBeEqual(output, ([]byte)(nil))
 }
+
+func Test_ListFileNames(t *testing.T) {
+	aTest := tester.New(t)
+	folderPath := TestFolder2
+	var output []string
+	var err error
+
+	// Test.
+	output, err = ListFileNames(folderPath)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(output, []string{TestFile2})
+}
