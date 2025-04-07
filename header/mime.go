@@ -25,6 +25,6 @@ const (
 	MimeHeaderContentLocation         = "Content-Location"          // [RFC4021]
 	MimeHeaderContentMD5              = "Content-MD5"               // [RFC4021]
 	MimeHeaderContentTransferEncoding = "Content-Transfer-Encoding" // [RFC4021]
-	MimeHeaderContentType             = "Content-Type"              // [RFC4021]
+	MimeHeaderContentType             = "Content-Type"              // [RFC4021][RFC-ietf-lamps-header-protection-25]
 	MimeHeaderMIMEVersion             = "MIME-Version"              // [RFC4021]
 )
