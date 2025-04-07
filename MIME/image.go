@@ -3,7 +3,7 @@ package mime
 // Image.
 const (
 	TypeImageAces                      = "image/aces"                         // [SMPTE][Howard_Lukk]
-	TypeImageApng                      = "image/apng"                         // [W3C][W3C_PNG_Working_Group]
+	TypeImageApng                      = "image/apng"                         // [W3C][W3C_PNG_WG]
 	TypeImageAvci                      = "image/avci"                         // [ISO-IEC_JTC_1][David_Singer]
 	TypeImageAvcs                      = "image/avcs"                         // [ISO-IEC_JTC_1][David_Singer]
 	TypeImageAvif                      = "image/avif"                         // [Alliance_for_Open_Media][Cyril_Concolato]
@@ -14,16 +14,18 @@ const (
 	TypeImageEmf                       = "image/emf"                          // [RFC7903]
 	TypeImageExample                   = "image/example"                      // [RFC4735]
 	TypeImageFits                      = "image/fits"                         // [RFC4047]
-	TypeImageG3fax                     = "image/g3fax"                        // [RFC1494]
+	TypeImageG3Fax                     = "image/g3fax"                        // [RFC1494]
 	TypeImageGif                       = "image/gif"                          // [RFC2045][RFC2046]
 	TypeImageHeic                      = "image/heic"                         // [ISO-IEC_JTC_1][David_Singer]
 	TypeImageHeicSequence              = "image/heic-sequence"                // [ISO-IEC_JTC_1][David_Singer]
 	TypeImageHeif                      = "image/heif"                         // [ISO-IEC_JTC_1][David_Singer]
 	TypeImageHeifSequence              = "image/heif-sequence"                // [ISO-IEC_JTC_1][David_Singer]
-	TypeImageHej2k                     = "image/hej2k"                        // [ISO-IEC_JTC_1][ITU-T]
+	TypeImageHej2K                     = "image/hej2k"                        // [ISO-IEC_JTC_1][ITU-T]
 	TypeImageHsj2                      = "image/hsj2"                         // [ISO-IEC_JTC_1][ITU-T]
 	TypeImageIef                       = "image/ief"                          // [RFC1314]
-	TypeImageJ2c                       = "image/j2c"                          // [ISO-IEC_JTC_1_SC_29_WG_1][ISO-IEC_JTC_1][ITU-T]
+	TypeImageJ2C                       = "image/j2c"                          // [ISO-IEC_JTC_1_SC_29_WG_1][ISO-IEC_JTC_1][ITU-T]
+	TypeImageJaii                      = "image/jaii"                         // [ISO-IEC_JTC_1_SC_29_WG_1][Ye-Kui_Wang]
+	TypeImageJais                      = "image/jais"                         // [ISO-IEC_JTC_1_SC_29_WG_1][Ye-Kui_Wang]
 	TypeImageJls                       = "image/jls"                          // [DICOM_Standard_Committee][David_Clunie]
 	TypeImageJp2                       = "image/jp2"                          // [RFC3745]
 	TypeImageJpeg                      = "image/jpeg"                         // [RFC2045][RFC2046]
@@ -42,7 +44,7 @@ const (
 	TypeImageKtx                       = "image/ktx"                          // [Khronos][Mark_Callow]
 	TypeImageKtx2                      = "image/ktx2"                         // [Khronos][Mark_Callow]
 	TypeImageNaplps                    = "image/naplps"                       // [Ilya_Ferber]
-	TypeImagePng                       = "image/png"                          // [W3C][PNG_Working_Group]
+	TypeImagePng                       = "image/png"                          // [W3C][PNG_WG]
 	TypeImagePrsBtif                   = "image/prs.btif"                     // [Ben_Simon]
 	TypeImagePrsPti                    = "image/prs.pti"                      // [Juern_Laun]
 	TypeImagePwgRaster                 = "image/pwg-raster"                   // [Michael_Sweet]
@@ -52,6 +54,7 @@ const (
 	TypeImageTiffFx                    = "image/tiff-fx"                      // [RFC3950]
 	TypeImageVndAdobePhotoshop         = "image/vnd.adobe.photoshop"          // [Kim_Scarborough]
 	TypeImageVndAirzipAcceleratorAzv   = "image/vnd.airzip.accelerator.azv"   // [Gary_Clueit]
+	TypeImageVndClip                   = "image/vnd.clip"                     // [Ryo_Inaba]
 	TypeImageVndCnsInf2                = "image/vnd.cns.inf2"                 // [Ann_McLaughlin]
 	TypeImageVndDeceGraphic            = "image/vnd.dece.graphic"             // [Michael_A_Dolan]
 	TypeImageVndDjvu                   = "image/vnd.djvu"                     // [Leon_Bottou]
@@ -80,10 +83,10 @@ const (
 	TypeImageVndWapWbmp                = "image/vnd.wap.wbmp"                 // [Peter_Stark]
 	TypeImageVndXiff                   = "image/vnd.xiff"                     // [Steven_Martin]
 	TypeImageVndZbrushPcx              = "image/vnd.zbrush.pcx"               // [Chris_Charabaruk]
-	TypeImageWebp                      = "image/webp"                         // [RFC-zern-webp-15]
+	TypeImageWebp                      = "image/webp"                         // [RFC9649]
 	TypeImageWmf                       = "image/wmf"                          // [RFC7903]
-	TypeImageXEmf                      = "image/emf"                          // [RFC7903] DEPRECATED In Favor Of Image/Emf
-	TypeImageXWmf                      = "image/wmf"                          // [RFC7903] DEPRECATED In Favor Of Image/Wmf
+	TypeImageXEmf                      = "image/x-emf"                        // [RFC7903]
+	TypeImageXWmf                      = "image/x-wmf"                        // [RFC7903]
 )
 
 const (
