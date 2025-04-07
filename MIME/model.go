@@ -18,7 +18,7 @@ const (
 	TypeModelStepZip                      = "model/step+zip"                         // [ISO-TC_184-SC_4][Dana_Tripp]
 	TypeModelStepXmlZip                   = "model/step-xml+zip"                     // [ISO-TC_184-SC_4][Dana_Tripp]
 	TypeModelStl                          = "model/stl"                              // [DICOM_Standard_Committee][DICOM_WG_17][Carolyn_Hull]
-	TypeModelU3d                          = "model/u3d"                              // [PDF_Association][Peter_Wyatt]
+	TypeModelU3D                          = "model/u3d"                              // [PDF_Association][Peter_Wyatt]
 	TypeModelVndBary                      = "model/vnd.bary"                         // [Displaced_Micro-Mesh_SDK_Support]
 	TypeModelVndCld                       = "model/vnd.cld"                          // [Robert_Monaghan]
 	TypeModelVndColladaXml                = "model/vnd.collada+xml"                  // [James_Riordon]
@@ -40,9 +40,9 @@ const (
 	TypeModelVndValveSourceCompiledMap    = "model/vnd.valve.source.compiled-map"    // [Henrik_Andersson]
 	TypeModelVndVtu                       = "model/vnd.vtu"                          // [Boris_Rabinovitch]
 	TypeModelVrml                         = "model/vrml"                             // [RFC2077]
-	TypeModelX3dVrml                      = "model/x3d-vrml"                         // [Web3D][Web3D_X3D]
-	TypeModelX3dFastinfoset               = "model/x3d+fastinfoset"                  // [Web3D_X3D]
-	TypeModelX3dXml                       = "model/x3d+xml"                          // [Web3D][Web3D_X3D]
+	TypeModelX3DVrml                      = "model/x3d-vrml"                         // [Web3D][Web3D_X3D]
+	TypeModelX3DFastinfoset               = "model/x3d+fastinfoset"                  // [Web3D_X3D]
+	TypeModelX3DXml                       = "model/x3d+xml"                          // [Web3D][Web3D_X3D]
 )
 
 const (
