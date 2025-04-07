@@ -12,7 +12,7 @@ This list may contain some old, deprecated and obsolete _MIME_ types.
 
 ## Update Time
 
-| Object        | Time       |
-|---------------|------------|
-| IANA database | 2024-07-05 |
-| Package       | 2024-07-13 |
+| Object        | Time        |
+|---------------|-------------|
+| IANA database | 2025-04-15  |
+| Package       | 2025-04-07 |
