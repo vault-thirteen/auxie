@@ -16,16 +16,16 @@ const (
 	TypeMessageHttp                          = "message/http"                            // [RFC9112]
 	TypeMessageImdnXml                       = "message/imdn+xml"                        // [RFC5438]
 	TypeMessageMls                           = "message/mls"                             // [RFC9420]
-	TypeMessageNews                          = "message/news"                            // [RFC5537][Henry_Spencer] (OBSOLETED By [RFC5537])
+	TypeMessageNews                          = "message/news"                            // [RFC5537][Henry_Spencer]
 	TypeMessageOhttpReq                      = "message/ohttp-req"                       // [RFC9458]
 	TypeMessageOhttpRes                      = "message/ohttp-res"                       // [RFC9458]
 	TypeMessagePartial                       = "message/partial"                         // [RFC2045][RFC2046]
 	TypeMessageRfc822                        = "message/rfc822"                          // [RFC2045][RFC2046]
-	TypeMessageSHttp                         = "message/s-http"                          // [RFC2660][status-change-http-experiments-to-historic] (OBSOLETE)
+	TypeMessageSHttp                         = "message/s-http"                          // [RFC2660][Status change of HTTP experiments to Historic]
 	TypeMessageSip                           = "message/sip"                             // [RFC3261]
 	TypeMessageSipfrag                       = "message/sipfrag"                         // [RFC3420]
 	TypeMessageTrackingStatus                = "message/tracking-status"                 // [RFC3886]
-	TypeMessageVndSiSimp                     = "message/vnd.si.simp"                     // [Nicholas_Parks_Young] (OBSOLETED By Request)
+	TypeMessageVndSiSimp                     = "message/vnd.si.simp"                     // [Nicholas_Parks_Young]
 	TypeMessageVndWfaWsc                     = "message/vnd.wfa.wsc"                     // [Mick_Conley]
 )
 
