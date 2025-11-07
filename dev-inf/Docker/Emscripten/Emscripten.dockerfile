@@ -1,5 +1,4 @@
-# Stable Debian O.S. has an extremely outdated version of the 'cmake' tool.
-FROM debian:trixie-slim
+FROM debian:stable-slim
 
 RUN apt-get -y update
 RUN apt-get -y upgrade
