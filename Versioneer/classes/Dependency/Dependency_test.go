@@ -1,10 +1,24 @@
-package pi
+package dependency
 
 import (
 	"testing"
 
 	"github.com/vault-thirteen/auxie/tester"
 )
+
+func Test_Name(t *testing.T) {
+	aTest := tester.New(t)
+
+	x := Dependency{name: "name"}
+	aTest.MustBeEqual(x.Name(), x.name)
+}
+
+func Test_Version(t *testing.T) {
+	aTest := tester.New(t)
+
+	x := Dependency{version: "version"}
+	aTest.MustBeEqual(x.Version(), x.version)
+}
 
 func Test_isStringAVersionPostfix(t *testing.T) {
 	aTest := tester.New(t)

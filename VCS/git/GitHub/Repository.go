@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	ver "github.com/vault-thirteen/auxie/VCS/common/Version"
+	"github.com/vault-thirteen/auxie/VCS/common/Version"
 )
 
 // Repository object.
@@ -55,11 +55,11 @@ func (r *Repository) ListTags() (tags []*Tag, err error) {
 	return r.getTags()
 }
 
-func (r *Repository) ListVersions() (versions []*ver.Version, err error) {
+func (r *Repository) ListVersions() (versions []*version.Version, err error) {
 	return r.getVersions(false)
 }
 
-func (r *Repository) ListCleanVersions() (versions []*ver.Version, err error) {
+func (r *Repository) ListCleanVersions() (versions []*version.Version, err error) {
 	return r.getVersions(true)
 }
 
@@ -73,14 +73,14 @@ func (r *Repository) getTags() (tags []*Tag, err error) {
 	return ParseTags(jsonData)
 }
 
-func (r *Repository) getVersions(onlyCleanVersions bool) (versions []*ver.Version, err error) {
+func (r *Repository) getVersions(onlyCleanVersions bool) (versions []*version.Version, err error) {
 	var tags []*Tag
 	tags, err = r.getTags()
 	if err != nil {
 		return nil, err
 	}
 
-	versions = make([]*ver.Version, 0, len(tags))
+	versions = make([]*version.Version, 0, len(tags))
 	for _, tag := range tags {
 		if tag.HasVersion {
 			versions = append(versions, tag.Version)
@@ -88,7 +88,7 @@ func (r *Repository) getVersions(onlyCleanVersions bool) (versions []*ver.Versio
 	}
 
 	if onlyCleanVersions {
-		versions = ver.CleanVersions(versions)
+		versions = version.CleanVersions(versions)
 	}
 
 	return versions, nil

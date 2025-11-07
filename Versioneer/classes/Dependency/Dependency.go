@@ -1,4 +1,4 @@
-package pi
+package dependency
 
 import (
 	"errors"
@@ -6,10 +6,18 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/vault-thirteen/auxie/VCS/common/Version"
 	"github.com/vault-thirteen/auxie/number"
 )
 
-const VersionMark = 'v'
+const (
+	NameUnknown    = "???"
+	VersionUnknown = "v??"
+)
+
+const (
+	ErrDependencyInfoIsNotAvailable = "dependency info is not available"
+)
 
 // Dependency is information about program's dependency.
 type Dependency struct {
@@ -17,11 +25,8 @@ type Dependency struct {
 	version string
 }
 
-func NewDependency(m *debug.Module) (dep *Dependency, err error) {
-	dep = &Dependency{
-		name:    NameUnknown,
-		version: VersionUnknown,
-	}
+func New(m *debug.Module) (dep *Dependency, err error) {
+	dep = &Dependency{}
 
 	if m == nil {
 		return dep, errors.New(ErrDependencyInfoIsNotAvailable)
@@ -35,21 +40,22 @@ func NewDependency(m *debug.Module) (dep *Dependency, err error) {
 		tmp = getLastTwoPathParts(m.Path)
 	}
 
-	if len(tmp) == 0 {
+	dep.name = tmp
+	if len(dep.name) == 0 {
 		dep.name = NameUnknown
-	} else {
-		dep.name = tmp
 	}
 
-	tmp = path.Base(m.Version)
-	if len(tmp) == 0 {
+	dep.version = path.Base(m.Version)
+	if len(dep.version) == 0 {
 		dep.version = VersionUnknown
-	} else {
-		dep.version = tmp
 	}
 
 	return dep, nil
 }
+
+func (d *Dependency) Name() string { return d.name }
+
+func (d *Dependency) Version() string { return d.version }
 
 func isStringAVersionPostfix(s string) (isVersionPostfix bool) {
 	symbols := []rune(s)
@@ -58,7 +64,7 @@ func isStringAVersionPostfix(s string) (isVersionPostfix bool) {
 		return false
 	}
 
-	if symbols[0] != VersionMark {
+	if symbols[0] != version.GolangVersionMark {
 		return false
 	}
 

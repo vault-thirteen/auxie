@@ -1,4 +1,4 @@
-package ver
+package version
 
 import (
 	"fmt"
@@ -9,7 +9,9 @@ import (
 )
 
 const (
-	VersionFormat = "v%d.%d.%d%s"
+	GolangVersionMark   = 'v'
+	GolangVersionFormat = string(GolangVersionMark) + "%d.%d.%d%s"
+	ShortVersionFormat  = "%d.%d.%d%s"
 )
 
 const (
@@ -73,7 +75,11 @@ func New(versionStr string) (v *Version, err error) {
 // version while this object uses its own format for formatting versions.
 // E.g. a version parsed from 'Ver.1.2.3' will be formatted as 'v1.2.3'.
 func (v *Version) ToString() string {
-	return fmt.Sprintf(VersionFormat, v.Major, v.Minor, v.Patch, v.Postfix)
+	return fmt.Sprintf(GolangVersionFormat, v.Major, v.Minor, v.Patch, v.Postfix)
+}
+
+func (v *Version) ShortString() string {
+	return fmt.Sprintf(ShortVersionFormat, v.Major, v.Minor, v.Patch, v.Postfix)
 }
 
 // IsClean checks whether the version has only numeric information without any

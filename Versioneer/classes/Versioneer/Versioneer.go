@@ -6,8 +6,9 @@ import (
 	"runtime"
 
 	"github.com/kr/pretty"
-	ver "github.com/vault-thirteen/auxie/VCS/common/Version"
-	pi "github.com/vault-thirteen/auxie/Versioneer/ProgramInfo"
+	"github.com/vault-thirteen/auxie/VCS/common/Version"
+	"github.com/vault-thirteen/auxie/Versioneer/classes/Dependency"
+	"github.com/vault-thirteen/auxie/Versioneer/classes/ProgramInfo"
 )
 
 const (
@@ -24,7 +25,7 @@ type Versioneer struct {
 func New() (v *Versioneer, err error) {
 	v = new(Versioneer)
 
-	v.programInfo, err = pi.NewProgramInfo()
+	v.programInfo, err = pi.New()
 	if err != nil {
 		return nil, err
 	}
@@ -85,19 +86,19 @@ func (v *Versioneer) ProgramVersionString() (programVersion string) {
 	return v.programInfo.ProgramVersionString()
 }
 
-func (v *Versioneer) ProgramVcsVersion() *ver.Version {
-	return v.programInfo.ProgramVcsVersion()
+func (v *Versioneer) ProgramVcsVersion() *version.Version {
+	return v.programInfo.ProgramVersion()
 }
 
 func (v *Versioneer) IsUpdateAvailable() bool {
 	return v.programInfo.IsUpdateAvailable()
 }
 
-func (v *Versioneer) LatestVersion() *ver.Version {
+func (v *Versioneer) LatestVersion() *version.Version {
 	return v.programInfo.LatestVersion()
 }
 
-func (v *Versioneer) DependenciesList() (list []*pi.Dependency) {
+func (v *Versioneer) DependenciesList() (list []*dependency.Dependency) {
 	return v.programInfo.DependenciesList()
 }
 
