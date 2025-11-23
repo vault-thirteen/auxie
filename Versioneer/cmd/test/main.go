@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	ver "github.com/vault-thirteen/auxie/Versioneer"
+	ver "github.com/vault-thirteen/auxie/Versioneer/classes/Versioneer"
 )
 
 func main() {
