@@ -5,7 +5,7 @@ go 1.25.8
 require (
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/kr/pretty v0.3.1
-	github.com/lib/pq v1.11.2
+	github.com/lib/pq v1.12.0
 	github.com/prometheus/procfs v0.20.1
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.52.0
