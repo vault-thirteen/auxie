@@ -2,91 +2,6 @@ package header
 
 // Mail protocol header field names.
 
-// Status: Deprecated.
-const (
-	MailHeaderXArchivedAt = "X-Archived-At" // [RFC5064]
-)
-
-// Status: Experimental.
-const (
-	MailHeaderARCAuthenticationResults = "ARC-Authentication-Results" // [RFC8617]
-	MailHeaderARCMessageSignature      = "ARC-Message-Signature"      // [RFC8617]
-	MailHeaderARCSeal                  = "ARC-Seal"                   // [RFC8617]
-)
-
-// Status: Informational.
-const (
-	MailHeaderOrganization = "Organization" // [RFC7681]
-)
-
-// Status: Obsoleted.
-const (
-	MailHeaderDowngradedBcc                       = "Downgraded-Bcc"                         // [RFC5504][RFC6857]
-	MailHeaderDowngradedCc                        = "Downgraded-Cc"                          // [RFC5504][RFC6857]
-	MailHeaderDowngradedDispositionNotificationTo = "Downgraded-Disposition-Notification-To" // [RFC5504][RFC6857]
-	MailHeaderDowngradedFrom                      = "Downgraded-From"                        // [RFC5504][RFC6857 Section 3.1.10]
-	MailHeaderDowngradedMailFrom                  = "Downgraded-Mail-From"                   // [RFC5504][RFC6857 Section 3.1.10]
-	MailHeaderDowngradedRcptTo                    = "Downgraded-Rcpt-To"                     // [RFC5504][RFC6857]
-	MailHeaderDowngradedReplyTo                   = "Downgraded-Reply-To"                    // [RFC5504][RFC6857]
-	MailHeaderDowngradedResentBcc                 = "Downgraded-Resent-Bcc"                  // [RFC5504][RFC6857]
-	MailHeaderDowngradedResentCc                  = "Downgraded-Resent-Cc"                   // [RFC5504][RFC6857]
-	MailHeaderDowngradedResentFrom                = "Downgraded-Resent-From"                 // [RFC5504][RFC6857]
-	MailHeaderDowngradedResentReplyTo             = "Downgraded-Resent-Reply-To"             // [RFC5504][RFC6857]
-	MailHeaderDowngradedResentSender              = "Downgraded-Resent-Sender"               // [RFC5504][RFC6857]
-	MailHeaderDowngradedResentTo                  = "Downgraded-Resent-To"                   // [RFC5504][RFC6857]
-	MailHeaderDowngradedReturnPath                = "Downgraded-Return-Path"                 // [RFC5504][RFC6857]
-	MailHeaderDowngradedSender                    = "Downgraded-Sender"                      // [RFC5504][RFC6857]
-	MailHeaderDowngradedTo                        = "Downgraded-To"                          // [RFC5504][RFC6857]
-	MailHeaderResentReplyTo                       = "Resent-Reply-To"                        // [RFC-ietf-emailcore-rfc5322bis-12, 4.5.6]
-)
-
-// Status: Standard.
-const (
-	MailHeaderArchivedAt                  = "Archived-At"                   // [RFC5064]
-	MailHeaderAuthenticationResults       = "Authentication-Results"        // [RFC8601]
-	MailHeaderAutoSubmitted               = "Auto-Submitted"                // [RFC3834 section 5]
-	MailHeaderBcc                         = "Bcc"                           // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.3]
-	MailHeaderCc                          = "Cc"                            // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.3]
-	MailHeaderComments                    = "Comments"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.5]
-	MailHeaderDate                        = "Date"                          // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.1]
-	MailHeaderDKIMSignature               = "DKIM-Signature"                // [RFC6376]
-	MailHeaderDowngradedFinalRecipient    = "Downgraded-Final-Recipient"    // [RFC6857 Section 3.1.10]
-	MailHeaderDowngradedInReplyTo         = "Downgraded-In-Reply-To"        // [RFC6857 Section 3.1.10]
-	MailHeaderDowngradedMessageId         = "Downgraded-Message-Id"         // [RFC6857 Section 3.1.10]
-	MailHeaderDowngradedOriginalRecipient = "Downgraded-Original-Recipient" // [RFC6857 Section 3.1.10]
-	MailHeaderDowngradedReferences        = "Downgraded-References"         // [RFC6857 Section 3.1.10]
-	MailHeaderFrom                        = "From"                          // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.2]
-	MailHeaderHPOuter                     = "HP-Outer"                      // [RFC-ietf-lamps-header-protection-25 Section 2.2.1]
-	MailHeaderInReplyTo                   = "In-Reply-To"                   // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.4]
-	MailHeaderKeywords                    = "Keywords"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.5]
-	MailHeaderListUnsubscribePost         = "List-Unsubscribe-Post"         // [RFC8058]
-	MailHeaderMessageID                   = "Message-ID"                    // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.4]
-	MailHeaderMTPriority                  = "MT-Priority"                   // [RFC6758]
-	MailHeaderOriginalFrom                = "Original-From"                 // [RFC5703]
-	MailHeaderOriginalRecipient           = "Original-Recipient"            // [RFC3798][RFC5337]
-	MailHeaderOriginalSubject             = "Original-Subject"              // [RFC5703]
-	MailHeaderReceived                    = "Received"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.7][draft-ietf-emailcore-rfc5321bis-42]
-	MailHeaderReceivedSPF                 = "Received-SPF"                  // [RFC7208]
-	MailHeaderReferences                  = "References"                    // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.4]
-	MailHeaderReplyTo                     = "Reply-To"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.2]
-	MailHeaderRequireRecipientValidSince  = "Require-Recipient-Valid-Since" // [RFC7293]
-	MailHeaderResentBcc                   = "Resent-Bcc"                    // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
-	MailHeaderResentCc                    = "Resent-Cc"                     // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
-	MailHeaderResentDate                  = "Resent-Date"                   // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
-	MailHeaderResentFrom                  = "Resent-From"                   // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
-	MailHeaderResentMessageID             = "Resent-Message-ID"             // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
-	MailHeaderResentSender                = "Resent-Sender"                 // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
-	MailHeaderResentTo                    = "Resent-To"                     // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
-	MailHeaderReturnPath                  = "Return-Path"                   // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.7][draft-ietf-emailcore-rfc5321bis-42]
-	MailHeaderSender                      = "Sender"                        // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.2]
-	MailHeaderSubject                     = "Subject"                       // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.5]
-	MailHeaderTLSReportDomain             = "TLS-Report-Domain"             // [RFC8460]
-	MailHeaderTLSReportSubmitter          = "TLS-Report-Submitter"          // [RFC8460]
-	MailHeaderTLSRequired                 = "TLS-Required"                  // [RFC8689]
-	MailHeaderTo                          = "To"                            // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.3]
-	MailHeaderVBRInfo                     = "VBR-Info"                      // [RFC5518]
-)
-
 // Status: (Empty).
 const (
 	MailHeaderAcceptLanguage                  = "Accept-Language"                    // [RFC4021]
@@ -179,4 +94,89 @@ const (
 	MailHeaderX400Received                    = "X400-Received"                      // [RFC4021]
 	MailHeaderX400Recipients                  = "X400-Recipients"                    // [RFC4021]
 	MailHeaderX400Trace                       = "X400-Trace"                         // [RFC4021]
+)
+
+// Status: Deprecated.
+const (
+	MailHeaderXArchivedAt = "X-Archived-At" // [RFC5064]
+)
+
+// Status: Experimental.
+const (
+	MailHeaderARCAuthenticationResults = "ARC-Authentication-Results" // [RFC8617]
+	MailHeaderARCMessageSignature      = "ARC-Message-Signature"      // [RFC8617]
+	MailHeaderARCSeal                  = "ARC-Seal"                   // [RFC8617]
+)
+
+// Status: Informational.
+const (
+	MailHeaderOrganization = "Organization" // [RFC7681]
+)
+
+// Status: Obsoleted.
+const (
+	MailHeaderDowngradedBcc                       = "Downgraded-Bcc"                         // [RFC5504][RFC6857]
+	MailHeaderDowngradedCc                        = "Downgraded-Cc"                          // [RFC5504][RFC6857]
+	MailHeaderDowngradedDispositionNotificationTo = "Downgraded-Disposition-Notification-To" // [RFC5504][RFC6857]
+	MailHeaderDowngradedFrom                      = "Downgraded-From"                        // [RFC5504][RFC6857 Section 3.1.10]
+	MailHeaderDowngradedMailFrom                  = "Downgraded-Mail-From"                   // [RFC5504][RFC6857 Section 3.1.10]
+	MailHeaderDowngradedRcptTo                    = "Downgraded-Rcpt-To"                     // [RFC5504][RFC6857]
+	MailHeaderDowngradedReplyTo                   = "Downgraded-Reply-To"                    // [RFC5504][RFC6857]
+	MailHeaderDowngradedResentBcc                 = "Downgraded-Resent-Bcc"                  // [RFC5504][RFC6857]
+	MailHeaderDowngradedResentCc                  = "Downgraded-Resent-Cc"                   // [RFC5504][RFC6857]
+	MailHeaderDowngradedResentFrom                = "Downgraded-Resent-From"                 // [RFC5504][RFC6857]
+	MailHeaderDowngradedResentReplyTo             = "Downgraded-Resent-Reply-To"             // [RFC5504][RFC6857]
+	MailHeaderDowngradedResentSender              = "Downgraded-Resent-Sender"               // [RFC5504][RFC6857]
+	MailHeaderDowngradedResentTo                  = "Downgraded-Resent-To"                   // [RFC5504][RFC6857]
+	MailHeaderDowngradedReturnPath                = "Downgraded-Return-Path"                 // [RFC5504][RFC6857]
+	MailHeaderDowngradedSender                    = "Downgraded-Sender"                      // [RFC5504][RFC6857]
+	MailHeaderDowngradedTo                        = "Downgraded-To"                          // [RFC5504][RFC6857]
+	MailHeaderResentReplyTo                       = "Resent-Reply-To"                        // [RFC-ietf-emailcore-rfc5322bis-12, 4.5.6]
+)
+
+// Status: Standard.
+const (
+	MailHeaderArchivedAt                  = "Archived-At"                   // [RFC5064]
+	MailHeaderAuthenticationResults       = "Authentication-Results"        // [RFC8601]
+	MailHeaderAutoSubmitted               = "Auto-Submitted"                // [RFC3834 section 5]
+	MailHeaderBcc                         = "Bcc"                           // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.3]
+	MailHeaderCc                          = "Cc"                            // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.3]
+	MailHeaderComments                    = "Comments"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.5]
+	MailHeaderDate                        = "Date"                          // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.1]
+	MailHeaderDKIMSignature               = "DKIM-Signature"                // [RFC6376]
+	MailHeaderDowngradedFinalRecipient    = "Downgraded-Final-Recipient"    // [RFC6857 Section 3.1.10]
+	MailHeaderDowngradedInReplyTo         = "Downgraded-In-Reply-To"        // [RFC6857 Section 3.1.10]
+	MailHeaderDowngradedMessageId         = "Downgraded-Message-Id"         // [RFC6857 Section 3.1.10]
+	MailHeaderDowngradedOriginalRecipient = "Downgraded-Original-Recipient" // [RFC6857 Section 3.1.10]
+	MailHeaderDowngradedReferences        = "Downgraded-References"         // [RFC6857 Section 3.1.10]
+	MailHeaderFrom                        = "From"                          // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.2]
+	MailHeaderHPOuter                     = "HP-Outer"                      // [RFC9788 Section 2.2.1]
+	MailHeaderInReplyTo                   = "In-Reply-To"                   // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.4]
+	MailHeaderKeywords                    = "Keywords"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.5]
+	MailHeaderListUnsubscribePost         = "List-Unsubscribe-Post"         // [RFC8058]
+	MailHeaderMessageID                   = "Message-ID"                    // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.4]
+	MailHeaderMTPriority                  = "MT-Priority"                   // [RFC6758]
+	MailHeaderOriginalFrom                = "Original-From"                 // [RFC5703]
+	MailHeaderOriginalRecipient           = "Original-Recipient"            // [RFC3798][RFC5337]
+	MailHeaderOriginalSubject             = "Original-Subject"              // [RFC5703]
+	MailHeaderReceived                    = "Received"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.7][RFC-ietf-emailcore-rfc5321bis-43]
+	MailHeaderReceivedSPF                 = "Received-SPF"                  // [RFC7208]
+	MailHeaderReferences                  = "References"                    // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.4]
+	MailHeaderReplyTo                     = "Reply-To"                      // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.2]
+	MailHeaderRequireRecipientValidSince  = "Require-Recipient-Valid-Since" // [RFC7293]
+	MailHeaderResentBcc                   = "Resent-Bcc"                    // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
+	MailHeaderResentCc                    = "Resent-Cc"                     // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
+	MailHeaderResentDate                  = "Resent-Date"                   // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
+	MailHeaderResentFrom                  = "Resent-From"                   // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
+	MailHeaderResentMessageID             = "Resent-Message-ID"             // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
+	MailHeaderResentSender                = "Resent-Sender"                 // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
+	MailHeaderResentTo                    = "Resent-To"                     // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.6]
+	MailHeaderReturnPath                  = "Return-Path"                   // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.7][RFC-ietf-emailcore-rfc5321bis-43]
+	MailHeaderSender                      = "Sender"                        // [RFC6854][RFC-ietf-emailcore-rfc5322bis-12, 3.6.2]
+	MailHeaderSubject                     = "Subject"                       // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.5]
+	MailHeaderTLSReportDomain             = "TLS-Report-Domain"             // [RFC8460]
+	MailHeaderTLSReportSubmitter          = "TLS-Report-Submitter"          // [RFC8460]
+	MailHeaderTLSRequired                 = "TLS-Required"                  // [RFC8689]
+	MailHeaderTo                          = "To"                            // [RFC-ietf-emailcore-rfc5322bis-12, 3.6.3]
+	MailHeaderVBRInfo                     = "VBR-Info"                      // [RFC5518]
 )
