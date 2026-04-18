@@ -17,6 +17,8 @@ const (
 	TypeMessageImdnXml                       = "message/imdn+xml"                        // [RFC5438]
 	TypeMessageMls                           = "message/mls"                             // [RFC9420]
 	TypeMessageNews                          = "message/news"                            // [RFC5537][Henry_Spencer]
+	TypeMessageOhttpChunkedReq               = "message/ohttp-chunked-req"               // [RFC-ietf-ohai-chunked-ohttp-08]
+	TypeMessageOhttpChunkedRes               = "message/ohttp-chunked-res"               // [RFC-ietf-ohai-chunked-ohttp-08]
 	TypeMessageOhttpReq                      = "message/ohttp-req"                       // [RFC9458]
 	TypeMessageOhttpRes                      = "message/ohttp-res"                       // [RFC9458]
 	TypeMessagePartial                       = "message/partial"                         // [RFC2045][RFC2046]
