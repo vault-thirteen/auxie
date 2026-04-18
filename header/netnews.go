@@ -2,6 +2,14 @@ package header
 
 // Netnews protocol header field names.
 
+// Status: (Empty).
+const (
+	NetnewsHeaderFace     = "Face"      // [https://quimby.gnus.org/circus/face]
+	NetnewsHeaderJabberID = "Jabber-ID" // [RFC7259]
+	NetnewsHeaderXFace    = "X-Face"    // [https://purl.org/x-face-spec]
+	NetnewsHeaderXPGPSig  = "X-PGP-Sig" // [ftp://ftp.isc.org/pub/pgpcontrol/FORMAT][https://ftp.isc.org/pub/pgpcontrol/FORMAT]
+)
+
 // Status: Deprecated.
 const (
 	NetnewsHeaderLines       = "Lines"         // [RFC5536][RFC3977]
@@ -51,12 +59,4 @@ const (
 	NetnewsHeaderSupersedes     = "Supersedes"      // [RFC5536][RFC2156]
 	NetnewsHeaderUserAgent      = "User-Agent"      // [RFC5536][RFC2616]
 	NetnewsHeaderXref           = "Xref"            // [RFC5536]
-)
-
-// Status: (Empty).
-const (
-	NetnewsHeaderFace     = "Face"      // [https://quimby.gnus.org/circus/face]
-	NetnewsHeaderJabberID = "Jabber-ID" // [RFC7259]
-	NetnewsHeaderXFace    = "X-Face"    // [https://purl.org/x-face-spec]
-	NetnewsHeaderXPGPSig  = "X-PGP-Sig" // [ftp://ftp.isc.org/pub/pgpcontrol/FORMAT][https://ftp.isc.org/pub/pgpcontrol/FORMAT]
 )
