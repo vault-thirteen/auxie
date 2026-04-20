@@ -90,6 +90,17 @@ func GetFileContents(filePath string) (contents []byte, err error) {
 	return io.ReadAll(f)
 }
 
+// GetFileSize gets file's size in bytes.
+func GetFileSize(filePath string) (fileSize int, err error) {
+	var fi os.FileInfo
+	fi, err = os.Stat(filePath)
+	if err != nil {
+		return -1, err
+	}
+
+	return int(fi.Size()), nil
+}
+
 // ListFileNames lists names of all files in the folder.
 // Sub-folders are not used.
 func ListFileNames(folderPath string) (fileNames []string, err error) {

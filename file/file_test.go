@@ -179,6 +179,23 @@ func Test_GetFileContents(t *testing.T) {
 	aTest.MustBeEqual(output, ([]byte)(nil))
 }
 
+func Test_GetFileSize(t *testing.T) {
+	aTest := tester.New(t)
+	filePath := filepath.Join(TestFolder2, TestFile2)
+	var output int
+	var err error
+
+	// Test #1. Existing file.
+	output, err = GetFileSize(filePath)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(output, len("Test.\r\n"))
+
+	// Test #2. Non-existent file.
+	output, err = GetFileSize(NonExistentTestFile2)
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(output, -1)
+}
+
 func Test_ListFileNames(t *testing.T) {
 	aTest := tester.New(t)
 	folderPath := TestFolder2
