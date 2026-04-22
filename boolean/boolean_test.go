@@ -109,3 +109,23 @@ func Test_FromString(t *testing.T) {
 	}
 	fmt.Println()
 }
+
+func Test_FromStringP(t *testing.T) {
+	var aTest = tester.New(t)
+	aTest.MustBeEqual(FromStringP("true"), true)
+	aTest.MustBeEqual(FromStringP("false"), false)
+}
+
+func Test_FromStringM(t *testing.T) {
+	var aTest = tester.New(t)
+	var x *bool
+
+	x = FromStringM("true")
+	aTest.MustBeEqual(*x, true)
+
+	x = FromStringM("false")
+	aTest.MustBeEqual(*x, false)
+
+	x = FromStringM("junk")
+	aTest.MustBeEqual(x, (*bool)(nil))
+}

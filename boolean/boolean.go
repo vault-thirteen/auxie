@@ -56,3 +56,21 @@ func FromString(s string) (b bool, err error) {
 
 	return false, fmt.Errorf(ErrfBadBoolean, s)
 }
+
+func FromStringP(s string) (b bool) {
+	var err error
+	b, err = FromString(s)
+	if err != nil {
+		panic(err)
+		return
+	}
+	return b
+}
+
+func FromStringM(s string) *bool {
+	b, err := FromString(s)
+	if err != nil {
+		return nil
+	}
+	return &b
+}
