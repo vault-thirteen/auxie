@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"strings"
 
 	bt "github.com/vault-thirteen/auxie/BasicTypes"
 )
@@ -53,6 +54,42 @@ func (r *Reader) ReadLineEndingWithCRLF() (line []byte, err error) {
 	}
 
 	return line, nil
+}
+
+// ReadNextLineCRLF reads a next line ending exactly with the 'CR'+'LF'
+// symbols sequence. Trailing and leading space symbols, such as ' ', CR, LF
+// and others, are excluded from the returned result.
+func (r *Reader) ReadNextLineCRLF() (line string, err error) {
+	var buf []byte
+	buf, err = r.ReadLineEndingWithCRLF()
+	if err != nil {
+		return strings.TrimSpace(string(buf)), err
+	}
+
+	return strings.TrimSpace(string(buf)), nil
+}
+
+// ReadNextLineCRLFP is a modification of the ReadNextLineCRLF method which
+// throws an exception on error.
+func (r *Reader) ReadNextLineCRLFP() (line string) {
+	buf, err := r.ReadLineEndingWithCRLF()
+	line = strings.TrimSpace(string(buf))
+	if err != nil {
+		panic(err)
+		return line
+	}
+	return line
+}
+
+// ReadNextLineCRLFM is a modification of the ReadNextLineCRLF method which
+// returns a NULL pointer on error.
+func (r *Reader) ReadNextLineCRLFM() *string {
+	buf, err := r.ReadLineEndingWithCRLF()
+	line := strings.TrimSpace(string(buf))
+	if err != nil {
+		return nil
+	}
+	return &line
 }
 
 // ReadBytes reads an exact number of bytes.

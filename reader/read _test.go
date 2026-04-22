@@ -88,6 +88,99 @@ func Test_ReadLineEndingWithCRLF(t *testing.T) {
 	tst.MustBeEqual(result, resultExpected)
 }
 
+func Test_ReadNextLineCRLF(t *testing.T) {
+	var data []byte
+	var err error
+	var rdr *Reader
+	var result string
+	var resultExpected string
+	var tst *tester.Test
+
+	tst = tester.New(t)
+
+	// Test #1. Empty Data.
+
+	// Prepare the Data.
+	data = []byte{}
+	resultExpected = ""
+
+	// Run the Test.
+	rdr = New(bytes.NewReader(data))
+	result, err = rdr.ReadNextLineCRLF()
+	tst.MustBeAnError(err)
+	tst.MustBeEqual(err.Error(), io.EOF.Error())
+	tst.MustBeEqual(result, resultExpected)
+
+	// Test #2. Normal Data.
+
+	// Prepare the Data.
+	data = []byte{}
+	data = append(data, CR)
+	data = append(data, []byte(" 123 456 ")...)
+	data = append(data, CR, LF)
+
+	// Run the Test.
+	rdr = New(bytes.NewReader(data))
+	resultExpected = "123 456"
+	result, err = rdr.ReadNextLineCRLF()
+	tst.MustBeNoError(err)
+	tst.MustBeEqual(result, resultExpected)
+}
+
+func Test_ReadNextLineCRLFP(t *testing.T) {
+	var data []byte
+	var rdr *Reader
+	var result string
+	var resultExpected string
+	var tst *tester.Test
+
+	tst = tester.New(t)
+
+	// Test #1. Normal Data.
+
+	// Prepare the Data.
+	data = []byte{}
+	data = append(data, CR)
+	data = append(data, []byte(" 123 ")...)
+	data = append(data, CR, LF)
+
+	// Run the Test.
+	rdr = New(bytes.NewReader(data))
+	resultExpected = "123"
+	result = rdr.ReadNextLineCRLFP()
+	tst.MustBeEqual(result, resultExpected)
+}
+
+func Test_ReadNextLineCRLFM(t *testing.T) {
+	var data []byte
+	var rdr *Reader
+	var result *string
+	tst := tester.New(t)
+
+	// Test #1. Empty Data.
+
+	// Prepare the Data.
+	data = []byte{}
+
+	// Run the Test.
+	rdr = New(bytes.NewReader(data))
+	result = rdr.ReadNextLineCRLFM()
+	tst.MustBeEqual(result, (*string)(nil))
+
+	// Test #2. Normal Data.
+
+	// Prepare the Data.
+	data = []byte{}
+	data = append(data, CR)
+	data = append(data, []byte(" XYZ ")...)
+	data = append(data, CR, LF)
+
+	// Run the Test.
+	rdr = New(bytes.NewReader(data))
+	result = rdr.ReadNextLineCRLFM()
+	tst.MustBeEqual(*result, "XYZ")
+}
+
 func Test_ReadBytes(t *testing.T) {
 	var tst = tester.New(t)
 	var err error
