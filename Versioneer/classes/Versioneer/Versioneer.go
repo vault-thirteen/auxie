@@ -6,6 +6,7 @@ import (
 	"runtime"
 
 	"github.com/kr/pretty"
+
 	"github.com/vault-thirteen/auxie/VCS/common/Version"
 	"github.com/vault-thirteen/auxie/Versioneer/classes/Dependency"
 	"github.com/vault-thirteen/auxie/Versioneer/classes/ProgramInfo"
@@ -17,6 +18,11 @@ const (
 	MsgUpdateIsAvailable = "An update is available to version %v."
 )
 
+const (
+	GolangIsShit                = true
+	IgnoreGolangDevelVersionBug = GolangIsShit
+)
+
 // Versioneer is an extended version of the ProgramInfo class.
 type Versioneer struct {
 	programInfo *pi.ProgramInfo
@@ -25,7 +31,7 @@ type Versioneer struct {
 func New() (v *Versioneer, err error) {
 	v = new(Versioneer)
 
-	v.programInfo, err = pi.New()
+	v.programInfo, err = pi.New(IgnoreGolangDevelVersionBug)
 	if err != nil {
 		return nil, err
 	}
