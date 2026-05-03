@@ -111,3 +111,7 @@ func (v *Versioneer) DependenciesList() (list []*dependency.Dependency) {
 func (v *Versioneer) DependenciesText() (txt string) {
 	return v.programInfo.DependenciesText()
 }
+
+func (v *Versioneer) GoVersion() string {
+	return v.programInfo.GoVersion()
+}

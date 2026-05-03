@@ -27,6 +27,8 @@ const (
 type ProgramInfo struct {
 	buildInfo *debug.BuildInfo
 
+	goVersion string
+
 	platform string
 	account  string
 	project  string
@@ -73,6 +75,8 @@ func New(ignoreGolangDevelVersionBug bool) (info *ProgramInfo, err error) {
 	// may not work due to many reasons. We can not guarantee anything on any
 	// platform except the GitHub while there is no official universal standard
 	// for storing projects.
+
+	info.goVersion = info.buildInfo.GoVersion
 
 	mainPathParts := strings.Split(bi.Main.Path, "/")
 	if len(mainPathParts) < 3 {
@@ -179,4 +183,9 @@ func (pi *ProgramInfo) DependenciesList() (list []*dependency.Dependency) {
 // DependenciesText returns a textual list of dependencies provided by runtime.
 func (pi *ProgramInfo) DependenciesText() (txt string) {
 	return pi.dependenciesText
+}
+
+// GoVersion returns a version of Go language.
+func (pi *ProgramInfo) GoVersion() string {
+	return pi.goVersion
 }
