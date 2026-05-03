@@ -3,7 +3,7 @@ module github.com/vault-thirteen/auxie
 go 1.25.9
 
 require (
-	github.com/go-sql-driver/mysql v1.9.3
+	github.com/go-sql-driver/mysql v1.10.0
 	github.com/kr/pretty v0.3.1
 	github.com/lib/pq v1.12.3
 	github.com/prometheus/procfs v0.20.1
