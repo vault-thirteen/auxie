@@ -19,8 +19,7 @@ const (
 )
 
 const (
-	GolangIsShit                = true
-	IgnoreGolangDevelVersionBug = GolangIsShit
+	GolangIsShit = true
 )
 
 // Versioneer is an extended version of the ProgramInfo class.
@@ -28,10 +27,10 @@ type Versioneer struct {
 	programInfo *pi.ProgramInfo
 }
 
-func New() (v *Versioneer, err error) {
+func New(ignoreGolangDevelVersionBug bool) (v *Versioneer, err error) {
 	v = new(Versioneer)
 
-	v.programInfo, err = pi.New(IgnoreGolangDevelVersionBug)
+	v.programInfo, err = pi.New(ignoreGolangDevelVersionBug)
 	if err != nil {
 		return nil, err
 	}

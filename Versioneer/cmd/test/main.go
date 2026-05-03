@@ -8,11 +8,11 @@ import (
 )
 
 func main() {
-	showIntro()
+	showIntro(false)
 }
 
-func showIntro() {
-	versioneer, err := ver.New()
+func showIntro(ignoreGolangDevelVersionBug bool) {
+	versioneer, err := ver.New(ignoreGolangDevelVersionBug)
 	mustBeNoError(err)
 	versioneer.ShowIntroText("Server")
 	versioneer.ShowComponentsInfoText()
