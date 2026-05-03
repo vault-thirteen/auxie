@@ -45,7 +45,11 @@ type ProgramInfo struct {
 // New provides convenient access to program's name, program's version and
 // information about dependencies. Program's version is taken from both runtime
 // and VCS. Dependencies are taken from runtime.
-func New() (info *ProgramInfo, err error) {
+func New(ignoreGolangDevelVersionBug bool) (info *ProgramInfo, err error) {
+	if ignoreGolangDevelVersionBug {
+		log.Println("Ignoring old Golang 'devel' version bug. Some functionality will be lost.")
+	}
+
 	info = &ProgramInfo{
 		dependencies: make([]*dependency.Dependency, 0),
 	}
@@ -91,10 +95,16 @@ func New() (info *ProgramInfo, err error) {
 
 	info.version, err = version.New(info.versionText1)
 	if err != nil {
-		return nil, err
+		if ignoreGolangDevelVersionBug {
+			log.Println(err)
+		} else {
+			return nil, err
+		}
 	}
 
-	info.versionText2 = info.version.ShortString()
+	if info.version != nil {
+		info.versionText2 = info.version.ShortString()
+	}
 
 	var dep *dependency.Dependency
 	for _, d := range bi.Deps {
