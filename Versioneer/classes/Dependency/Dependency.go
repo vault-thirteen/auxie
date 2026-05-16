@@ -5,89 +5,98 @@ import (
 	"path"
 	"runtime/debug"
 	"strings"
-
-	"github.com/vault-thirteen/auxie/VCS/common/Version"
-	"github.com/vault-thirteen/auxie/number"
-)
-
-const (
-	NameUnknown    = "???"
-	VersionUnknown = "v??"
 )
 
 const (
 	ErrDependencyInfoIsNotAvailable = "dependency info is not available"
+	ErrSyntaxError                  = "syntax error"
+)
+
+const (
+	DomainGithub = "github.com"
+	DomainGolang = "golang.org"
 )
 
 // Dependency is information about program's dependency.
 type Dependency struct {
+	// Raw data.
+	fullPath   string
+	domain     string
+	path       string
+	account    string
+	repository string
+	postfix    string
+
+	// Public data.
 	name    string
 	version string
 }
 
 func New(m *debug.Module) (dep *Dependency, err error) {
-	dep = &Dependency{}
-
 	if m == nil {
-		return dep, errors.New(ErrDependencyInfoIsNotAvailable)
+		return nil, errors.New(ErrDependencyInfoIsNotAvailable)
 	}
 
-	// Some repositories with code written in Go language are using an ugly
-	// postfix "hack" with version in it. We need to read that shit too.
-	var tmp string
-	tmp = path.Base(m.Path)
-	if isStringAVersionPostfix(tmp) {
-		tmp = getLastTwoPathParts(m.Path)
+	dep = &Dependency{
+		fullPath: m.Path,
 	}
 
-	dep.name = tmp
-	if len(dep.name) == 0 {
-		dep.name = NameUnknown
+	err = dep.parseModulePath()
+	if err != nil {
+		return nil, err
 	}
 
 	dep.version = path.Base(m.Version)
-	if len(dep.version) == 0 {
-		dep.version = VersionUnknown
-	}
 
 	return dep, nil
 }
+func (d *Dependency) parseModulePath() (err error) {
+	if d == nil {
+		return errors.New(ErrDependencyInfoIsNotAvailable)
+	}
 
-func (d *Dependency) Name() string { return d.name }
+	// 1. Get domain & path.
+	var ok bool
+	d.domain, d.path, ok = strings.Cut(d.fullPath, "/")
+	if !ok {
+		return errors.New(ErrSyntaxError)
+	}
 
+	switch d.domain {
+	case DomainGithub:
+		{
+			var buf string
+			d.account, buf, ok = strings.Cut(d.path, "/")
+			if !ok {
+				return errors.New(ErrSyntaxError)
+			}
+
+			var hasPostfix bool
+			d.repository, d.postfix, hasPostfix = strings.Cut(buf, "/")
+
+			if !hasPostfix {
+				d.name = d.repository
+			} else {
+				switch strings.ToLower(d.postfix) {
+				case "src", "source":
+					d.name = d.repository
+				default:
+					d.name = d.repository + "/" + d.postfix
+				}
+			}
+		}
+	case DomainGolang:
+		{
+			d.name = d.path
+		}
+	default:
+		{
+			d.name = d.fullPath
+		}
+	}
+
+	return nil
+}
+
+func (d *Dependency) Name() string    { return d.name }
 func (d *Dependency) Version() string { return d.version }
-
-func isStringAVersionPostfix(s string) (isVersionPostfix bool) {
-	symbols := []rune(s)
-
-	if len(symbols) <= 1 {
-		return false
-	}
-
-	if symbols[0] != version.GolangVersionMark {
-		return false
-	}
-
-	nonMarkString := string(symbols[1:])
-
-	versionNumber, err := number.ParseUint(nonMarkString)
-	if err != nil {
-		return false
-	}
-
-	if versionNumber < 1 {
-		return false
-	}
-
-	return true
-}
-
-func getLastTwoPathParts(p string) (ltp string) {
-	var lastPart, preLastPart, tmp string
-	tmp, lastPart = path.Split(p)
-	tmp = strings.TrimSuffix(tmp, `\`)
-	tmp = strings.TrimSuffix(tmp, `/`)
-	tmp, preLastPart = path.Split(tmp)
-
-	return path.Join(preLastPart, lastPart)
-}
