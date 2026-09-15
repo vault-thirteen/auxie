@@ -16,18 +16,18 @@ const (
 	TypeMessageHttp                          = "message/http"                            // [RFC9112]
 	TypeMessageImdnXml                       = "message/imdn+xml"                        // [RFC5438]
 	TypeMessageMls                           = "message/mls"                             // [RFC9420]
-	TypeMessageNews                          = "message/news"                            // [RFC5537][Henry_Spencer]
+	TypeMessageNews                          = "message/news"                            // [RFC5537][Henry_Spencer] Obsoleted
 	TypeMessageOhttpChunkedReq               = "message/ohttp-chunked-req"               // [RFC-ietf-ohai-chunked-ohttp-08]
 	TypeMessageOhttpChunkedRes               = "message/ohttp-chunked-res"               // [RFC-ietf-ohai-chunked-ohttp-08]
 	TypeMessageOhttpReq                      = "message/ohttp-req"                       // [RFC9458]
 	TypeMessageOhttpRes                      = "message/ohttp-res"                       // [RFC9458]
 	TypeMessagePartial                       = "message/partial"                         // [RFC2045][RFC2046]
 	TypeMessageRfc822                        = "message/rfc822"                          // [RFC2045][RFC2046]
-	TypeMessageSHttp                         = "message/s-http"                          // [RFC2660][Status change of HTTP experiments to Historic]
+	TypeMessageSHttp                         = "message/s-http"                          // [RFC2660][Status change of HTTP experiments to Historic] Obsolete
 	TypeMessageSip                           = "message/sip"                             // [RFC3261]
 	TypeMessageSipfrag                       = "message/sipfrag"                         // [RFC3420]
 	TypeMessageTrackingStatus                = "message/tracking-status"                 // [RFC3886]
-	TypeMessageVndSiSimp                     = "message/vnd.si.simp"                     // [Nicholas_Parks_Young]
+	TypeMessageVndSiSimp                     = "message/vnd.si.simp"                     // [Nicholas_Parks_Young] Obsoleted
 	TypeMessageVndWfaWsc                     = "message/vnd.wfa.wsc"                     // [Mick_Conley]
 )
 

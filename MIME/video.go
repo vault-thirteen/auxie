@@ -46,6 +46,7 @@ const (
 	TypeVideoOgg                           = "video/ogg"                              // [RFC5334][RFC7845]
 	TypeVideoParityfec                     = "video/parityfec"                        // [RFC3009]
 	TypeVideoPointer                       = "video/pointer"                          // [RFC2862]
+	TypeVideoPrsAvid                       = "video/prs.avid"                         // [Ai_Media_Format]
 	TypeVideoQuicktime                     = "video/quicktime"                        // [RFC6381][Paul_Lindner]
 	TypeVideoRaptorfec                     = "video/raptorfec"                        // [RFC6682]
 	TypeVideoRaw                           = "video/raw"                              // [RFC4175]

@@ -21,7 +21,7 @@ const (
 	TypeImageHeif                      = "image/heif"                         // [ISO-IEC_JTC_1][David_Singer]
 	TypeImageHeifSequence              = "image/heif-sequence"                // [ISO-IEC_JTC_1][David_Singer]
 	TypeImageHej2K                     = "image/hej2k"                        // [ISO-IEC_JTC_1][ITU-T]
-	TypeImageHsj2                      = "image/hsj2"                         // [ISO-IEC_JTC_1][ITU-T]
+	TypeImageHsj2                      = "image/hsj2"                         // [ISO-IEC_JTC_1][ITU-T] Obsolete
 	TypeImageIef                       = "image/ief"                          // [RFC1314]
 	TypeImageJ2C                       = "image/j2c"                          // [ISO-IEC_JTC_1_SC_29_WG_1][ISO-IEC_JTC_1][ITU-T]
 	TypeImageJaii                      = "image/jaii"                         // [ISO-IEC_JTC_1_SC_29_WG_1][Ye-Kui_Wang]
@@ -45,6 +45,7 @@ const (
 	TypeImageKtx2                      = "image/ktx2"                         // [Khronos][Mark_Callow]
 	TypeImageNaplps                    = "image/naplps"                       // [Ilya_Ferber]
 	TypeImagePng                       = "image/png"                          // [W3C][PNG_WG][PNG]
+	TypeImagePrsAimg                   = "image/prs.aimg"                     // [Ai_Media_Format]
 	TypeImagePrsBtif                   = "image/prs.btif"                     // [Ben_Simon]
 	TypeImagePrsPti                    = "image/prs.pti"                      // [Juern_Laun]
 	TypeImagePwgRaster                 = "image/pwg-raster"                   // [Michael_Sweet]
@@ -87,8 +88,8 @@ const (
 	TypeImageVndZbrushPcx              = "image/vnd.zbrush.pcx"               // [Chris_Charabaruk]
 	TypeImageWebp                      = "image/webp"                         // [RFC9649]
 	TypeImageWmf                       = "image/wmf"                          // [RFC7903]
-	TypeImageXEmf                      = "image/x-emf"                        // [RFC7903]
-	TypeImageXWmf                      = "image/x-wmf"                        // [RFC7903]
+	TypeImageXEmf                      = "image/x-emf"                        // [RFC7903] Deprecated
+	TypeImageXWmf                      = "image/x-wmf"                        // [RFC7903] Deprecated
 )
 
 const (

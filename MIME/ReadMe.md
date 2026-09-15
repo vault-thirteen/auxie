@@ -14,4 +14,4 @@ This list may contain some old, deprecated and obsolete _MIME_ types.
 
 | Object  | Time       |
 |---------|------------|
-| Package | 2026-04-18 |
+| Package | 2026-09-15 |
