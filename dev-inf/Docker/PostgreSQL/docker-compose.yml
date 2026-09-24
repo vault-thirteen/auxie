@@ -1,10 +1,10 @@
-version: '2'
-
 services:
   postgresql:
     # ACHTUNG
     # Other images are heavily bugged !
-    image: postgres:16
+    # PostgreSQL 18 was released on 25.09.2025.
+    # End-of-Life (EOL) Date: 14.11.2030.
+    image: postgres:18
     container_name: postgresql
     restart: always
     ports:

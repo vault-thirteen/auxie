@@ -1,10 +1,10 @@
-version: '2'
-
 services:
   mysql:
     # ACHTUNG
     # The image is heavily bugged !
-    image: mysql:8.0
+    # MySQL 8.4 LTS was released on 30.04.2026.
+    # Support till April 2032.
+    image: mysql:8.4
     container_name: mysql
     restart: always
     command: --max-allowed-packet=64M

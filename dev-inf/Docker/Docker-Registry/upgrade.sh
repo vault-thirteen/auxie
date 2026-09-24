@@ -3,15 +3,12 @@
 # Exit on error.
 set -e
 
-# Portainer Stop.
+# Registry Stop.
 docker stop registry
 docker rm registry
 
 # Docker Image Update.
-docker pull registry:2
+docker pull registry:3
 
-# Start.
-docker run -d -p 5000:5000 --restart=always --name registry registry:2
-
-# Source:
-# https://docs.portainer.io/start/upgrade/docker
+# Registry Start.
+docker compose up -d
