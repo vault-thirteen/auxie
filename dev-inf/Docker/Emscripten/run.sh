@@ -8,5 +8,5 @@ img_hash=$(cat $img_hash_file)
 
 docker run -it \
     --name Emscripten \
-    --mount type=bind,source=data,destination=/home/data \
+    --mount type=bind,source=/home/username/Docker/Emscripten/data,destination=/home/data \
     $img_hash
