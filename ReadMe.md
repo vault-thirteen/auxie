@@ -16,7 +16,7 @@ and _Windows_.
 4. **BOM** – [BOM](BOM/ReadMe.md) – Functions and methods to work with _Unicode_ byte order mark.
 5. **Boolean** – [Boolean](boolean/ReadMe.md) – A boolean-to-string parser.
 6. **Cache** – [Cache](Cache/ReadMe.md) – A cache with several features.
-7. **CSV** – [CSV](CSV/ReadMe.md) – A writer for _CSV_ format.
+7. **csv** – [csv](csv/ReadMe.md) – A writer for _CSV_ format.
 8. **dev-inf** – [Dev Inf](dev-inf/ReadMe.md) – Various development infrastructure scripts.
 9. **endianness** – [endianness](endianness/ReadMe.md) – Detection of "endianness" of a machine.
 10. **Env** – [Env](env/ReadMe.md) – A simple library to work with environment variables.
