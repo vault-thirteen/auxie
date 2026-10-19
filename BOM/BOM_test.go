@@ -1,0 +1,414 @@
+package bom
+
+import (
+	"bytes"
+	"io"
+	"testing"
+
+	"github.com/vault-thirteen/auxie/cio"
+	"github.com/vault-thirteen/auxie/errors"
+	sr "github.com/vault-thirteen/auxie/reader/simple"
+	"github.com/vault-thirteen/auxie/tester"
+)
+
+func Test_BOMUTF8(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF8(), bomUTF8)
+}
+
+func Test_BOMUTF16BE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF16BE(), bomUTF16BE)
+}
+
+func Test_BOMUTF16LE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF16LE(), bomUTF16LE)
+}
+
+func Test_BOMUTF32BE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF32BE(), bomUTF32BE)
+}
+
+func Test_BOMUTF32LE(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF32LE(), bomUTF32LE)
+}
+
+func Test_BOMUTF7(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF7(), bomUTF7)
+}
+
+func Test_BOMUTF1(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF1(), bomUTF1)
+}
+
+func Test_BOMUTF_EBCDIC(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_UTF_EBCDIC(), bomUTF_EBCDIC)
+}
+
+func Test_BOMSCSU(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_SCSU(), bomSCSU)
+}
+
+func Test_BOMBOCU1(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_BOCU1(), bomBOCU1)
+}
+
+func Test_BOMGB18030(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOM_GB18030(), bomGB18030)
+}
+
+func Test_BOMs(t *testing.T) {
+	aTest := tester.New(t)
+	aTest.MustBeEqual(BOMs(), boms)
+}
+
+func Test_ReadBOMOfEncoding(t *testing.T) {
+	tst := tester.New(t)
+
+	type TestData struct {
+		data           []byte
+		encoding       Encoding
+		expectedPrefix []byte
+		expectedError  error
+	}
+
+	type Result struct {
+		prefix []byte
+		err    error
+	}
+	var result Result
+
+	var tests = []TestData{
+		{
+			data:           []byte{},
+			encoding:       Encoding(123),
+			expectedPrefix: []byte(nil),
+			expectedError:  errors.ErrorFromText("unknown encoding: 123"),
+		},
+		{
+			data:           []byte{},
+			encoding:       EncodingUTF8,
+			expectedPrefix: []byte{},
+			expectedError:  io.EOF,
+		},
+		{
+			data:           []byte{'A', 'B'},
+			encoding:       EncodingUTF8,
+			expectedPrefix: []byte{'A', 'B'},
+			expectedError:  errors.ErrorFromText("byte order mark is not found"),
+		},
+		{
+			data:           []byte{0xEF, 0xBB},
+			encoding:       EncodingUTF8,
+			expectedPrefix: []byte{0xEF, 0xBB},
+			expectedError:  errors.ErrorFromText("byte order mark is not found"),
+		},
+		{
+			data:           []byte{'A', 'B', 'C'},
+			encoding:       EncodingUTF8,
+			expectedPrefix: []byte{'A', 'B', 'C'},
+			expectedError:  errors.ErrorFromText("byte order mark is not found"),
+		},
+		{
+			data:           []byte{0xEF, 0xBB, 0xBF},
+			encoding:       EncodingUTF8,
+			expectedPrefix: []byte{0xEF, 0xBB, 0xBF},
+			expectedError:  nil,
+		},
+		{
+			data:           []byte{'A', 'B', 'C', 'D'},
+			encoding:       EncodingUTF8,
+			expectedPrefix: []byte{'A', 'B', 'C'},
+			expectedError:  errors.ErrorFromText("byte order mark is not found"),
+		},
+		{
+			data:           []byte{0xEF, 0xBB, 0xBF, 'D'},
+			encoding:       EncodingUTF8,
+			expectedPrefix: []byte{0xEF, 0xBB, 0xBF},
+			expectedError:  nil,
+		},
+	}
+
+	// Run the tests.
+	for i, test := range tests {
+		cio.Print("[", i+1, "] ")
+
+		r := bytes.NewReader(test.data)
+		result.prefix, result.err = ReadBOMOfEncoding(r, test.encoding)
+
+		if test.expectedError == nil {
+			tst.MustBeNoError(result.err)
+		} else {
+			tst.MustBeAnError(result.err)
+			tst.MustBeEqual(result.err, test.expectedError)
+		}
+		tst.MustBeEqual(result.prefix, test.expectedPrefix)
+	}
+	cio.PrintMessage()
+}
+
+func Test_SkipBOM(t *testing.T) {
+	tst := tester.New(t)
+
+	type TestData struct {
+		data             []byte
+		encoding         Encoding
+		expectedNextByte byte
+		expectedError    error
+	}
+
+	type Result struct {
+		prefix []byte
+		err    error
+		b      byte
+	}
+	var result Result
+
+	var tests = []TestData{
+		{
+			data:             []byte{'A', 'B', 'C', 'D', 'E'},
+			encoding:         EncodingUTF8,
+			expectedNextByte: 'D',
+			expectedError:    errors.ErrorFromText("byte order mark is not found"),
+		},
+		{
+			data:             []byte{0xEF, 0xBB, 0xBF, 'D'},
+			encoding:         EncodingUTF8,
+			expectedNextByte: 'D',
+			expectedError:    nil,
+		},
+	}
+
+	// Run the tests.
+	for i, test := range tests {
+		cio.Print("[", i+1, "] ")
+
+		r := bytes.NewReader(test.data)
+		result.err = SkipBOM(r, test.encoding)
+
+		if test.expectedError == nil {
+			tst.MustBeNoError(result.err)
+		} else {
+			tst.MustBeAnError(result.err)
+			tst.MustBeEqual(result.err, test.expectedError)
+		}
+
+		result.b, result.err = sr.ReadByte(r)
+		tst.MustBeNoError(result.err)
+		tst.MustBeEqual(result.b, test.expectedNextByte)
+	}
+	cio.PrintMessage()
+}
+
+func Test_SearchForBOM(t *testing.T) {
+	tst := tester.New(t)
+
+	type TestData struct {
+		data              []byte
+		expectedEncodings []Encoding
+		expectedAcc       []byte
+		expectedError     error
+	}
+
+	type Result struct {
+		encodings []Encoding
+		acc       []byte
+		err       error
+	}
+	var result Result
+
+	var tests = []TestData{
+		// Test #1. Empty data.
+		{
+			data:              []byte{},
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{},
+			expectedError:     io.EOF,
+		},
+
+		// Test #2. One byte. Not a BOM.
+		{
+			data:              []byte{'A'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{'A'},
+			expectedError:     nil,
+		},
+		// Test #3. One byte. Possibly a BOM.
+		{
+			data:              []byte{0xDD}, // It may be the UTF-EBCDIC BOM.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0xDD},
+			expectedError:     io.EOF,
+		},
+
+		// Test #4. Two bytes. Not a BOM from the first byte.
+		{
+			data:              []byte{'A', 'B'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{'A'},
+			expectedError:     nil,
+		},
+		// Test #5. Two bytes. Not a BOM from the second byte.
+		{
+			data:              []byte{0xDD, 'B'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0xDD, 'B'},
+			expectedError:     nil,
+		},
+		// Test #6. Two bytes. Mystery of colliding BOMs (0xFF 0xFE).
+		{
+			data:              []byte{0xFF, 0xFE}, // Mystery.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0xFF, 0xFE},
+			expectedError:     io.EOF,
+		},
+
+		// Test #7. Three bytes. Not a BOM from the first byte.
+		{
+			data:              []byte{'A', 'B', 'C'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{'A'},
+			expectedError:     nil,
+		},
+		// Test #8. Three bytes. Not a BOM from the second byte.
+		{
+			data:              []byte{0xDD, 'B', 'C'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0xDD, 'B'},
+			expectedError:     nil,
+		},
+		// Test #9. Three bytes. Two-byte BOM.
+		{
+			data:              []byte{0xFE, 0xFF, 'C'}, // BOM.
+			expectedEncodings: []Encoding{EncodingUTF16BE},
+			expectedAcc:       []byte{0xFE, 0xFF},
+			expectedError:     nil,
+		},
+		// Test #10. Three bytes. Three-byte BOM.
+		{
+			data:              []byte{0xEF, 0xBB, 0xBF}, // BOM.
+			expectedEncodings: []Encoding{EncodingUTF8},
+			expectedAcc:       []byte{0xEF, 0xBB, 0xBF},
+			expectedError:     nil,
+		},
+		// Test #11. Three bytes. Possibly a BOM.
+		{
+			data:              []byte{0x00, 0x00, 0xFE}, // It may be UTF-32 BE.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0x00, 0x00, 0xFE},
+			expectedError:     io.EOF,
+		},
+
+		// Test #12. Four bytes. Not a BOM from the first byte.
+		{
+			data:              []byte{'A', 'B', 'C', 'D'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{'A'},
+			expectedError:     nil,
+		},
+		// Test #13. Four bytes. Not a BOM from the second byte.
+		{
+			data:              []byte{0xDD, 'B', 'C', 'D'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0xDD, 'B'},
+			expectedError:     nil,
+		},
+		// Test #14. Four bytes. Not a BOM from the third byte.
+		{
+			data:              []byte{0xEF, 0xBB, 'C', 'D'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0xEF, 0xBB, 'C'},
+			expectedError:     nil,
+		},
+		// Test #15. Four bytes. Not a BOM from the fourth byte.
+		{
+			data:              []byte{0x00, 0x00, 0xFE, 'D'}, // Not a BOM, 100%.
+			expectedEncodings: []Encoding{},
+			expectedAcc:       []byte{0x00, 0x00, 0xFE, 'D'},
+			expectedError:     nil,
+		},
+		// Test #16. Four bytes. Two-byte BOM.
+		{
+			data:              []byte{0xFF, 0xFE, 'C', 'D'}, // BOM.
+			expectedEncodings: []Encoding{EncodingUTF16LE},
+			expectedAcc:       []byte{0xFF, 0xFE, 'C'},
+			expectedError:     nil,
+		},
+		// Test #17. Four bytes. Mystery.
+		{
+			data:              []byte{0xFF, 0xFE, 0x00, 0x00}, // Two colliding BOMs.
+			expectedEncodings: []Encoding{EncodingUTF16LE, EncodingUTF32LE},
+			expectedAcc:       []byte{0xFF, 0xFE, 0x00, 0x00},
+			expectedError:     nil,
+		},
+		// Test #18. Four bytes. Three-byte BOM.
+		{
+			data:              []byte{0xEF, 0xBB, 0xBF, 'D'}, // BOM.
+			expectedEncodings: []Encoding{EncodingUTF8},
+			expectedAcc:       []byte{0xEF, 0xBB, 0xBF},
+			expectedError:     nil,
+		},
+		// Test #18. Four bytes. Four-byte BOM.
+		{
+			data:              []byte{0x00, 0x00, 0xFE, 0xFF}, // BOM.
+			expectedEncodings: []Encoding{EncodingUTF32BE},
+			expectedAcc:       []byte{0x00, 0x00, 0xFE, 0xFF},
+			expectedError:     nil,
+		},
+	}
+
+	// Run the tests.
+	for i, test := range tests {
+		cio.Print("[", i+1, "] ")
+
+		r := bytes.NewReader(test.data)
+		result.encodings, result.acc, result.err = SearchForBOM(r)
+
+		if test.expectedError == nil {
+			tst.MustBeNoError(result.err)
+		} else {
+			tst.MustBeAnError(result.err)
+			tst.MustBeEqual(result.err, test.expectedError)
+		}
+		tst.MustBeEqual(result.acc, test.expectedAcc)
+
+		// Array items are randomly placed because they are taken from the map.
+		// We need to sort the result before checking it.
+		sortEncodings(result.encodings)
+		tst.MustBeEqual(result.encodings, test.expectedEncodings)
+	}
+	cio.PrintMessage()
+}
+
+func Test_getMaximumBOMSize(t *testing.T) {
+	tst := tester.New(t)
+
+	// 2.
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF16BE}), 2)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF16LE}), 2)
+
+	// 3.
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF8}), 3)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF7}), 3)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF1}), 3)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingSCSU}), 3)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingBOCU1}), 3)
+
+	// 4.
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF32BE}), 4)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF32LE}), 4)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF_EBCDIC}), 4)
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingGB18030}), 4)
+
+	// Mix.
+	tst.MustBeEqual(getMaximumBOMSize([]Encoding{EncodingUTF16BE, EncodingUTF8, EncodingUTF32BE}), 4)
+}

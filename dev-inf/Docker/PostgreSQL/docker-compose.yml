@@ -1,0 +1,19 @@
+services:
+  postgresql:
+    # ACHTUNG
+    # Other images are heavily bugged !
+    # PostgreSQL 18 was released on 25.09.2025.
+    # End-of-Life (EOL) Date: 14.11.2030.
+    image: postgres:18
+    container_name: postgresql
+    restart: always
+    ports:
+      # A standard PostgreSQL port is 5432.
+      - '5432:5432'
+    volumes:
+      - type: bind
+        # Path to the local (host) data folder.
+        source: postgresql_data
+        target: /var/lib/postgresql
+    environment:
+      - 'POSTGRES_PASSWORD=xxx'
