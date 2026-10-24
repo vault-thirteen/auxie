@@ -6,7 +6,7 @@ require (
 	github.com/go-sql-driver/mysql v1.10.1
 	github.com/kr/pretty v0.3.1
 	github.com/lib/pq v1.12.3
-	github.com/prometheus/procfs v0.22.0
+	github.com/prometheus/procfs v0.23.0
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.61.0
 	golang.org/x/sys v0.49.0
