@@ -118,3 +118,42 @@ func Test_CompleteStop(t *testing.T) {
 	err = sc.CompleteStop()
 	aTest.MustBeNoError(err)
 }
+func Test_IsStarting(t *testing.T) {
+	aTest := tester.New(t)
+	var sc *StartController
+	sc = NewStartController()
+
+	// 1.
+	sc.isStarting.Store(true)
+	aTest.MustBeEqual(sc.IsStarting(), true)
+
+	// 2.
+	sc.isStarting.Store(false)
+	aTest.MustBeEqual(sc.IsStarting(), false)
+}
+func Test_IsRunning(t *testing.T) {
+	aTest := tester.New(t)
+	var sc *StartController
+	sc = NewStartController()
+
+	// 1.
+	sc.isRunning.Store(true)
+	aTest.MustBeEqual(sc.IsRunning(), true)
+
+	// 2.
+	sc.isRunning.Store(false)
+	aTest.MustBeEqual(sc.IsRunning(), false)
+}
+func Test_IsStopping(t *testing.T) {
+	aTest := tester.New(t)
+	var sc *StartController
+	sc = NewStartController()
+
+	// 1.
+	sc.isStopping.Store(true)
+	aTest.MustBeEqual(sc.IsStopping(), true)
+
+	// 2.
+	sc.isStopping.Store(false)
+	aTest.MustBeEqual(sc.IsStopping(), false)
+}

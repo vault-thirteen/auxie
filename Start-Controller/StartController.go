@@ -112,3 +112,12 @@ func (sc *StartController) CompleteStop() (err error) {
 
 	return nil
 }
+func (sc *StartController) IsStarting() bool {
+	return sc.isStarting.Load()
+}
+func (sc *StartController) IsRunning() bool {
+	return sc.isRunning.Load()
+}
+func (sc *StartController) IsStopping() bool {
+	return sc.isStopping.Load()
+}
