@@ -51,15 +51,16 @@ and _Windows_.
 | 37 | **SMS**                | [SMS](SMS/ReadMe.md)                               | Simple Merge Sorter.                                                |
 | 38 | **SQL**                | [SQL](SQL/ReadMe.md)                               | Various _SQL_ helpers.                                              |
 | 39 | **SSC**                | [SSC](SSC/ReadMe.md)                               | Simple Stupid Cache.                                                |
-| 40 | **task-queue**         | [task-queue](task-queue/ReadMe.md)                 | Task queue.                                                         |
-| 41 | **Tester**             | [Tester](tester/ReadMe.md)                         | Various useful functions to perform tests.                          |
-| 42 | **Time**               | [Time](time/ReadMe.md)                             | A simple library to work with time in _Go_ programming language.    |
-| 43 | **Time Metadata**      | [Time Metadata](time-metadata/ReadMe.md)           | An auxiliary type for storing time of creation and time of update.  |
-| 44 | **TSB**                | [TSB](TSB/ReadMe.md)                               | Tri-State Boolean.                                                  |
-| 45 | **Unicode**            | [Unicode](unicode/ReadMe.md)                       | _Unicode_ symbols processing package.                               |
-| 46 | **VCS**                | [VCS](VCS/ReadMe.md)                               | A collection of helpers for version control systems.                |
-| 47 | **Versioneer**         | [Versioneer](Versioneer/ReadMe.md)                 | Product and dependency version helper.                              |
-| 48 | **Zipper**             | [Zipper](zipper/ReadMe.md)                         | Functions to work with compressed files.                            |
+| 40 | **Start-Controller**   | [Start-Controller](Start-Controller/ReadMe.md)     | A start-stop controlling mechanism.                                 |
+| 41 | **task-queue**         | [task-queue](task-queue/ReadMe.md)                 | Task queue.                                                         |
+| 42 | **Tester**             | [Tester](tester/ReadMe.md)                         | Various useful functions to perform tests.                          |
+| 43 | **Time**               | [Time](time/ReadMe.md)                             | A simple library to work with time in _Go_ programming language.    |
+| 44 | **Time Metadata**      | [Time Metadata](time-metadata/ReadMe.md)           | An auxiliary type for storing time of creation and time of update.  |
+| 45 | **TSB**                | [TSB](TSB/ReadMe.md)                               | Tri-State Boolean.                                                  |
+| 46 | **Unicode**            | [Unicode](unicode/ReadMe.md)                       | _Unicode_ symbols processing package.                               |
+| 47 | **VCS**                | [VCS](VCS/ReadMe.md)                               | A collection of helpers for version control systems.                |
+| 48 | **Versioneer**         | [Versioneer](Versioneer/ReadMe.md)                 | Product and dependency version helper.                              |
+| 49 | **Zipper**             | [Zipper](zipper/ReadMe.md)                         | Functions to work with compressed files.                            |
 
 ### Microsoft Windows OS support
 
