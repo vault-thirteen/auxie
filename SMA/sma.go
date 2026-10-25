@@ -50,7 +50,7 @@ func New(windowSize int) (c *Calculator, err error) {
 }
 
 // IsCold checks whether the data set is cold.
-func (c Calculator) IsCold() bool {
+func (c *Calculator) IsCold() bool {
 	return c.items.Len() < c.size
 }
 
@@ -97,7 +97,7 @@ func (c *Calculator) AddItemAndGetSMA(p ValueType) (sma ValueType, err error) {
 }
 
 // Returns an average value of the stored items.
-func (c Calculator) getItemsAverage() (average ValueType, err error) {
+func (c *Calculator) getItemsAverage() (average ValueType, err error) {
 	// Fool check.
 	if c.items.Len() != c.size {
 		return 0, errors.ErrorFromText(Err_NotEnoughData)
