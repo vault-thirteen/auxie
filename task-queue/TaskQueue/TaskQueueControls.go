@@ -7,6 +7,10 @@ import (
 	stct "github.com/vault-thirteen/auxie/Start-Controller"
 )
 
+const (
+	ErrorChannelSize = 8
+)
+
 type TaskQueueControls struct {
 	ssc                  *stct.StartController
 	lock                 *sync.Mutex
@@ -31,7 +35,7 @@ func NewTaskQueueControls(sizeLimit int) (tqc *TaskQueueControls) {
 		errorCatcherWg:       new(sync.WaitGroup),
 	}
 
-	errChan := make(chan error, 1)
+	errChan := make(chan error, ErrorChannelSize)
 	tqc.errors = &errChan
 
 	return tqc
