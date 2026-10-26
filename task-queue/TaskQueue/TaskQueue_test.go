@@ -9,23 +9,44 @@ import (
 	"github.com/vault-thirteen/auxie/cio"
 	tsk "github.com/vault-thirteen/auxie/task-queue/Task"
 	ti "github.com/vault-thirteen/auxie/task-queue/TaskId"
+	tqs "github.com/vault-thirteen/auxie/task-queue/TaskQueueSettings"
+	tqsp "github.com/vault-thirteen/auxie/task-queue/TaskQueueSettingsPublic"
 	ts "github.com/vault-thirteen/auxie/task-queue/TaskStatus"
+	ce "github.com/vault-thirteen/auxie/task-queue/common/error"
 	"github.com/vault-thirteen/auxie/tester"
 )
 
-type TestRequest struct {
-	a, b int
-	fn   string
-}
+func Test_NewTaskQueue(t *testing.T) {
+	aTest := tester.New(t)
+	var settings *tqs.TaskQueueSettings
+	var tq *TaskQueue[TestRequest, TestResponse]
+	var err error
 
-type TestResponse struct {
-	c int
+	// Test #1. No settings.
+	settings = nil
+	tq, err = NewTaskQueue[TestRequest, TestResponse](settings)
+	aTest.MustBeAnError(err)
+	aTest.MustBeEqual(err.Error(), ce.Err_NullPointer)
+
+	// Test #2. Invalid settings.
+	// We can not provide invalid settings while they use private fields.
+
+	// Test #3. Normal test.
+	settings = test_getCommonQueueSettings()
+	tq, err = NewTaskQueue[TestRequest, TestResponse](settings)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(tq.settings, settings)
+	aTest.MustBeEqual(tq.inQueue != nil, true)
+	aTest.MustBeEqual(tq.tasks != nil, true)
+	aTest.MustBeEqual(tq.lastTaskId != nil, true)
+	aTest.MustBeEqual(tq.controls != nil, true)
 }
 
 func Test_StartStop(t *testing.T) {
 	aTest := tester.New(t)
 	var err error
-	tq := NewTaskQueue[TestRequest, TestResponse](2)
+	tqSettings := test_getCommonQueueSettings()
+	tq := test_createCommonTaskQueue(tqSettings)
 
 	err = tq.Start()
 	aTest.MustBeNoError(err)
@@ -35,25 +56,23 @@ func Test_StartStop(t *testing.T) {
 func Test_AddTask(t *testing.T) {
 	// Init.
 	aTest := tester.New(t)
-	var err error
-	tq := NewTaskQueue[TestRequest, TestResponse](2)
-	err = tq.Start()
-	aTest.MustBeNoError(err)
+	tqSettings := test_getCommonQueueSettings()
+	tq := test_createCommonTaskQueue(tqSettings)
+	req := test_createCommonRequest()
 	var task *tsk.Task[TestRequest, TestResponse]
 	var taskId ti.TaskId
+	var err error
 
-	// Test.
-	req := &TestRequest{a: 1, b: 2, fn: "hello"}
-	taskId, err = tq.AddTask(req)
+	// Preparation.
+	err = tq.Start()
 	aTest.MustBeNoError(err)
 
-	// Check.
-	task = tq.tasks[taskId]
-	aTest.MustBeDifferent(task, (*tsk.Task[TestRequest, TestResponse])(nil))
-	aTest.MustBeEqual(task.GetId(), taskId)
-	aTest.MustBeEqual(task.GetStatus(), ts.TaskStatus_Queued)
+	// Test.
+	taskId, err = tq.AddTask(req)
+	aTest.MustBeNoError(err)
+	test_checkTaskIdAndStatus(aTest, tq.tasks, taskId, ts.TaskStatus_Queued)
 
-	// Un-queue and process the task to unblock the shutdown.
+	// Cleaning.
 	task, err = tq.TakeTaskIntoWork()
 	aTest.MustBeNoError(err)
 	err = tq.MarkTaskAsProcessed(task.GetId(), nil)
@@ -61,55 +80,52 @@ func Test_AddTask(t *testing.T) {
 	task, err = tq.CompleteTask(task.GetId())
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(task.GetId(), taskId)
-
-	// Fin.
 	err = tq.Stop()
 	aTest.MustBeNoError(err)
 }
 func Test_TakeTaskIntoWork(t *testing.T) {
 	// Init.
 	aTest := tester.New(t)
-	var err error
-	tq := NewTaskQueue[TestRequest, TestResponse](2)
-	err = tq.Start()
-	aTest.MustBeNoError(err)
+	tqSettings := test_getCommonQueueSettings()
+	tq := test_createCommonTaskQueue(tqSettings)
+	req := test_createCommonRequest()
 	var task *tsk.Task[TestRequest, TestResponse]
 	var taskId ti.TaskId
-	req := &TestRequest{a: 1, b: 2, fn: "hello"}
+	var err error
+
+	// Preparation.
+	err = tq.Start()
+	aTest.MustBeNoError(err)
 	taskId, err = tq.AddTask(req)
 	aTest.MustBeNoError(err)
 
 	// Test.
 	task, err = tq.TakeTaskIntoWork()
 	aTest.MustBeNoError(err)
+	test_checkTaskIdAndStatus(aTest, tq.tasks, taskId, ts.TaskStatus_InWork)
 
-	// Check.
-	task = tq.tasks[taskId]
-	aTest.MustBeDifferent(task, (*tsk.Task[TestRequest, TestResponse])(nil))
-	aTest.MustBeEqual(task.GetId(), taskId)
-	aTest.MustBeEqual(task.GetStatus(), ts.TaskStatus_InWork)
-
-	// Process the task to unblock the shutdown.
+	// Cleaning.
 	err = tq.MarkTaskAsProcessed(task.GetId(), nil)
 	aTest.MustBeNoError(err)
 	task, err = tq.CompleteTask(task.GetId())
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(task.GetId(), taskId)
-
-	// Fin.
 	err = tq.Stop()
 	aTest.MustBeNoError(err)
 }
 func Test_MarkTaskAsProcessed(t *testing.T) {
 	// Init.
 	aTest := tester.New(t)
-	var err error
-	tq := NewTaskQueue[TestRequest, TestResponse](2)
-	err = tq.Start()
-	aTest.MustBeNoError(err)
+	tqSettings := test_getCommonQueueSettings()
+	tq := test_createCommonTaskQueue(tqSettings)
+	req := test_createCommonRequest()
 	var task *tsk.Task[TestRequest, TestResponse]
 	var taskId ti.TaskId
-	req := &TestRequest{a: 1, b: 2, fn: "hello"}
+	var err error
+
+	// Preparation.
+	err = tq.Start()
+	aTest.MustBeNoError(err)
 	taskId, err = tq.AddTask(req)
 	aTest.MustBeNoError(err)
 	task, err = tq.TakeTaskIntoWork()
@@ -118,32 +134,28 @@ func Test_MarkTaskAsProcessed(t *testing.T) {
 	// Test.
 	err = tq.MarkTaskAsProcessed(task.GetId(), nil)
 	aTest.MustBeNoError(err)
+	test_checkTaskIdAndStatus(aTest, tq.tasks, taskId, ts.TaskStatus_Processed)
 
-	// Check.
-	task = tq.tasks[taskId]
-	aTest.MustBeDifferent(task, (*tsk.Task[TestRequest, TestResponse])(nil))
-	aTest.MustBeEqual(task.GetId(), taskId)
-	aTest.MustBeEqual(task.GetStatus(), ts.TaskStatus_Processed)
-
-	// Process the task to unblock the shutdown.
+	// Cleaning.
 	task, err = tq.CompleteTask(task.GetId())
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(task.GetId(), taskId)
-
-	// Fin.
 	err = tq.Stop()
 	aTest.MustBeNoError(err)
 }
 func Test_CompleteTask(t *testing.T) {
 	// Init.
 	aTest := tester.New(t)
-	var err error
-	tq := NewTaskQueue[TestRequest, TestResponse](2)
-	err = tq.Start()
-	aTest.MustBeNoError(err)
+	tqSettings := test_getCommonQueueSettings()
+	tq := test_createCommonTaskQueue(tqSettings)
+	req := test_createCommonRequest()
 	var task *tsk.Task[TestRequest, TestResponse]
 	var taskId ti.TaskId
-	req := &TestRequest{a: 1, b: 2, fn: "hello"}
+	var err error
+
+	// Preparation.
+	err = tq.Start()
+	aTest.MustBeNoError(err)
 	taskId, err = tq.AddTask(req)
 	aTest.MustBeNoError(err)
 	task, err = tq.TakeTaskIntoWork()
@@ -155,27 +167,25 @@ func Test_CompleteTask(t *testing.T) {
 	task, err = tq.CompleteTask(task.GetId())
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(task.GetId(), taskId)
+	test_checkTaskIdAndStatus(aTest, tq.tasks, taskId, ts.TaskStatus_Completed)
 
-	// Check.
-	task = tq.tasks[taskId]
-	aTest.MustBeDifferent(task, (*tsk.Task[TestRequest, TestResponse])(nil))
-	aTest.MustBeEqual(task.GetId(), taskId)
-	aTest.MustBeEqual(task.GetStatus(), ts.TaskStatus_Completed)
-
-	// Fin.
+	// Cleaning.
 	err = tq.Stop()
 	aTest.MustBeNoError(err)
 }
 func Test_GetTaskStatus(t *testing.T) {
 	// Init.
 	aTest := tester.New(t)
-	var err error
-	tq := NewTaskQueue[TestRequest, TestResponse](2)
-	err = tq.Start()
-	aTest.MustBeNoError(err)
+	tqSettings := test_getCommonQueueSettings()
+	tq := test_createCommonTaskQueue(tqSettings)
+	req := test_createCommonRequest()
 	var task *tsk.Task[TestRequest, TestResponse]
 	var taskId ti.TaskId
-	req := &TestRequest{a: 1, b: 2, fn: "hello"}
+	var err error
+
+	// Preparation.
+	err = tq.Start()
+	aTest.MustBeNoError(err)
 	taskId, err = tq.AddTask(req)
 	aTest.MustBeNoError(err)
 	task, err = tq.TakeTaskIntoWork()
@@ -191,27 +201,25 @@ func Test_GetTaskStatus(t *testing.T) {
 	status, err = tq.GetTaskStatus(taskId)
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(status, ts.TaskStatus_Completed)
+	test_checkTaskIdAndStatus(aTest, tq.tasks, taskId, ts.TaskStatus_Completed)
 
-	// Check.
-	task = tq.tasks[taskId]
-	aTest.MustBeDifferent(task, (*tsk.Task[TestRequest, TestResponse])(nil))
-	aTest.MustBeEqual(task.GetId(), taskId)
-	aTest.MustBeEqual(task.GetStatus(), ts.TaskStatus_Completed)
-
-	// Fin.
+	// Cleaning.
 	err = tq.Stop()
 	aTest.MustBeNoError(err)
 }
 func Test_GetQueueSize(t *testing.T) {
 	// Init.
 	aTest := tester.New(t)
-	var err error
-	tq := NewTaskQueue[TestRequest, TestResponse](2)
-	err = tq.Start()
-	aTest.MustBeNoError(err)
+	tqSettings := test_getCommonQueueSettings()
+	tq := test_createCommonTaskQueue(tqSettings)
+	req := test_createCommonRequest()
 	var task *tsk.Task[TestRequest, TestResponse]
 	var taskId ti.TaskId
-	req := &TestRequest{a: 1, b: 2, fn: "hello"}
+	var err error
+
+	// Preparation.
+	err = tq.Start()
+	aTest.MustBeNoError(err)
 	taskId, err = tq.AddTask(req)
 	aTest.MustBeNoError(err)
 
@@ -221,36 +229,55 @@ func Test_GetQueueSize(t *testing.T) {
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(queueSize, 1)
 
+	// Test #2.
 	// Change the queue size by taking a task from it.
 	task, err = tq.TakeTaskIntoWork()
 	aTest.MustBeNoError(err)
-
-	// Test #2.
 	queueSize, err = tq.GetQueueSize()
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(queueSize, 0)
 
-	// Process the task to unblock the shutdown.
+	// Cleaning.
 	err = tq.MarkTaskAsProcessed(task.GetId(), nil)
 	aTest.MustBeNoError(err)
 	task, err = tq.CompleteTask(task.GetId())
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(task.GetId(), taskId)
-
-	// Fin.
 	err = tq.Stop()
 	aTest.MustBeNoError(err)
 }
 
-func Test_stress(t *testing.T) {
+func Test_errorCatcher(t *testing.T) {
 	aTest := tester.New(t)
+
+	// Test #1.
+	test_errorCatcher(aTest, nil)
+
+	// Test #2.
+	customErrorHandler := func(err error) {
+		cio.PrintMessage("in custom error handler, error:", err)
+	}
+	test_errorCatcher(aTest, customErrorHandler)
+}
+func Test_stress(t *testing.T) {
 	cio.PrintMessage("This test can take some time. Please, wait.")
 
-	tq := NewTaskQueue[TestRequest, TestResponse](100)
+	// Init.
+	aTest := tester.New(t)
+	tqCustomSettings, err := tqs.NewTaskQueueSettings(
+		&tqsp.TaskQueueSettingsPublic{
+			InputQueueSizeLimit: 100,
+			ErrorChannelSize:    8,
+		},
+	)
+	aTest.MustBeNoError(err)
+	tq := test_createCommonTaskQueue(tqCustomSettings)
 
-	err := tq.Start()
+	// Preparation.
+	err = tq.Start()
 	aTest.MustBeNoError(err)
 
+	// Test.
 	iMax := 1000
 	wg := new(sync.WaitGroup)
 	wg.Add(2)
@@ -309,6 +336,7 @@ func Test_stress(t *testing.T) {
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(qSize, 0)
 
+	// Cleaning.
 	err = tq.Stop()
 	aTest.MustBeNoError(err)
 }

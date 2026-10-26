@@ -11,8 +11,12 @@ const (
 	Err_OnlyProcessedTasksCanBeCompleted  = "only processed tasks can be completed"
 	Err_OnlyCompletedTasksCanBeDestroyed  = "only completed tasks can be destroyed"
 	Err_NotRunningOrStopping              = "not running or stopping"
+	Err_InputQueueSizeLimit               = "error in input queue size limit"
+	Err_ErrorChannelSize                  = "error in error channel size"
+	Err_NullPointer                       = "null pointer"
 
-	Errf_UnsupportedStatus = "unsupported TaskStatus: %v"
-	Errf_TaskIsNotFound    = "task is not found, id: %v"
-	Errf_TaskAlreadyExists = "task already exists, id: %v"
+	Errf_UnsupportedStatus    = "unsupported TaskStatus: %v"
+	Errf_TaskIsNotFound       = "task is not found, id: %v"
+	Errf_TaskAlreadyExists    = "task already exists, id: %v"
+	Errf_BrokenTaskInRegistry = "broken task in registry, id: %v"
 )

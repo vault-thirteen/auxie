@@ -9,42 +9,41 @@ import (
 	q "github.com/vault-thirteen/auxie/queue"
 	t "github.com/vault-thirteen/auxie/task-queue/Task"
 	ti "github.com/vault-thirteen/auxie/task-queue/TaskId"
+	tqs "github.com/vault-thirteen/auxie/task-queue/TaskQueueSettings"
 	ts "github.com/vault-thirteen/auxie/task-queue/TaskStatus"
 	to "github.com/vault-thirteen/auxie/task-queue/TimeOf"
+	tp "github.com/vault-thirteen/auxie/task-queue/TimeStamp"
 	ce "github.com/vault-thirteen/auxie/task-queue/common/error"
 	cm "github.com/vault-thirteen/auxie/task-queue/common/message"
 )
 
-const (
-	// CompletedTaskTtlSec is time period after which completed Task may be
-	// deleted.
-	CompletedTaskTtlSec = 1 * 60
-
-	// CleanerSleepTimeSec is a delay between cleans made by cleaner.
-	CleanerSleepTimeSec = 60
-
-	ErrorCatcherSleepTimeSec                 = 1
-	SleepTimeWaitingForZeroQueueSec          = 1
-	SleepTimeWaitingForZeroTasksInWorkSec    = 1
-	SleepTimeWaitingForZeroProcessedTasksSec = 1
-)
-
 type TaskQueue[T1 any, T2 any] struct {
+	settings   *tqs.TaskQueueSettings
 	inQueue    *q.Queue[t.Task[T1, T2]]
 	tasks      map[ti.TaskId]*t.Task[T1, T2]
 	lastTaskId *c.Counter
 	controls   *TaskQueueControls
 }
 
-func NewTaskQueue[T1 any, T2 any](sizeLimit int) (tq *TaskQueue[T1, T2]) {
+func NewTaskQueue[T1 any, T2 any](settings *tqs.TaskQueueSettings) (tq *TaskQueue[T1, T2], err error) {
+	if settings == nil {
+		return nil, errors.ErrorFromText(ce.Err_NullPointer)
+	}
+
+	err = settings.Validate()
+	if err != nil {
+		return nil, err
+	}
+
 	tq = &TaskQueue[T1, T2]{
+		settings:   settings,
 		inQueue:    q.NewQueue[t.Task[T1, T2]](),
 		tasks:      make(map[string]*t.Task[T1, T2]),
 		lastTaskId: c.NewCounter(),
-		controls:   NewTaskQueueControls(sizeLimit),
+		controls:   NewTaskQueueControls(settings),
 	}
 
-	return tq
+	return tq, nil
 }
 
 func (tq *TaskQueue[T1, T2]) startErrorCatcher() {
@@ -59,21 +58,35 @@ func (tq *TaskQueue[T1, T2]) stopErrorCatcher() {
 func (tq *TaskQueue[T1, T2]) errorCatcher() {
 	defer tq.controls.errorCatcherWg.Done()
 
-	loop := true
+	var ecFn = tq.defaultErrorCatcherFn
+	if tq.controls.errorCatcherFn != nil {
+		ecFn = tq.controls.errorCatcherFn
+	}
+
+	var sleepTime = time.Duration(tq.settings.ErrorCatcherSleepTimeSec()) * time.Second
+	var loop = true
 	var err error
+
 	for loop {
 		select {
 		case err = <-*tq.controls.errors:
-			errors.LogError(err)
+			{
+				ecFn(err)
+			}
 
 		default:
-			if !tq.controls.errorCatcherMustWork.Load() {
-				loop = false
-				break
+			{
+				if !tq.controls.errorCatcherMustWork.Load() {
+					loop = false
+					break
+				}
+				time.Sleep(sleepTime)
 			}
-			time.Sleep(ErrorCatcherSleepTimeSec * time.Second)
 		}
 	}
+}
+func (tq *TaskQueue[T1, T2]) defaultErrorCatcherFn(err error) {
+	errors.LogError(err)
 }
 func (tq *TaskQueue[T1, T2]) startCleaner() {
 	tq.controls.cleanerMustWork.Store(true)
@@ -87,11 +100,14 @@ func (tq *TaskQueue[T1, T2]) stopCleaner() {
 func (tq *TaskQueue[T1, T2]) cleaner() {
 	defer tq.controls.cleanerWg.Done()
 
-	loop := true
+	var sleepTimeSec = tq.settings.CleanerSleepTimeSec()
+	var loop = true
+
 	for loop {
 		tq.clean()
 
-		for i := 0; i < CleanerSleepTimeSec; i++ {
+		// Break sleep time into several parts in order not to miss signals.
+		for i := 0; i < sleepTimeSec; i++ {
 			time.Sleep(time.Second)
 			if !tq.controls.cleanerMustWork.Load() {
 				loop = false
@@ -104,20 +120,37 @@ func (tq *TaskQueue[T1, T2]) clean() {
 	tq.controls.lock.Lock()
 	defer tq.controls.lock.Unlock()
 
-	timeNowTS := time.Now().UTC().Unix()
+	var timeNowTS = time.Now().UTC().Unix()
+	var completedTaskTtlSec = tp.TimeStamp(tq.settings.CompletedTaskTtlSec())
 
 	// Delete old completed tasks.
 	var err error
 	var tOf to.TimeOf
+	var tasksIdsForRemoval []ti.TaskId
+
+	// Collect IDs.
+	tasksIdsForRemoval = make([]ti.TaskId, 0, len(tq.tasks))
 	for taskId, task := range tq.tasks {
+		// Check data consistency.
+		if task.GetId() != taskId {
+			err = errors.ErrorFromFormattedText(ce.Errf_BrokenTaskInRegistry, taskId)
+			*tq.controls.errors <- err
+		}
+
+		// Find an old completed task.
 		if task.GetStatus() == ts.TaskStatus_Completed {
 			tOf = task.GetTimeOf()
-			if tOf.Completion()+CompletedTaskTtlSec < timeNowTS {
-				err = tq.deleteTask(taskId)
-				if err != nil {
-					*tq.controls.errors <- err
-				}
+			if tOf.Completion()+completedTaskTtlSec < timeNowTS {
+				tasksIdsForRemoval = append(tasksIdsForRemoval, taskId)
 			}
+		}
+	}
+
+	// Remove old completed tasks from registry.
+	for _, taskId := range tasksIdsForRemoval {
+		err = tq.deleteTask(taskId)
+		if err != nil {
+			*tq.controls.errors <- err
 		}
 	}
 }
@@ -129,12 +162,14 @@ func (tq *TaskQueue[T1, T2]) disableReceivingNewTasks() {
 	tq.controls.receiveNewTasks.Store(false)
 }
 func (tq *TaskQueue[T1, T2]) waitForEmptyQueue() {
+	var sleepTime = time.Duration(tq.settings.SleepTimeWaitingForZeroQueueSec()) * time.Second
+
 	var qSize int
 	for {
 		qSize = tq.getQueueSize()
 
 		if qSize != 0 {
-			time.Sleep(SleepTimeWaitingForZeroQueueSec * time.Second)
+			time.Sleep(sleepTime)
 		} else {
 			return
 		}
@@ -147,24 +182,28 @@ func (tq *TaskQueue[T1, T2]) getQueueSize() (n int) {
 	return tq.inQueue.Size()
 }
 func (tq *TaskQueue[T1, T2]) waitForZeroTasksInWork() {
+	var sleepTime = time.Duration(tq.settings.SleepTimeWaitingForZeroTasksInWorkSec()) * time.Second
+
 	var n int
 	for {
 		n = tq.countTasksWithStatus(ts.TaskStatus_InWork)
 
 		if n != 0 {
-			time.Sleep(SleepTimeWaitingForZeroTasksInWorkSec * time.Second)
+			time.Sleep(sleepTime)
 		} else {
 			return
 		}
 	}
 }
 func (tq *TaskQueue[T1, T2]) waitForZeroProcessedTasks() {
+	var sleepTime = time.Duration(tq.settings.SleepTimeWaitingForZeroProcessedTasksSec()) * time.Second
+
 	var n int
 	for {
 		n = tq.countTasksWithStatus(ts.TaskStatus_Processed)
 
 		if n != 0 {
-			time.Sleep(SleepTimeWaitingForZeroProcessedTasksSec * time.Second)
+			time.Sleep(sleepTime)
 		} else {
 			return
 		}
@@ -295,7 +334,7 @@ func (tq *TaskQueue[T1, T2]) AddTask(request *T1) (taskId ti.TaskId, err error) 
 		return ti.ZeroTaskId, errors.ErrorFromText(ce.Err_NotReceivingNewTasks)
 	}
 
-	if tq.inQueue.Size() >= tq.controls.sizeLimit {
+	if tq.inQueue.Size() >= tq.settings.InputQueueSizeLimit() {
 		return ti.ZeroTaskId, errors.ErrorFromText(ce.Err_QueueIsFull)
 	}
 
