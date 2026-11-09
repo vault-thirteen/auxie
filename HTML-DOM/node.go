@@ -32,7 +32,6 @@ func GetCleanValue(node *html.Node) (cleanValue string) {
 
 	return strings.TrimSpace(node.Data)
 }
-
 func GetOuterHtml(node *html.Node) (outerHtml string, err error) {
 	if node == nil {
 		return outerHtml, errors.ErrorFromText(Err_NodeIsNotSet)
@@ -43,7 +42,6 @@ func GetOuterHtml(node *html.Node) (outerHtml string, err error) {
 	err = html.Render(w, node)
 	return bufInnerHtml.String(), nil
 }
-
 func GetInnerHtml(node *html.Node) (innerHtml string, err error) {
 	if node == nil {
 		return innerHtml, errors.ErrorFromText(Err_NodeIsNotSet)
@@ -57,6 +55,21 @@ func GetInnerHtml(node *html.Node) (innerHtml string, err error) {
 	default:
 		return "", errors.ErrorFromText(Err_UnsupportedNodeType)
 	}
+}
+func GetTextContent(node *html.Node) string {
+	if node == nil {
+		return ""
+	}
+
+	if node.Type == html.TextNode {
+		return node.Data
+	}
+
+	var sb strings.Builder
+	for c := node.FirstChild; c != nil; c = c.NextSibling {
+		sb.WriteString(GetTextContent(c))
+	}
+	return sb.String()
 }
 
 func concatenateOuterHtmlOfNodes(nodes []*html.Node) (outerHtml string, err error) {

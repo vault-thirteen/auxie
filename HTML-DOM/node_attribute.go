@@ -34,3 +34,12 @@ func GetNodeAttributeValue(node *html.Node, attributeName string) (attributeValu
 
 	return "", false
 }
+
+// GetNodeTagName returns node's tag name.
+func GetNodeTagName(node *html.Node) (tagName string) {
+	if node == nil {
+		return ""
+	}
+
+	return node.Data
+}

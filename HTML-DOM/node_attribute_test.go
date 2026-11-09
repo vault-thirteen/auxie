@@ -91,3 +91,19 @@ func Test_GetNodeAttributeValue(t *testing.T) {
 	aTest.MustBeEqual(attributeValue, "the-class")
 	aTest.MustBeEqual(attributeExists, true)
 }
+
+func Test_GetNodeTagName(t *testing.T) {
+
+	var aTest = tester.New(t)
+	var node *html.Node
+
+	// Test #1. Null Node.
+	node = nil
+	aTest.MustBeEqual(GetNodeTagName(node), "")
+
+	// Test #2. Normal.
+	node = &html.Node{
+		Data: TagDiv,
+	}
+	aTest.MustBeEqual(GetNodeTagName(node), "div")
+}

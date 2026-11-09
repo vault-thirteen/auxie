@@ -41,7 +41,6 @@ func Test_GetCleanValue(t *testing.T) {
 	}
 	aTest.MustBeEqual(GetCleanValue(node), "Срамота")
 }
-
 func Test_GetOuterHtml(t *testing.T) {
 	var aTest = tester.New(t)
 	var pivot *html.Node
@@ -96,7 +95,6 @@ func Test_GetOuterHtml(t *testing.T) {
                 <div class="class-object-c-3" id="id-object-c-3">C-3</div>Ѫ<p>Voxel</p>Ѧ
             </div>`)
 }
-
 func Test_GetInnerHtml(t *testing.T) {
 	var aTest = tester.New(t)
 	var pivot *html.Node
@@ -140,4 +138,28 @@ func Test_GetInnerHtml(t *testing.T) {
                 <div class="class-object-c-2" id="id-object-c-2">C-2</div>Ѧ<p>John Carmack</p>Ѫ
                 <div class="class-object-c-3" id="id-object-c-3">C-3</div>Ѫ<p>Voxel</p>Ѧ
             `)
+}
+func Test_GetTextContent(t *testing.T) {
+	var aTest = tester.New(t)
+	var pivot *html.Node
+	var result string
+	var err error
+
+	// Test #1.
+	result = GetTextContent(nil)
+	aTest.MustBeEqual(result, "")
+
+	// Test #2. Element with sub-elements.
+	pivot, err = _test_prepareTestNode()
+	aTest.MustBeNoError(err)
+	pivot = GetElementById(pivot, "id-object-e")
+	result = GetTextContent(pivot)
+	aTest.MustBeEqual(result, "Hello example")
+
+	// Test #3. Leaf element.
+	pivot, err = _test_prepareTestNode()
+	aTest.MustBeNoError(err)
+	pivot = GetElementById(pivot, "id-object-d-1")
+	result = GetTextContent(pivot)
+	aTest.MustBeEqual(result, "D-1")
 }
