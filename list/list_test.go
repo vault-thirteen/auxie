@@ -1,4 +1,4 @@
-package generic
+package list
 
 import (
 	"testing"
