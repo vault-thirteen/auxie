@@ -21,6 +21,18 @@ const (
 	NonExistentTestFile2 = "NonExistentTest.txt"
 )
 
+func Test_CountFiles(t *testing.T) {
+	aTest := tester.New(t)
+	folderPath := TestFolder2
+	var output int
+	var err error
+
+	// Test.
+	output, err = CountFiles(folderPath)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(output, 1)
+}
+
 func Test_CreateFolderSafely(t *testing.T) {
 	var aTest = tester.New(t)
 	var err error
@@ -206,16 +218,4 @@ func Test_ListFileNames(t *testing.T) {
 	output, err = ListFileNames(folderPath)
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(output, []string{TestFile2})
-}
-
-func Test_CountFiles(t *testing.T) {
-	aTest := tester.New(t)
-	folderPath := TestFolder2
-	var output int
-	var err error
-
-	// Test.
-	output, err = CountFiles(folderPath)
-	aTest.MustBeNoError(err)
-	aTest.MustBeEqual(output, 1)
 }

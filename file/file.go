@@ -12,6 +12,26 @@ const (
 	Err_ObjectIsNotFolder = "object is not a folder"
 )
 
+// CountFiles counts files in the folder.
+// Sub-folders are not used.
+func CountFiles(folderPath string) (filesCount int, err error) {
+	var des []os.DirEntry
+	des, err = os.ReadDir(folderPath)
+	if err != nil {
+		return filesCount, err
+	}
+
+	for _, de := range des {
+		if de.IsDir() {
+			continue
+		}
+
+		filesCount++
+	}
+
+	return filesCount, nil
+}
+
 // CreateFolderSafely tries to create a folder ignoring an error if the folder
 // already exists.
 func CreateFolderSafely(path string, permissions os.FileMode) (err error) {
@@ -119,24 +139,4 @@ func ListFileNames(folderPath string) (fileNames []string, err error) {
 	}
 
 	return fileNames, nil
-}
-
-// CountFiles counts files in the folder.
-// Sub-folders are not used.
-func CountFiles(folderPath string) (filesCount int, err error) {
-	var des []os.DirEntry
-	des, err = os.ReadDir(folderPath)
-	if err != nil {
-		return filesCount, err
-	}
-
-	for _, de := range des {
-		if de.IsDir() {
-			continue
-		}
-
-		filesCount++
-	}
-
-	return filesCount, nil
 }
