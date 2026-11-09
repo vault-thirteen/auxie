@@ -18,6 +18,7 @@ const (
 const (
 	TestFolder2          = "test"
 	TestFile2            = "Test.txt"
+	TestFile3            = "created_file.txt"
 	NonExistentTestFile2 = "NonExistentTest.txt"
 )
 
@@ -31,6 +32,38 @@ func Test_CountFiles(t *testing.T) {
 	output, err = CountFiles(folderPath)
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(output, 1)
+}
+
+func Test_CreateFolderIfNotExists(t *testing.T) {
+	var aTest = tester.New(t)
+	var err error
+	var result os.FileInfo
+
+	// Prepare the Environment.
+	testFolder := filepath.Join(TestFolder, "")
+	err = os.Mkdir(testFolder, 0755)
+	aTest.MustBeNoError(err)
+	folderX := filepath.Join(testFolder, "xx")
+
+	defer func() {
+		// Clear the Environment.
+		err = os.RemoveAll(testFolder)
+		aTest.MustBeNoError(err)
+	}()
+
+	// Test #1. Create a Folder for the first Time.
+	err = CreateFolderIfNotExists(folderX, 0755)
+	aTest.MustBeNoError(err)
+	result, err = os.Stat(folderX)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(result.IsDir(), true)
+
+	// Test #2. Create a Folder for the second Time.
+	err = CreateFolderIfNotExists(folderX, 0755)
+	aTest.MustBeNoError(err)
+	result, err = os.Stat(folderX)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(result.IsDir(), true)
 }
 
 func Test_CreateFolderSafely(t *testing.T) {
@@ -218,4 +251,31 @@ func Test_ListFileNames(t *testing.T) {
 	output, err = ListFileNames(folderPath)
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(output, []string{TestFile2})
+}
+
+func Test_SaveBytesToFile(t *testing.T) {
+	aTest := tester.New(t)
+	filePath := filepath.Join(TestFolder2, TestFile3)
+	var data []byte
+	var err error
+
+	// Ensure that file does not exist before running the test.
+	var fileExists bool
+	fileExists, err = FileExists(filePath)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(fileExists, false)
+
+	// Test.
+	data = []byte("some text")
+	err = SaveBytesToFile(filePath, data)
+	aTest.MustBeNoError(err)
+
+	var fileContents []byte
+	fileContents, err = GetFileContents(filePath)
+	aTest.MustBeNoError(err)
+	aTest.MustBeEqual(fileContents, data)
+
+	// Fin.
+	err = os.Remove(filePath)
+	aTest.MustBeNoError(err)
 }

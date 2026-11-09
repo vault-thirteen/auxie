@@ -32,6 +32,24 @@ func CountFiles(folderPath string) (filesCount int, err error) {
 	return filesCount, nil
 }
 
+// CreateFolderIfNotExists creates a folder if it does not exist.
+func CreateFolderIfNotExists(folderPath string, newFolderPermissions os.FileMode) (err error) {
+	var folderExists bool
+	folderExists, err = FolderExists(folderPath)
+	if err != nil {
+		return err
+	}
+
+	if !folderExists {
+		err = CreateFolderSafely(folderPath, newFolderPermissions)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // CreateFolderSafely tries to create a folder ignoring an error if the folder
 // already exists.
 func CreateFolderSafely(path string, permissions os.FileMode) (err error) {
@@ -139,4 +157,24 @@ func ListFileNames(folderPath string) (fileNames []string, err error) {
 	}
 
 	return fileNames, nil
+}
+
+// SaveBytesToFile creates a new file and saves byte array into it.
+func SaveBytesToFile(filePath string, bytes []byte) (err error) {
+	var f *os.File
+	f, err = os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		derr := f.Close()
+		err = errors.Combine(err, derr)
+	}()
+
+	_, err = f.Write(bytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
