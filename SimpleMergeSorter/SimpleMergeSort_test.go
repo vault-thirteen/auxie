@@ -6,7 +6,7 @@ import (
 	"github.com/vault-thirteen/auxie/tester"
 )
 
-func Test_New(t *testing.T) {
+func Test_NewSimpleMergeSorter(t *testing.T) {
 	aTest := tester.New(t)
 
 	// Test #1. Normal data.
@@ -25,7 +25,7 @@ func Test_New(t *testing.T) {
 		cursors: nil,
 	}
 
-	result, err := New(data...)
+	result, err := NewSimpleMergeSorter(data...)
 	aTest.MustBeNoError(err)
 	aTest.MustBeEqual(result, expectedResult)
 
@@ -35,7 +35,7 @@ func Test_New(t *testing.T) {
 		{},
 	}
 
-	mergeSorter, err := New(data...)
+	mergeSorter, err := NewSimpleMergeSorter(data...)
 	aTest.MustBeAnError(err)
 	aTest.MustBeEqual(mergeSorter, (*SimpleMergeSorter)(nil))
 }
@@ -72,7 +72,7 @@ func Test_Sort(t *testing.T) {
 		{3, 7, 2},
 	}
 
-	mergeSorter, err := New(data...)
+	mergeSorter, err := NewSimpleMergeSorter(data...)
 	aTest.MustBeNoError(err)
 	aTest.MustBeDifferent(mergeSorter, (*SimpleMergeSorter)(nil))
 

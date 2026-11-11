@@ -34,8 +34,8 @@ type Calculator struct {
 	previousValue *ValueType
 }
 
-// New is the constructor of the Calculator.
-func New(windowSize int) (c *Calculator, err error) {
+// NewCalculator is the constructor of the Calculator.
+func NewCalculator(windowSize int) (c *Calculator, err error) {
 	if windowSize < 1 {
 		return nil, errors.ErrorFromText(Err_WindowsSize)
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/vault-thirteen/auxie/tester"
 )
 
-func Test_New(t *testing.T) {
+func Test_NewCalculator(t *testing.T) {
 	aTest := tester.New(t)
 
 	var (
@@ -16,12 +16,12 @@ func Test_New(t *testing.T) {
 	)
 
 	// Test #1. Wrong windows size.
-	calculator, err = New(0)
+	calculator, err = NewCalculator(0)
 	aTest.MustBeAnError(err)
 	aTest.MustBeEqual(calculator, (*Calculator)(nil))
 
 	// Test #2. OK.
-	calculator, err = New(123)
+	calculator, err = NewCalculator(123)
 	aTest.MustBeNoError(err)
 	aTest.MustBeDifferent(calculator, (*Calculator)(nil))
 	aTest.MustBeEqual(calculator.size, 123)
@@ -37,7 +37,7 @@ func Test_IsCold(t *testing.T) {
 		err        error
 	)
 
-	calculator, err = New(3)
+	calculator, err = NewCalculator(3)
 	aTest.MustBeNoError(err)
 
 	// Test #0. No items.
@@ -69,7 +69,7 @@ func Test_AddItemAndGetSMA(t *testing.T) {
 		err        error
 	)
 
-	calculator, err = New(3)
+	calculator, err = NewCalculator(3)
 	aTest.MustBeNoError(err)
 
 	// Test #1. One item.
@@ -109,7 +109,7 @@ func Test_getItemsAverage(t *testing.T) {
 		err        error
 	)
 
-	calculator, err = New(3)
+	calculator, err = NewCalculator(3)
 	aTest.MustBeNoError(err)
 
 	calculator.items.PushFront(ValueType(1.0))

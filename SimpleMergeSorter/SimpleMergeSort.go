@@ -23,7 +23,7 @@ type SimpleMergeSorter struct {
 type ValueType = float64
 
 // New is a constructor of a simple merge sorter.
-func New(data ...[]ValueType) (sms *SimpleMergeSorter, err error) {
+func NewSimpleMergeSorter(data ...[]ValueType) (sms *SimpleMergeSorter, err error) {
 	// Prepare the raw data.
 	for i := range data {
 		//sort.Ints(data[i])
