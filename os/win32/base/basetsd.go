@@ -20,14 +20,14 @@ type PULONG32 = *ULONG32
 type DWORD32 = uint32
 type PDWORD32 = *DWORD32
 
-type INT_PTR = int64
+type INT_PTR = uintptr
 type PINT_PTR = *INT_PTR
-type UINT_PTR = uint64
+type UINT_PTR = uintptr
 type PUINT_PTR = *UINT_PTR
 
-type LONG_PTR = int64
+type LONG_PTR = uintptr
 type PLONG_PTR = *LONG_PTR
-type ULONG_PTR = uint64
+type ULONG_PTR = uintptr
 type PULONG_PTR = *ULONG_PTR
 
 type HANDLE64 = uint64
