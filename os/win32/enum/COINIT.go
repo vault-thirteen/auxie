@@ -1,0 +1,10 @@
+package e
+
+type COINIT uint32
+
+const (
+	COINIT_APARTMENTTHREADED COINIT = 0x2 // Apartment model
+	COINIT_MULTITHREADED     COINIT = COINIT(COINITBASE_MULTITHREADED)
+	COINIT_DISABLE_OLE1DDE   COINIT = 0x4 // Don't use DDE for Ole1 support.
+	COINIT_SPEED_OVER_MEMORY COINIT = 0x8 // Trade memory for speed.
+)

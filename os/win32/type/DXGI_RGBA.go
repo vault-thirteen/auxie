@@ -1,0 +1,3 @@
+package t
+
+type DXGI_RGBA D3DCOLORVALUE

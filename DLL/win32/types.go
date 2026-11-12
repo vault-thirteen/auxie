@@ -1,4 +1,4 @@
-package win32
+package dll
 
 import bt "github.com/vault-thirteen/auxie/BasicTypes"
 

@@ -1,4 +1,4 @@
-package win32
+package dll
 
 type FuncMapping struct {
 	Fn           *uintptr

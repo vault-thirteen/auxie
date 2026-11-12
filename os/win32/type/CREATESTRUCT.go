@@ -1,0 +1,3 @@
+package t
+
+type CREATESTRUCT = CREATESTRUCTW

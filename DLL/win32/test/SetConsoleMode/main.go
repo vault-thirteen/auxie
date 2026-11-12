@@ -3,8 +3,8 @@ package main
 import (
 	"time"
 
+	dll "github.com/vault-thirteen/auxie/DLL/win32"
 	"github.com/vault-thirteen/auxie/cio"
-	"github.com/vault-thirteen/auxie/os/win32"
 )
 
 func main() {
@@ -24,8 +24,8 @@ func mustBeNoError(err error) {
 	}
 }
 
-func prepareDlls() (dc *win32.DllController, err error) {
-	dc = win32.NewDllController()
+func prepareDlls() (dc *dll.DllController, err error) {
+	dc = dll.NewDllController()
 
 	err = dc.Init()
 	if err != nil {

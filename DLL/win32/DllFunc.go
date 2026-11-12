@@ -1,4 +1,4 @@
-package win32
+package dll
 
 // DllFunc object is used for fast access to functions from DLL files.
 // This structure is just an example with minimal default fields. For real life

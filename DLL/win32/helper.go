@@ -1,4 +1,4 @@
-package win32
+package dll
 
 import (
 	"errors"
