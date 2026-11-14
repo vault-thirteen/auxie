@@ -17,13 +17,11 @@ func main() {
 	printSomething()
 	time.Sleep(time.Second * 10)
 }
-
 func mustBeNoError(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
-
 func prepareDlls() (dc *dll.DllController, err error) {
 	dc = dll.NewDllController()
 
@@ -34,15 +32,18 @@ func prepareDlls() (dc *dll.DllController, err error) {
 
 	return dc, nil
 }
-
 func printSomething() {
-	cio.PrintMessage("\033[0;31mThis is a test of red colour.\033[0;0m")
-	cio.PrintMessage("\033[0;33mThis is a test of yellow colour.\033[0;0m")
-	cio.PrintMessage("\033[0;32mThis is a test of green colour.\033[0;0m")
-	cio.PrintMessage("\033[0;36mThis is a test of cyan colour.\033[0;0m")
-	cio.PrintMessage("\033[0;34mThis is a test of blue colour.\033[0;0m")
-	cio.PrintMessage("\033[0;35mThis is a test of purple colour.\033[0;0m")
-	cio.PrintMessage("\033[0;30mThis is a test of black colour.\033[0;0m")
-	cio.PrintMessage("\033[0;37mThis is a test of white colour.\033[0;0m")
+	printLine("\033[0;31m", "red", "\033[0;0m")
+	printLine("\033[0;33m", "yellow", "\033[0;0m")
+	printLine("\033[0;32m", "green", "\033[0;0m")
+	printLine("\033[0;36m", "cyan", "\033[0;0m")
+	printLine("\033[0;34m", "blue", "\033[0;0m")
+	printLine("\033[0;35m", "purple", "\033[0;0m")
+	printLine("\033[0;30m", "black", "\033[0;0m")
+	printLine("\033[0;37m", "white", "\033[0;0m")
 	cio.PrintMessage("Have a good day.")
+}
+func printLine(colOn string, colName string, colOff string) {
+	msg := cio.FormatMessage(`This is a test of %s colour.`, colName)
+	cio.PrintMessage(colOn + msg + colOff)
 }

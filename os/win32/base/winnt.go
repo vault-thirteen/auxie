@@ -111,6 +111,7 @@ type PCUNZTCH = PCUNZWCH
 type PSHORT = *SHORT
 type PLONG = *LONG
 
+/* typedef void *HANDLE; */
 type HANDLE = unsafe.Pointer
 type PHANDLE = *HANDLE
 
