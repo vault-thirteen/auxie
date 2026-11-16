@@ -171,6 +171,9 @@ func compareRowValues(r1, r2 m.Row) (ok bool) {
 func composeFile(types []m.MIME, t string) (data []byte, err error) {
 	var sb = new(strings.Builder)
 	var typeName = m.CapitalizeFirstLetter(t)
+	SB_AddLine(sb, `package mime`)
+	SB_AddLine(sb, "")
+
 	var line string
 	line = `// ` + typeName + `.`
 	SB_AddLine(sb, line)
