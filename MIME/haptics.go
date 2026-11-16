@@ -2,9 +2,9 @@ package mime
 
 // Haptics.
 const (
-	TypeHapticsIvs  = "haptics/ivs"  // [RFC9695]
-	TypeHapticsHjif = "haptics/hjif" // [RFC9695]
-	TypeHapticsHmpg = "haptics/hmpg" // [RFC9695][RFC-ietf-avtcore-rtp-haptics-13]
+	TypeHapticsIvs  = "haptics/ivs"  // [RFC 9695]
+	TypeHapticsHjif = "haptics/hjif" // [RFC 9695]
+	TypeHapticsHmpg = "haptics/hmpg" // [RFC 9695]; [RFC 9993]
 )
 
 const (
