@@ -89,3 +89,8 @@ func LOWORD(l uintptr) WORD {
 func HIWORD(l uintptr) WORD {
 	return WORD((l >> 16) & 0xffff)
 }
+
+const (
+	TRUE  BOOL = 1
+	FALSE BOOL = 0
+)

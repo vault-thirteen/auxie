@@ -8,6 +8,7 @@ require (
 	github.com/lib/pq v1.12.3
 	github.com/prometheus/procfs v0.23.0
 	go.uber.org/multierr v1.11.0
+	golang.org/x/exp v0.0.0-20261113113407-e3970619a1a4
 	golang.org/x/net v0.62.0
 	golang.org/x/sys v0.50.0
 	golang.org/x/term v0.48.0

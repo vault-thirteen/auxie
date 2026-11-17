@@ -389,3 +389,46 @@ const (
 	VK_PA1                             = 0xFD // PA1 key
 	VK_OEM_CLEAR                       = 0xFE // Clear key
 )
+
+// SW constants, Show Window.
+const (
+	SW_HIDE            = 0
+	SW_SHOWNORMAL      = 1
+	SW_NORMAL          = 1
+	SW_SHOWMINIMIZED   = 2
+	SW_SHOWMAXIMIZED   = 3
+	SW_MAXIMIZE        = 3
+	SW_SHOWNOACTIVATE  = 4
+	SW_SHOW            = 5
+	SW_MINIMIZE        = 6
+	SW_SHOWMINNOACTIVE = 7
+	SW_SHOWNA          = 8
+	SW_RESTORE         = 9
+	SW_SHOWDEFAULT     = 10
+	SW_FORCEMINIMIZE   = 11
+	SW_MAX             = 11
+)
+
+const (
+	KEYEVENTF_EXTENDEDKEY = 0x0001
+	KEYEVENTF_KEYUP       = 0x0002
+	KEYEVENTF_UNICODE     = 0x0004
+	KEYEVENTF_SCANCODE    = 0x0008
+)
+
+const (
+	MOUSEEVENTF_MOVE            = 0x0001  /* mouse move */
+	MOUSEEVENTF_LEFTDOWN        = 0x0002  /* left button down */
+	MOUSEEVENTF_LEFTUP          = 0x0004  /* left button up */
+	MOUSEEVENTF_RIGHTDOWN       = 0x0008  /* right button down */
+	MOUSEEVENTF_RIGHTUP         = 0x0010  /* right button up */
+	MOUSEEVENTF_MIDDLEDOWN      = 0x0020  /* middle button down */
+	MOUSEEVENTF_MIDDLEUP        = 0x0040  /* middle button up */
+	MOUSEEVENTF_XDOWN           = 0x0080  /* x button down */
+	MOUSEEVENTF_XUP             = 0x0100  /* x button down */
+	MOUSEEVENTF_WHEEL           = 0x0800  /* wheel button rolled */
+	MOUSEEVENTF_HWHEEL          = 0x01000 /* hwheel button rolled */
+	MOUSEEVENTF_MOVE_NOCOALESCE = 0x2000  /* do not coalesce mouse moves */
+	MOUSEEVENTF_VIRTUALDESK     = 0x4000  /* map to entire virtual desktop */
+	MOUSEEVENTF_ABSOLUTE        = 0x8000  /* absolute move */
+)

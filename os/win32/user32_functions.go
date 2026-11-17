@@ -8,85 +8,43 @@ import (
 
 	b "github.com/vault-thirteen/auxie/os/win32/base"
 	e "github.com/vault-thirteen/auxie/os/win32/enum"
-	i "github.com/vault-thirteen/auxie/os/win32/interface"
+	//i "github.com/vault-thirteen/auxie/os/win32/interface"
 	t "github.com/vault-thirteen/auxie/os/win32/type"
 	"golang.org/x/sys/windows"
 )
 
 var _ unsafe.Pointer
 
-// Do the interface allocations only once for common
-// Errno values.
-const (
-	errnoERROR_IO_PENDING = 997
-)
-
 var (
-	errERROR_IO_PENDING error = syscall.Errno(errnoERROR_IO_PENDING)
-	errERROR_EINVAL     error = syscall.EINVAL
+	moduser32 = windows.NewLazySystemDLL("user32.dll")
+
+	procCreateWindowExW          = moduser32.NewProc("CreateWindowExW")
+	procDefWindowProcW           = moduser32.NewProc("DefWindowProcW")
+	procDestroyWindow            = moduser32.NewProc("DestroyWindow")
+	procDispatchMessageW         = moduser32.NewProc("DispatchMessageW")
+	procFindWindowW              = moduser32.NewProc("FindWindowW")
+	procGetClientRect            = moduser32.NewProc("GetClientRect")
+	procGetKeyState              = moduser32.NewProc("GetKeyState")
+	procGetMessageW              = moduser32.NewProc("GetMessageW")
+	procGetWindowLongPtrW        = moduser32.NewProc("GetWindowLongPtrW")
+	procGetWindowRect            = moduser32.NewProc("GetWindowRect")
+	procGetWindowThreadProcessId = moduser32.NewProc("GetWindowThreadProcessId")
+	procInvalidateRect           = moduser32.NewProc("InvalidateRect")
+	procIsWindowVisible          = moduser32.NewProc("IsWindowVisible")
+	procLoadCursorW              = moduser32.NewProc("LoadCursorW")
+	procPeekMessageW             = moduser32.NewProc("PeekMessageW")
+	procPostQuitMessage          = moduser32.NewProc("PostQuitMessage")
+	procRegisterClassExW         = moduser32.NewProc("RegisterClassExW")
+	procSendInput                = moduser32.NewProc("SendInput")
+	procSetCursorPos             = moduser32.NewProc("SetCursorPos")
+	procSetForegroundWindow      = moduser32.NewProc("SetForegroundWindow")
+	procSetWindowLongPtrW        = moduser32.NewProc("SetWindowLongPtrW")
+	procShowWindow               = moduser32.NewProc("ShowWindow")
+	procTranslateMessage         = moduser32.NewProc("TranslateMessage")
+	procUnregisterClassW         = moduser32.NewProc("UnregisterClassW")
+	procUpdateWindow             = moduser32.NewProc("UpdateWindow")
+	procValidateRect             = moduser32.NewProc("ValidateRect")
 )
-
-// errnoErr returns common boxed Errno values, to prevent
-// allocations at runtime.
-func errnoErr(e syscall.Errno) error {
-	switch e {
-	case 0:
-		return errERROR_EINVAL
-	case errnoERROR_IO_PENDING:
-		return errERROR_IO_PENDING
-	}
-	// TODO: add more here, after collecting data on the common
-	// error values see on Windows. (perhaps when running
-	// all.bat?)
-	return e
-}
-
-var (
-	modd2d1     = windows.NewLazySystemDLL("d2d1.dll")
-	modkernel32 = windows.NewLazySystemDLL("kernel32.dll")
-	modole32    = windows.NewLazySystemDLL("ole32.dll")
-	moduser32   = windows.NewLazySystemDLL("user32.dll")
-
-	procD2D1CreateFactory = modd2d1.NewProc("D2D1CreateFactory")
-	procSetLastError      = modkernel32.NewProc("SetLastError")
-	procCoCreateInstance  = modole32.NewProc("CoCreateInstance")
-	procCreateWindowExW   = moduser32.NewProc("CreateWindowExW")
-	procDefWindowProcW    = moduser32.NewProc("DefWindowProcW")
-	procDestroyWindow     = moduser32.NewProc("DestroyWindow")
-	procDispatchMessageW  = moduser32.NewProc("DispatchMessageW")
-	procGetClientRect     = moduser32.NewProc("GetClientRect")
-	procGetKeyState       = moduser32.NewProc("GetKeyState")
-	procGetMessageW       = moduser32.NewProc("GetMessageW")
-	procGetWindowLongPtrW = moduser32.NewProc("GetWindowLongPtrW")
-	procInvalidateRect    = moduser32.NewProc("InvalidateRect")
-	procLoadCursorW       = moduser32.NewProc("LoadCursorW")
-	procPeekMessageW      = moduser32.NewProc("PeekMessageW")
-	procPostQuitMessage   = moduser32.NewProc("PostQuitMessage")
-	procRegisterClassExW  = moduser32.NewProc("RegisterClassExW")
-	procSetWindowLongPtrW = moduser32.NewProc("SetWindowLongPtrW")
-	procShowWindow        = moduser32.NewProc("ShowWindow")
-	procTranslateMessage  = moduser32.NewProc("TranslateMessage")
-	procUnregisterClassW  = moduser32.NewProc("UnregisterClassW")
-	procUpdateWindow      = moduser32.NewProc("UpdateWindow")
-	procValidateRect      = moduser32.NewProc("ValidateRect")
-)
-
-func D2D1CreateFactory(factoryType e.D2D1_FACTORY_TYPE, riid *b.IID, pFactoryOptions *t.D2D1_FACTORY_OPTIONS, ppIFactory **i.ID2D1Factory) (ret b.HRESULT) {
-	r0, _, _ := syscall.SyscallN(procD2D1CreateFactory.Addr(), uintptr(factoryType), uintptr(unsafe.Pointer(riid)), uintptr(unsafe.Pointer(pFactoryOptions)), uintptr(unsafe.Pointer(ppIFactory)))
-	ret = b.HRESULT(r0)
-	return
-}
-
-func SetLastError(dwErrCode b.DWORD) {
-	syscall.SyscallN(procSetLastError.Addr(), uintptr(dwErrCode))
-	return
-}
-
-func CoCreateInstance(rclsid *windows.GUID, pUnkOuter *i.IUnknown, dwClsContext b.DWORD, riid *windows.GUID, ppv *unsafe.Pointer) (ret b.HRESULT) {
-	r0, _, _ := syscall.SyscallN(procCoCreateInstance.Addr(), uintptr(unsafe.Pointer(rclsid)), uintptr(unsafe.Pointer(pUnkOuter)), uintptr(dwClsContext), uintptr(unsafe.Pointer(riid)), uintptr(unsafe.Pointer(ppv)))
-	ret = b.HRESULT(r0)
-	return
-}
 
 func CreateWindowExW(dwExStyle b.DWORD, lpClassName *uint16, lpWindowName *uint16, dwStyle b.DWORD, x int32, y int32, nWidth int32, nHeight int32, hWndParent b.HWND, hMenu b.HMENU, hInstance b.HINSTANCE, lpParam unsafe.Pointer) (ret b.HWND, err error) {
 	r0, _, e1 := syscall.SyscallN(procCreateWindowExW.Addr(), uintptr(dwExStyle), uintptr(unsafe.Pointer(lpClassName)), uintptr(unsafe.Pointer(lpWindowName)), uintptr(dwStyle), uintptr(x), uintptr(y), uintptr(nWidth), uintptr(nHeight), uintptr(hWndParent), uintptr(hMenu), uintptr(hInstance), uintptr(lpParam))
@@ -115,6 +73,12 @@ func DestroyWindow(hWnd b.HWND) (ret b.BOOL, err error) {
 func DispatchMessageW(lpMsg *t.MSG) (ret b.LRESULT) {
 	r0, _, _ := syscall.SyscallN(procDispatchMessageW.Addr(), uintptr(unsafe.Pointer(lpMsg)))
 	ret = b.LRESULT(r0)
+	return
+}
+
+func FindWindowW(lpClassName *b.WCHAR, lpWindowName *b.WCHAR) (hWnd b.HWND) {
+	r0, _, _ := syscall.SyscallN(procFindWindowW.Addr(), uintptr(unsafe.Pointer(lpClassName)), uintptr(unsafe.Pointer(lpWindowName)))
+	hWnd = b.HWND(r0)
 	return
 }
 
@@ -151,8 +115,32 @@ func GetWindowLongPtrW(hWnd b.HWND, nIndex int32) (ret b.LONG_PTR, err error) {
 	return
 }
 
+func GetWindowRect(hWnd b.HWND, lpRect *t.RECT) (ret b.BOOL, err error) {
+	r0, _, e1 := syscall.SyscallN(procGetWindowRect.Addr(), uintptr(hWnd), uintptr(unsafe.Pointer(lpRect)))
+	ret = b.BOOL(r0)
+	if ret == 0 {
+		err = errnoErr(e1)
+	}
+	return
+}
+
+func GetWindowThreadProcessId(hWnd b.HWND, lpdwProcessId *b.DWORD) (tid b.DWORD, err error) {
+	r0, _, e1 := syscall.SyscallN(procGetWindowThreadProcessId.Addr(), uintptr(hWnd), uintptr(unsafe.Pointer(lpdwProcessId)))
+	tid = b.DWORD(r0)
+	if tid == 0 {
+		err = errnoErr(e1)
+	}
+	return
+}
+
 func InvalidateRect(hWnd b.HWND, lpRect *t.RECT, bErase b.BOOL) (ret b.BOOL) {
 	r0, _, _ := syscall.SyscallN(procInvalidateRect.Addr(), uintptr(hWnd), uintptr(unsafe.Pointer(lpRect)), uintptr(bErase))
+	ret = b.BOOL(r0)
+	return
+}
+
+func IsWindowVisible(hWnd b.HWND) (ret b.BOOL) {
+	r0, _, _ := syscall.SyscallN(procIsWindowVisible.Addr(), uintptr(hWnd))
 	ret = b.BOOL(r0)
 	return
 }
@@ -180,6 +168,30 @@ func PostQuitMessage(nExitCode int32) {
 func RegisterClassExW(unnamedParam1 *t.WNDCLASSEXW_Golang) (ret b.ATOM, err error) {
 	r0, _, e1 := syscall.SyscallN(procRegisterClassExW.Addr(), uintptr(unsafe.Pointer(unnamedParam1)))
 	ret = b.ATOM(r0)
+	if ret == 0 {
+		err = errnoErr(e1)
+	}
+	return
+}
+
+func SendInput(cInputs b.UINT, pInputs t.LPINPUT, cbSize int32) (u b.UINT, err error) {
+	r0, _, e1 := syscall.SyscallN(procSendInput.Addr(), uintptr(cInputs), uintptr(pInputs), uintptr(cbSize))
+	u = b.UINT(r0)
+	if u == 0 {
+		err = errnoErr(e1)
+	}
+	return
+}
+
+func SetCursorPos(x int32, y int32) (ret b.BOOL) {
+	r0, _, _ := syscall.SyscallN(procSetCursorPos.Addr(), uintptr(x), uintptr(y))
+	ret = b.BOOL(r0)
+	return
+}
+
+func SetForegroundWindow(hWnd b.HWND) (ret b.BOOL, err error) {
+	r0, _, e1 := syscall.SyscallN(procSetForegroundWindow.Addr(), uintptr(hWnd))
+	ret = b.BOOL(r0)
 	if ret == 0 {
 		err = errnoErr(e1)
 	}
