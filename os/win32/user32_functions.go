@@ -24,6 +24,7 @@ var (
 	procDispatchMessageW         = moduser32.NewProc("DispatchMessageW")
 	procFindWindowW              = moduser32.NewProc("FindWindowW")
 	procGetClientRect            = moduser32.NewProc("GetClientRect")
+	procGetCursorPos             = moduser32.NewProc("GetCursorPos")
 	procGetKeyState              = moduser32.NewProc("GetKeyState")
 	procGetMessageW              = moduser32.NewProc("GetMessageW")
 	procGetWindowLongPtrW        = moduser32.NewProc("GetWindowLongPtrW")
@@ -36,9 +37,11 @@ var (
 	procPostQuitMessage          = moduser32.NewProc("PostQuitMessage")
 	procRegisterClassExW         = moduser32.NewProc("RegisterClassExW")
 	procSendInput                = moduser32.NewProc("SendInput")
+	procSetCursor                = moduser32.NewProc("SetCursor")
 	procSetCursorPos             = moduser32.NewProc("SetCursorPos")
 	procSetForegroundWindow      = moduser32.NewProc("SetForegroundWindow")
 	procSetWindowLongPtrW        = moduser32.NewProc("SetWindowLongPtrW")
+	procShowCursor               = moduser32.NewProc("ShowCursor")
 	procShowWindow               = moduser32.NewProc("ShowWindow")
 	procTranslateMessage         = moduser32.NewProc("TranslateMessage")
 	procUnregisterClassW         = moduser32.NewProc("UnregisterClassW")
@@ -84,6 +87,15 @@ func FindWindowW(lpClassName *b.WCHAR, lpWindowName *b.WCHAR) (hWnd b.HWND) {
 
 func GetClientRect(hWnd b.HWND, lpRect *t.RECT) (ret b.BOOL, err error) {
 	r0, _, e1 := syscall.SyscallN(procGetClientRect.Addr(), uintptr(hWnd), uintptr(unsafe.Pointer(lpRect)))
+	ret = b.BOOL(r0)
+	if ret == 0 {
+		err = errnoErr(e1)
+	}
+	return
+}
+
+func GetCursorPos(lpPoint *t.POINT) (ret b.BOOL, err error) {
+	r0, _, e1 := syscall.SyscallN(procGetCursorPos.Addr(), uintptr(unsafe.Pointer(lpPoint)))
 	ret = b.BOOL(r0)
 	if ret == 0 {
 		err = errnoErr(e1)
@@ -183,9 +195,18 @@ func SendInput(cInputs b.UINT, pInputs t.LPINPUT, cbSize int32) (u b.UINT, err e
 	return
 }
 
-func SetCursorPos(x int32, y int32) (ret b.BOOL) {
-	r0, _, _ := syscall.SyscallN(procSetCursorPos.Addr(), uintptr(x), uintptr(y))
+func SetCursor(hCursor b.HCURSOR) (ret b.HCURSOR) {
+	r0, _, _ := syscall.SyscallN(procSetCursor.Addr(), uintptr(hCursor))
+	ret = b.HCURSOR(r0)
+	return
+}
+
+func SetCursorPos(x int32, y int32) (ret b.BOOL, err error) {
+	r0, _, e1 := syscall.SyscallN(procSetCursorPos.Addr(), uintptr(x), uintptr(y))
 	ret = b.BOOL(r0)
+	if ret == 0 {
+		err = errnoErr(e1)
+	}
 	return
 }
 
@@ -201,6 +222,12 @@ func SetForegroundWindow(hWnd b.HWND) (ret b.BOOL, err error) {
 func SetWindowLongPtrW(hWnd b.HWND, nIndex int32, dwNewLong b.LONG_PTR) (ret b.LONG_PTR) {
 	r0, _, _ := syscall.SyscallN(procSetWindowLongPtrW.Addr(), uintptr(hWnd), uintptr(nIndex), uintptr(dwNewLong))
 	ret = b.LONG_PTR(r0)
+	return
+}
+
+func ShowCursor(bShow b.BOOL) (ret int32) {
+	r0, _, _ := syscall.SyscallN(procShowCursor.Addr(), uintptr(bShow))
+	ret = int32(r0)
 	return
 }
 

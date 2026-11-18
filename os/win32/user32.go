@@ -18,12 +18,14 @@ var (
 //sys CreateWindowExW(dwExStyle b.DWORD, lpClassName *uint16, lpWindowName *uint16, dwStyle b.DWORD, x int32, y int32, nWidth int32, nHeight int32, hWndParent b.HWND, hMenu b.HMENU, hInstance b.HINSTANCE, lpParam unsafe.Pointer) (ret b.HWND, err error)[failretval==0] = user32.CreateWindowExW
 //sys DestroyWindow(hWnd b.HWND) (ret b.BOOL, err error)[failretval==0] = user32.DestroyWindow
 //sys GetClientRect(hWnd b.HWND, lpRect *t.RECT)(ret b.BOOL, err error)[failretval==0] = user32.GetClientRect
+//sys GetCursorPos(lpPoint *t.POINT)(ret b.BOOL, err error)[failretval==0] = user32.GetCursorPos
 //sys GetMessageW(lpMsg *t.MSG, hWnd b.HWND, wMsgFilterMin b.UINT, wMsgFilterMax b.UINT)(ret b.BOOL, err error)[failretval==-1] = user32.GetMessageW
 //sys GetWindowLongPtrW(hWnd b.HWND, nIndex int32) (ret b.LONG_PTR, err error)[failretval==0] = user32.GetWindowLongPtrW
 //sys GetWindowRect(hWnd b.HWND, lpRect *t.RECT)(ret b.BOOL, err error)[failretval==0] = user32.GetWindowRect
 //sys LoadCursorW(hInstance b.HINSTANCE, lpCursorName *uint16) (ret b.HCURSOR, err error)[failretval==0] = user32.LoadCursorW
 //sys RegisterClassExW(unnamedParam1 *t.WNDCLASSEXW_Golang) (ret b.ATOM, err error)[failretval==0] = user32.RegisterClassExW
 //sys SendInput(cInputs b.UINT, pInputs t.LPINPUT, cbSize int32)(u b.UINT, err error)[failretval==0] = user32.SendInput
+//sys SetCursorPos(x int32, y int32)(ret b.BOOL, err error)[failretval==0] = user32.SetCursorPos
 //sys SetForegroundWindow(hWnd b.HWND)(ret b.BOOL, err error)[failretval==0] = user32.SetForegroundWindow
 //sys UnregisterClassW(lpClassName *uint16, hInstance b.HINSTANCE)(ret b.BOOL, err error)[failretval==0] = user32.UnregisterClassW
 */
@@ -38,7 +40,8 @@ var (
 //sys IsWindowVisible(hWnd b.HWND)(ret b.BOOL) = user32.IsWindowVisible
 //sys PeekMessageW(lpMsg *t.MSG, hWnd b.HWND, wMsgFilterMin b.UINT, wMsgFilterMax b.UINT, wRemoveMsg b.UINT)(ret b.BOOL) = user32.PeekMessageW
 //sys PostQuitMessage(nExitCode int32) = user32.PostQuitMessage
-//sys SetCursorPos(x int32, y int32)(ret b.BOOL) = user32.SetCursorPos
+//sys SetCursor(hCursor b.HCURSOR)(ret b.HCURSOR) = user32.SetCursor
+//sys ShowCursor(bShow b.BOOL)(ret int32) = user32.ShowCursor
 //sys ShowWindow(hWnd b.HWND, nCmdShow int32) (ret b.BOOL) = user32.ShowWindow
 //sys TranslateMessage(lpMsg *t.MSG) (ret b.BOOL) = user32.TranslateMessage
 //sys UpdateWindow(hWnd b.HWND)(ret b.BOOL) = user32.UpdateWindow
