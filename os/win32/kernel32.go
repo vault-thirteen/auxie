@@ -8,7 +8,8 @@ package win32
 
 // Functions that do not set last error:
 /*
- */
+//sys GetLastError()(lastErrorCode b.DWORD) = kernel32.GetLastError
+*/
 
 // Non-standard logics. Be very careful using these functions.
 /*

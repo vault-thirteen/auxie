@@ -7,9 +7,6 @@ import (
 	"unsafe"
 
 	b "github.com/vault-thirteen/auxie/os/win32/base"
-	//e "github.com/vault-thirteen/auxie/os/win32/enum"
-	//i "github.com/vault-thirteen/auxie/os/win32/interface"
-	//t "github.com/vault-thirteen/auxie/os/win32/type"
 	"golang.org/x/sys/windows"
 )
 
@@ -18,8 +15,15 @@ var _ unsafe.Pointer
 var (
 	modkernel32 = windows.NewLazySystemDLL("kernel32.dll")
 
+	procGetLastError = modkernel32.NewProc("GetLastError")
 	procSetLastError = modkernel32.NewProc("SetLastError")
 )
+
+func GetLastError() (lastErrorCode b.DWORD) {
+	r0, _, _ := syscall.SyscallN(procGetLastError.Addr())
+	lastErrorCode = b.DWORD(r0)
+	return
+}
 
 func SetLastError(dwErrCode b.DWORD) {
 	syscall.SyscallN(procSetLastError.Addr(), uintptr(dwErrCode))
