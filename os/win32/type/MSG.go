@@ -5,12 +5,12 @@ import (
 )
 
 type MSG struct {
-	hwnd    b.HWND
-	message b.UINT
-	wParam  b.WPARAM
-	lParam  b.LPARAM
-	time    b.DWORD
-	pt      POINT
+	Hwnd    b.HWND
+	Message b.UINT
+	WParam  b.WPARAM
+	LParam  b.LPARAM
+	Time    b.DWORD
+	Pt      POINT
 	//lPrivate DWORD
 }
 
