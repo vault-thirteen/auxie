@@ -432,3 +432,29 @@ const (
 	MOUSEEVENTF_VIRTUALDESK     = 0x4000  /* map to entire virtual desktop */
 	MOUSEEVENTF_ABSOLUTE        = 0x8000  /* absolute move */
 )
+
+const (
+	MWMO_WAITALL        = 0x0001
+	MWMO_ALERTABLE      = 0x0002
+	MWMO_INPUTAVAILABLE = 0x0004
+)
+
+// Queue status flags for GetQueueStatus() and MsgWaitForMultipleObjects().
+const (
+	QS_KEY            = 0x0001
+	QS_MOUSEMOVE      = 0x0002
+	QS_MOUSEBUTTON    = 0x0004
+	QS_POSTMESSAGE    = 0x0008
+	QS_TIMER          = 0x0010
+	QS_PAINT          = 0x0020
+	QS_SENDMESSAGE    = 0x0040
+	QS_HOTKEY         = 0x0080
+	QS_ALLPOSTMESSAGE = 0x0100
+	QS_RAWINPUT       = 0x0400
+	QS_TOUCH          = 0x0800
+	QS_POINTER        = 0x1000
+	QS_MOUSE          = QS_MOUSEMOVE | QS_MOUSEBUTTON
+	QS_INPUT          = QS_MOUSE | QS_KEY | QS_RAWINPUT | QS_TOUCH | QS_POINTER
+	QS_ALLEVENTS      = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY
+	QS_ALLINPUT       = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE
+)

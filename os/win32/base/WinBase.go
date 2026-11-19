@@ -18,3 +18,5 @@ const (
 	STD_OUTPUT_HANDLE = ^uint32(11 - 1) // 4294967285 (0xFFFFFFF5)
 	STD_ERROR_HANDLE  = ^uint32(12 - 1) // 4294967284 (0xFFFFFFF4)
 )
+
+const INFINITE = 0xFFFFFFFF // Infinite timeout
