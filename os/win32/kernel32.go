@@ -4,7 +4,9 @@ package win32
 
 // Functions that set last error:
 /*
- */
+//sys CreateEventW(lpEventAttributes *t.SECURITY_ATTRIBUTES, bManualReset b.BOOL, bInitialState b.BOOL, lpName *b.WCHAR)(ret b.HANDLE, err error)[failretval==nil] = kernel32.CreateEventW
+//sys SetEvent(hEvent b.HANDLE)(ret b.BOOL, err error)[failretval==0] = kernel32.SetEvent
+*/
 
 // Functions that do not set last error:
 /*

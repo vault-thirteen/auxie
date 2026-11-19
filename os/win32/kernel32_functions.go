@@ -7,6 +7,7 @@ import (
 	"unsafe"
 
 	b "github.com/vault-thirteen/auxie/os/win32/base"
+	t "github.com/vault-thirteen/auxie/os/win32/type"
 	"golang.org/x/sys/windows"
 )
 
@@ -15,13 +16,33 @@ var _ unsafe.Pointer
 var (
 	modkernel32 = windows.NewLazySystemDLL("kernel32.dll")
 
+	procCreateEventW = modkernel32.NewProc("CreateEventW")
 	procGetLastError = modkernel32.NewProc("GetLastError")
+	procSetEvent     = modkernel32.NewProc("SetEvent")
 	procSetLastError = modkernel32.NewProc("SetLastError")
 )
+
+func CreateEventW(lpEventAttributes *t.SECURITY_ATTRIBUTES, bManualReset b.BOOL, bInitialState b.BOOL, lpName *b.WCHAR) (ret b.HANDLE, err error) {
+	r0, _, e1 := syscall.SyscallN(procCreateEventW.Addr(), uintptr(unsafe.Pointer(lpEventAttributes)), uintptr(bManualReset), uintptr(bInitialState), uintptr(unsafe.Pointer(lpName)))
+	ret = b.HANDLE(r0)
+	if ret == nil {
+		err = errnoErr(e1)
+	}
+	return
+}
 
 func GetLastError() (lastErrorCode b.DWORD) {
 	r0, _, _ := syscall.SyscallN(procGetLastError.Addr())
 	lastErrorCode = b.DWORD(r0)
+	return
+}
+
+func SetEvent(hEvent b.HANDLE) (ret b.BOOL, err error) {
+	r0, _, e1 := syscall.SyscallN(procSetEvent.Addr(), uintptr(hEvent))
+	ret = b.BOOL(r0)
+	if ret == 0 {
+		err = errnoErr(e1)
+	}
 	return
 }
 

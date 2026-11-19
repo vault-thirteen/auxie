@@ -23,6 +23,7 @@ var (
 //sys GetWindowLongPtrW(hWnd b.HWND, nIndex int32) (ret b.LONG_PTR, err error)[failretval==0] = user32.GetWindowLongPtrW
 //sys GetWindowRect(hWnd b.HWND, lpRect *t.RECT)(ret b.BOOL, err error)[failretval==0] = user32.GetWindowRect
 //sys LoadCursorW(hInstance b.HINSTANCE, lpCursorName *uint16) (ret b.HCURSOR, err error)[failretval==0] = user32.LoadCursorW
+//sys MsgWaitForMultipleObjectsEx(nCount b.DWORD, pHandles *b.HANDLE, dwMilliseconds b.DWORD, dwWakeMask b.DWORD, dwFlags b.DWORD)(ret b.DWORD, err error)[failretval==windows.WAIT_FAILED] = user32.MsgWaitForMultipleObjectsEx
 //sys RegisterClassExW(unnamedParam1 *t.WNDCLASSEXW_Golang) (ret b.ATOM, err error)[failretval==0] = user32.RegisterClassExW
 //sys SendInput(cInputs b.UINT, pInputs t.LPINPUT, cbSize int32)(u b.UINT, err error)[failretval==0] = user32.SendInput
 //sys SetCursorPos(x int32, y int32)(ret b.BOOL, err error)[failretval==0] = user32.SetCursorPos
