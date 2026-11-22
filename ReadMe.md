@@ -20,51 +20,52 @@ and _Windows_.
 | 6  | **Boolean**             | [Boolean](boolean/ReadMe.md)                         | A boolean-to-string parser.                                         |
 | 7  | **Cache**               | [Cache](Cache/ReadMe.md)                             | A cache with several features.                                      |
 | 8  | **CIO**                 | [cio](cio/ReadMe.md)                                 | Console input & output.                                             |
-| 9  | **Counter**             | [counter](counter/ReadMe.md)                         | A counter with a practically unlimited value.                       |
-| 10 | **CSV**                 | [csv](csv/ReadMe.md)                                 | A writer for _CSV_ format.                                          |
-| 11 | **CTools**              | [CTools](CTools/ReadMe.md)                           | Various tools for C/C++ languages.                                  |
-| 12 | **Dev-Inf**             | [Dev Inf](dev-inf/ReadMe.md)                         | Various development infrastructure scripts.                         |
-| 13 | **DLL**                 | [DLL](DLL/ReadMe.md)                                 | Dynamic Link Library.                                               |
-| 14 | **Endianness**          | [endianness](endianness/ReadMe.md)                   | Detection of "endianness" of a machine.                             |
-| 15 | **Env**                 | [Env](env/ReadMe.md)                                 | A simple library to work with environment variables.                |
-| 16 | **Errors**              | [Errors](errors/ReadMe.md)                           | A simple library to work with built-in errors.                      |
-| 17 | **File**                | [File](file/ReadMe.md)                               | A simple library to work with files and folders.                    |
-| 18 | **Hash**                | [hash](hash/ReadMe.md)                               | Helper functions for hash sums.                                     |
-| 19 | **Header**              | [Header](header/ReadMe.md)                           | _IANA_ registered message header names.                             |
-| 20 | **HTML-DOM**            | [HTML-DOM](HTML-DOM/ReadMe.md)                       | A library to work with _HTML_ document object model.                |
-| 21 | **HTTP Helper**         | [HTTP Helper](http-helper/ReadMe.md)                 | A package that helps in processing and testing _HTTP_ requests.     |
-| 22 | **IPA**                 | [IPA](IPA/ReadMe.md)                                 | Methods to work with Internet Protocol Addresses.                   |
-| 23 | **List**                | [list](list/ReadMe.md)                               | Functions for generic lists.                                        |
-| 24 | **MemUC**               | [MemUC](MemUC/ReadMe.md)                             | A library to cope with memory usage in _Go_ programming language.   |
-| 25 | **MIME**                | [MIME](MIME/ReadMe.md)                               | MIME types and basic functions to work with them.                   |
-| 26 | **MySQL-IT**            | [MySQL-IT](MySQL-IT/ReadMe.md)                       | A template for an application importing data into _MySQL_ database. |
-| 27 | **NTS**                 | [NTS](NTS/ReadMe.md)                                 | Methods for processing null-terminated strings.                     |
-| 28 | **Number**              | [Number](number/ReadMe.md)                           | A simple library to work with numbers in _Go_ programming language. |
-| 29 | **OS**                  | [os](os/ReadMe.md)                                   | Operating System.                                                   |
-| 30 | **Queue**               | [queue](queue/ReadMe.md)                             | A simple queue.                                                     |
-| 31 | **Random**              | [Random](random/ReadMe.md)                           | A simple library to work with random integer numbers.               |
-| 32 | **Range**               | [Range](range/ReadMe.md)                             | Methods to work with ranges of floating point numbers.              |
-| 33 | **Reader**              | [Reader](reader/ReadMe.md)                           | Auxiliary methods and functions for reading.                        |
-| 34 | **ReaderSeeker**        | [ReaderSeeker](ReaderSeeker/ReadMe.md)               | An interface which combines _io.Reader_ and _io.Seeker_ interfaces. |
-| 35 | **RPoFS**               | [RPoFS](rpofs/ReadMe.md)                             | Random Password of Fixed Size.                                      |
-| 36 | **RS**                  | [RS](rs/ReadMe.md)                                   | A Seeker extension to the reader package.                           |
-| 37 | **SAAC**                | [SAAC](SAAC/ReadMe.md)                               | Simple Arithmetic Average Calculator.                               |
-| 38 | **Simple-File-Server**  | [Simple-File-Server](Simple-File-Server/ReadMe.md)   | A simple file server library.                                       |
-| 39 | **SimpleMergeSorter**   | [SimpleMergeSorter](SimpleMergeSorter/ReadMe.md)     | Simple Merge Sorter.                                                |
-| 40 | **SimpleMovingAverage** | [SimpleMovingAverage](SimpleMovingAverage/ReadMe.md) | Simple Moving Average.                                              |
-| 41 | **SimpleStupidCache**   | [SimpleStupidCache](SimpleStupidCache/ReadMe.md)     | Simple Stupid Cache.                                                |
-| 42 | **SLReader**            | [SLReader](SLReader/ReadMe.md)                       | A reader based on io.Reader and using speed limits.                 |
-| 43 | **SQL**                 | [SQL](SQL/ReadMe.md)                                 | Various _SQL_ helpers.                                              |
-| 44 | **Start-Controller**    | [Start-Controller](Start-Controller/ReadMe.md)       | A start-stop controlling mechanism.                                 |
-| 45 | **Task-Queue**          | [task-queue](task-queue/ReadMe.md)                   | Task queue.                                                         |
-| 46 | **Tester**              | [Tester](tester/ReadMe.md)                           | Various useful functions to perform tests.                          |
-| 47 | **Time**                | [Time](time/ReadMe.md)                               | A simple library to work with time in _Go_ programming language.    |
-| 48 | **Time Metadata**       | [Time Metadata](time-metadata/ReadMe.md)             | An auxiliary type for storing time of creation and time of update.  |
-| 49 | **TSB**                 | [TSB](TSB/ReadMe.md)                                 | Tri-State Boolean.                                                  |
-| 50 | **Unicode**             | [Unicode](unicode/ReadMe.md)                         | _Unicode_ symbols processing package.                               |
-| 51 | **VCS**                 | [VCS](VCS/ReadMe.md)                                 | A collection of helpers for version control systems.                |
-| 52 | **Versioneer**          | [Versioneer](Versioneer/ReadMe.md)                   | Product and dependency version helper.                              |
-| 53 | **Zipper**              | [Zipper](zipper/ReadMe.md)                           | Functions to work with compressed files.                            |
+| 9  | **Colour**                 | [colour](colour/ReadMe.md)                                 | Colour.                                             |
+| 10  | **Counter**             | [counter](counter/ReadMe.md)                         | A counter with a practically unlimited value.                       |
+| 11 | **CSV**                 | [csv](csv/ReadMe.md)                                 | A writer for _CSV_ format.                                          |
+| 12 | **CTools**              | [CTools](CTools/ReadMe.md)                           | Various tools for C/C++ languages.                                  |
+| 13 | **Dev-Inf**             | [Dev Inf](dev-inf/ReadMe.md)                         | Various development infrastructure scripts.                         |
+| 14 | **DLL**                 | [DLL](DLL/ReadMe.md)                                 | Dynamic Link Library.                                               |
+| 15 | **Endianness**          | [endianness](endianness/ReadMe.md)                   | Detection of "endianness" of a machine.                             |
+| 16 | **Env**                 | [Env](env/ReadMe.md)                                 | A simple library to work with environment variables.                |
+| 17 | **Errors**              | [Errors](errors/ReadMe.md)                           | A simple library to work with built-in errors.                      |
+| 18 | **File**                | [File](file/ReadMe.md)                               | A simple library to work with files and folders.                    |
+| 19 | **Hash**                | [hash](hash/ReadMe.md)                               | Helper functions for hash sums.                                     |
+| 20 | **Header**              | [Header](header/ReadMe.md)                           | _IANA_ registered message header names.                             |
+| 21 | **HTML-DOM**            | [HTML-DOM](HTML-DOM/ReadMe.md)                       | A library to work with _HTML_ document object model.                |
+| 22 | **HTTP Helper**         | [HTTP Helper](http-helper/ReadMe.md)                 | A package that helps in processing and testing _HTTP_ requests.     |
+| 23 | **IPA**                 | [IPA](IPA/ReadMe.md)                                 | Methods to work with Internet Protocol Addresses.                   |
+| 24 | **List**                | [list](list/ReadMe.md)                               | Functions for generic lists.                                        |
+| 25 | **MemUC**               | [MemUC](MemUC/ReadMe.md)                             | A library to cope with memory usage in _Go_ programming language.   |
+| 26 | **MIME**                | [MIME](MIME/ReadMe.md)                               | MIME types and basic functions to work with them.                   |
+| 27 | **MySQL-IT**            | [MySQL-IT](MySQL-IT/ReadMe.md)                       | A template for an application importing data into _MySQL_ database. |
+| 28 | **NTS**                 | [NTS](NTS/ReadMe.md)                                 | Methods for processing null-terminated strings.                     |
+| 29 | **Number**              | [Number](number/ReadMe.md)                           | A simple library to work with numbers in _Go_ programming language. |
+| 30 | **OS**                  | [os](os/ReadMe.md)                                   | Operating System.                                                   |
+| 31 | **Queue**               | [queue](queue/ReadMe.md)                             | A simple queue.                                                     |
+| 32 | **Random**              | [Random](random/ReadMe.md)                           | A simple library to work with random integer numbers.               |
+| 33 | **Range**               | [Range](range/ReadMe.md)                             | Methods to work with ranges of floating point numbers.              |
+| 34 | **Reader**              | [Reader](reader/ReadMe.md)                           | Auxiliary methods and functions for reading.                        |
+| 35 | **ReaderSeeker**        | [ReaderSeeker](ReaderSeeker/ReadMe.md)               | An interface which combines _io.Reader_ and _io.Seeker_ interfaces. |
+| 36 | **RPoFS**               | [RPoFS](rpofs/ReadMe.md)                             | Random Password of Fixed Size.                                      |
+| 37 | **RS**                  | [RS](rs/ReadMe.md)                                   | A Seeker extension to the reader package.                           |
+| 38 | **SAAC**                | [SAAC](SAAC/ReadMe.md)                               | Simple Arithmetic Average Calculator.                               |
+| 39 | **Simple-File-Server**  | [Simple-File-Server](Simple-File-Server/ReadMe.md)   | A simple file server library.                                       |
+| 40 | **SimpleMergeSorter**   | [SimpleMergeSorter](SimpleMergeSorter/ReadMe.md)     | Simple Merge Sorter.                                                |
+| 41 | **SimpleMovingAverage** | [SimpleMovingAverage](SimpleMovingAverage/ReadMe.md) | Simple Moving Average.                                              |
+| 42 | **SimpleStupidCache**   | [SimpleStupidCache](SimpleStupidCache/ReadMe.md)     | Simple Stupid Cache.                                                |
+| 43 | **SLReader**            | [SLReader](SLReader/ReadMe.md)                       | A reader based on io.Reader and using speed limits.                 |
+| 44 | **SQL**                 | [SQL](SQL/ReadMe.md)                                 | Various _SQL_ helpers.                                              |
+| 45 | **Start-Controller**    | [Start-Controller](Start-Controller/ReadMe.md)       | A start-stop controlling mechanism.                                 |
+| 46 | **Task-Queue**          | [task-queue](task-queue/ReadMe.md)                   | Task queue.                                                         |
+| 47 | **Tester**              | [Tester](tester/ReadMe.md)                           | Various useful functions to perform tests.                          |
+| 48 | **Time**                | [Time](time/ReadMe.md)                               | A simple library to work with time in _Go_ programming language.    |
+| 49 | **Time Metadata**       | [Time Metadata](time-metadata/ReadMe.md)             | An auxiliary type for storing time of creation and time of update.  |
+| 50 | **TSB**                 | [TSB](TSB/ReadMe.md)                                 | Tri-State Boolean.                                                  |
+| 51 | **Unicode**             | [Unicode](unicode/ReadMe.md)                         | _Unicode_ symbols processing package.                               |
+| 52 | **VCS**                 | [VCS](VCS/ReadMe.md)                                 | A collection of helpers for version control systems.                |
+| 53 | **Versioneer**          | [Versioneer](Versioneer/ReadMe.md)                   | Product and dependency version helper.                              |
+| 54 | **Zipper**              | [Zipper](zipper/ReadMe.md)                           | Functions to work with compressed files.                            |
 
 ### Microsoft Windows OS support
 
