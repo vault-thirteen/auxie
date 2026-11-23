@@ -13,9 +13,8 @@ import (
 )
 
 const (
-	Err_MultipleResults           = "multiple results were found"
-	Err_MouseCursorMovementFailed = "mouse cursor movement failed"
-	Err_WindowIsNotFound          = "window is not found"
+	Err_MultipleResults  = "multiple results were found"
+	Err_WindowIsNotFound = "window is not found"
 
 	Errf_NoVisibleWindow = "no visible window was found for PID %d"
 )
@@ -234,8 +233,9 @@ func MoveMouseCursorToPos(pos *c.Pos[int32]) (err error) {
 		return nil
 	}
 
-	if win32.SetCursorPos(pos.X, pos.Y) != b.TRUE {
-		return errors.ErrorFromText(Err_MouseCursorMovementFailed)
+	_, err = win32.SetCursorPos(pos.X, pos.Y)
+	if err != nil {
+		return err
 	}
 
 	return nil
