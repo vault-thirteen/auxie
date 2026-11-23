@@ -36,36 +36,37 @@ and _Windows_.
 | 22 | **HTTP Helper**         | [HTTP Helper](http-helper/ReadMe.md)                 | A package that helps in processing and testing _HTTP_ requests.     |
 | 23 | **IPA**                 | [IPA](IPA/ReadMe.md)                                 | Methods to work with Internet Protocol Addresses.                   |
 | 24 | **List**                | [list](list/ReadMe.md)                               | Functions for generic lists.                                        |
-| 25 | **MemUC**               | [MemUC](MemUC/ReadMe.md)                             | A library to cope with memory usage in _Go_ programming language.   |
-| 26 | **MIME**                | [MIME](MIME/ReadMe.md)                               | MIME types and basic functions to work with them.                   |
-| 27 | **MySQL-IT**            | [MySQL-IT](MySQL-IT/ReadMe.md)                       | A template for an application importing data into _MySQL_ database. |
-| 28 | **NTS**                 | [NTS](NTS/ReadMe.md)                                 | Methods for processing null-terminated strings.                     |
-| 29 | **Number**              | [Number](number/ReadMe.md)                           | A simple library to work with numbers in _Go_ programming language. |
-| 30 | **OS**                  | [os](os/ReadMe.md)                                   | Operating System.                                                   |
-| 31 | **Queue**               | [queue](queue/ReadMe.md)                             | A simple queue.                                                     |
-| 32 | **Random**              | [Random](random/ReadMe.md)                           | A simple library to work with random integer numbers.               |
-| 33 | **Range**               | [Range](range/ReadMe.md)                             | Methods to work with ranges of floating point numbers.              |
-| 34 | **Reader**              | [Reader](reader/ReadMe.md)                           | Auxiliary methods and functions for reading.                        |
-| 35 | **ReaderSeeker**        | [ReaderSeeker](ReaderSeeker/ReadMe.md)               | An interface which combines _io.Reader_ and _io.Seeker_ interfaces. |
-| 36 | **RPoFS**               | [RPoFS](rpofs/ReadMe.md)                             | Random Password of Fixed Size.                                      |
-| 37 | **RS**                  | [RS](rs/ReadMe.md)                                   | A Seeker extension to the reader package.                           |
-| 38 | **SAAC**                | [SAAC](SAAC/ReadMe.md)                               | Simple Arithmetic Average Calculator.                               |
-| 39 | **Simple-File-Server**  | [Simple-File-Server](Simple-File-Server/ReadMe.md)   | A simple file server library.                                       |
-| 40 | **SimpleMergeSorter**   | [SimpleMergeSorter](SimpleMergeSorter/ReadMe.md)     | Simple Merge Sorter.                                                |
-| 41 | **SimpleMovingAverage** | [SimpleMovingAverage](SimpleMovingAverage/ReadMe.md) | Simple Moving Average.                                              |
-| 42 | **SimpleStupidCache**   | [SimpleStupidCache](SimpleStupidCache/ReadMe.md)     | Simple Stupid Cache.                                                |
-| 43 | **SLReader**            | [SLReader](SLReader/ReadMe.md)                       | A reader based on io.Reader and using speed limits.                 |
-| 44 | **SQL**                 | [SQL](SQL/ReadMe.md)                                 | Various _SQL_ helpers.                                              |
-| 45 | **Start-Controller**    | [Start-Controller](Start-Controller/ReadMe.md)       | A start-stop controlling mechanism.                                 |
-| 46 | **Task-Queue**          | [task-queue](task-queue/ReadMe.md)                   | Task queue.                                                         |
-| 47 | **Tester**              | [Tester](tester/ReadMe.md)                           | Various useful functions to perform tests.                          |
-| 48 | **Time**                | [Time](time/ReadMe.md)                               | A simple library to work with time in _Go_ programming language.    |
-| 49 | **Time Metadata**       | [Time Metadata](time-metadata/ReadMe.md)             | An auxiliary type for storing time of creation and time of update.  |
-| 50 | **TSB**                 | [TSB](TSB/ReadMe.md)                                 | Tri-State Boolean.                                                  |
-| 51 | **Unicode**             | [Unicode](unicode/ReadMe.md)                         | _Unicode_ symbols processing package.                               |
-| 52 | **VCS**                 | [VCS](VCS/ReadMe.md)                                 | A collection of helpers for version control systems.                |
-| 53 | **Versioneer**          | [Versioneer](Versioneer/ReadMe.md)                   | Product and dependency version helper.                              |
-| 54 | **Zipper**              | [Zipper](zipper/ReadMe.md)                           | Functions to work with compressed files.                            |
+| 25 | **MCCI**                | [MCCI](MCCI/ReadMe.md)                               | Multi-Channel Colour Image. |
+| 26 | **MemUC**               | [MemUC](MemUC/ReadMe.md)                             | A library to cope with memory usage in _Go_ programming language.   |
+| 27 | **MIME**                | [MIME](MIME/ReadMe.md)                               | MIME types and basic functions to work with them.                   |
+| 28 | **MySQL-IT**            | [MySQL-IT](MySQL-IT/ReadMe.md)                       | A template for an application importing data into _MySQL_ database. |
+| 29 | **NTS**                 | [NTS](NTS/ReadMe.md)                                 | Methods for processing null-terminated strings.                     |
+| 30 | **Number**              | [Number](number/ReadMe.md)                           | A simple library to work with numbers in _Go_ programming language. |
+| 31 | **OS**                  | [os](os/ReadMe.md)                                   | Operating System.                                                   |
+| 32 | **Queue**               | [queue](queue/ReadMe.md)                             | A simple queue.                                                     |
+| 33 | **Random**              | [Random](random/ReadMe.md)                           | A simple library to work with random integer numbers.               |
+| 34 | **Range**               | [Range](range/ReadMe.md)                             | Methods to work with ranges of floating point numbers.              |
+| 35 | **Reader**              | [Reader](reader/ReadMe.md)                           | Auxiliary methods and functions for reading.                        |
+| 36 | **ReaderSeeker**        | [ReaderSeeker](ReaderSeeker/ReadMe.md)               | An interface which combines _io.Reader_ and _io.Seeker_ interfaces. |
+| 37 | **RPoFS**               | [RPoFS](rpofs/ReadMe.md)                             | Random Password of Fixed Size.                                      |
+| 38 | **RS**                  | [RS](rs/ReadMe.md)                                   | A Seeker extension to the reader package.                           |
+| 39 | **SAAC**                | [SAAC](SAAC/ReadMe.md)                               | Simple Arithmetic Average Calculator.                               |
+| 40 | **Simple-File-Server**  | [Simple-File-Server](Simple-File-Server/ReadMe.md)   | A simple file server library.                                       |
+| 41 | **SimpleMergeSorter**   | [SimpleMergeSorter](SimpleMergeSorter/ReadMe.md)     | Simple Merge Sorter.                                                |
+| 42 | **SimpleMovingAverage** | [SimpleMovingAverage](SimpleMovingAverage/ReadMe.md) | Simple Moving Average.                                              |
+| 43 | **SimpleStupidCache**   | [SimpleStupidCache](SimpleStupidCache/ReadMe.md)     | Simple Stupid Cache.                                                |
+| 44 | **SLReader**            | [SLReader](SLReader/ReadMe.md)                       | A reader based on io.Reader and using speed limits.                 |
+| 45 | **SQL**                 | [SQL](SQL/ReadMe.md)                                 | Various _SQL_ helpers.                                              |
+| 46 | **Start-Controller**    | [Start-Controller](Start-Controller/ReadMe.md)       | A start-stop controlling mechanism.                                 |
+| 47 | **Task-Queue**          | [task-queue](task-queue/ReadMe.md)                   | Task queue.                                                         |
+| 48 | **Tester**              | [Tester](tester/ReadMe.md)                           | Various useful functions to perform tests.                          |
+| 49 | **Time**                | [Time](time/ReadMe.md)                               | A simple library to work with time in _Go_ programming language.    |
+| 50 | **Time Metadata**       | [Time Metadata](time-metadata/ReadMe.md)             | An auxiliary type for storing time of creation and time of update.  |
+| 51 | **TSB**                 | [TSB](TSB/ReadMe.md)                                 | Tri-State Boolean.                                                  |
+| 52 | **Unicode**             | [Unicode](unicode/ReadMe.md)                         | _Unicode_ symbols processing package.                               |
+| 53 | **VCS**                 | [VCS](VCS/ReadMe.md)                                 | A collection of helpers for version control systems.                |
+| 54 | **Versioneer**          | [Versioneer](Versioneer/ReadMe.md)                   | Product and dependency version helper.                              |
+| 55 | **Zipper**              | [Zipper](zipper/ReadMe.md)                           | Functions to work with compressed files.                            |
 
 ### Microsoft Windows OS support
 
