@@ -33,15 +33,6 @@ func NewImageFromImage(src image.Image, channelPixelFormat ChannelPixelFormat, a
 		return nil, errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
 	}
 
-	srcColourModel := c.GetColourModelType(src.ColorModel())
-	switch srcColourModel {
-	case c.ColourModelType_RGBA,
-		c.ColourModelType_NRGBA:
-
-	default:
-		return nil, errors.ErrorFromText(Err_UnsupportedImageFormat)
-	}
-
 	width := src.Bounds().Dx()
 	height := src.Bounds().Dy()
 
@@ -157,12 +148,6 @@ func (img *Image[T]) findChannelIndex(name string, waveLengthNm float32) (idx in
 }
 func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 	srcColourModel := c.GetColourModelType(src.ColorModel())
-	switch srcColourModel {
-	case c.ColourModelType_RGBA:
-	case c.ColourModelType_NRGBA:
-	default:
-		return errors.ErrorFromText(Err_UnsupportedImageFormat)
-	}
 
 	channelData := make([]ChannelDatum[T], 0, 4)
 
@@ -250,6 +235,22 @@ func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 						g_premultiplied = g_straight * alpha_normalised
 						b_premultiplied = b_straight * alpha_normalised
 					}
+
+				default: // Pre-multiplied, 16-bit.
+					{
+						r_premultiplied, g_premultiplied, b_premultiplied, alpha = GetRgbaAsFloat32(abstractPixel)
+						alpha_normalised = alpha / float32(math.MaxUint16) // 16-bit.
+
+						if alpha_normalised != 0 {
+							r_straight = r_premultiplied / alpha_normalised
+							g_straight = g_premultiplied / alpha_normalised
+							b_straight = b_premultiplied / alpha_normalised
+						} else {
+							r_straight = 0
+							g_straight = 0
+							b_straight = 0
+						}
+					}
 				}
 			}
 
@@ -265,6 +266,8 @@ func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 							divider = math.MaxUint8
 						case c.ColourModelType_NRGBA: // 8-bit.
 							divider = math.MaxUint8
+						default: // 16-bit.
+							divider = math.MaxUint16
 						}
 
 						switch img.Settings.AlphaChannelMode {
@@ -292,18 +295,44 @@ func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 						switch img.Settings.AlphaChannelMode {
 						case AlphaChannelMode_Straight:
 							{
-								rowRed = append(rowRed, T(r_straight))
-								rowGreen = append(rowGreen, T(g_straight))
-								rowBlue = append(rowBlue, T(b_straight))
-								rowAlpha = append(rowAlpha, T(alpha))
+								switch srcColourModel {
+								case c.ColourModelType_RGBA, // 8-bit.
+									c.ColourModelType_NRGBA: // 8-bit.
+									{
+										rowRed = append(rowRed, T(r_straight))
+										rowGreen = append(rowGreen, T(g_straight))
+										rowBlue = append(rowBlue, T(b_straight))
+										rowAlpha = append(rowAlpha, T(alpha))
+									}
+								default: // 16-bit.
+									{
+										rowRed = append(rowRed, T(ConvertColor16bitTo8bit(uint16(r_straight))))
+										rowGreen = append(rowGreen, T(ConvertColor16bitTo8bit(uint16(g_straight))))
+										rowBlue = append(rowBlue, T(ConvertColor16bitTo8bit(uint16(b_straight))))
+										rowAlpha = append(rowAlpha, T(ConvertColor16bitTo8bit(uint16(alpha))))
+									}
+								}
 							}
 
 						case AlphaChannelMode_Premultiplied:
 							{
-								rowRed = append(rowRed, T(r_premultiplied))
-								rowGreen = append(rowGreen, T(g_premultiplied))
-								rowBlue = append(rowBlue, T(b_premultiplied))
-								rowAlpha = append(rowAlpha, T(alpha))
+								switch srcColourModel {
+								case c.ColourModelType_RGBA, // 8-bit.
+									c.ColourModelType_NRGBA: // 8-bit.
+									{
+										rowRed = append(rowRed, T(r_premultiplied))
+										rowGreen = append(rowGreen, T(g_premultiplied))
+										rowBlue = append(rowBlue, T(b_premultiplied))
+										rowAlpha = append(rowAlpha, T(alpha))
+									}
+								default: // 16-bit.
+									{
+										rowRed = append(rowRed, T(ConvertColor16bitTo8bit(uint16(r_premultiplied))))
+										rowGreen = append(rowGreen, T(ConvertColor16bitTo8bit(uint16(g_premultiplied))))
+										rowBlue = append(rowBlue, T(ConvertColor16bitTo8bit(uint16(b_premultiplied))))
+										rowAlpha = append(rowAlpha, T(ConvertColor16bitTo8bit(uint16(alpha))))
+									}
+								}
 							}
 						}
 					}
@@ -314,18 +343,44 @@ func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 						switch img.Settings.AlphaChannelMode {
 						case AlphaChannelMode_Straight:
 							{
-								rowRed = append(rowRed, T(ConvertColor8bitTo16bit(uint16(r_straight))))
-								rowGreen = append(rowGreen, T(ConvertColor8bitTo16bit(uint16(g_straight))))
-								rowBlue = append(rowBlue, T(ConvertColor8bitTo16bit(uint16(b_straight))))
-								rowAlpha = append(rowAlpha, T(ConvertColor8bitTo16bit(uint16(alpha))))
+								switch srcColourModel {
+								case c.ColourModelType_RGBA, // 8-bit.
+									c.ColourModelType_NRGBA: // 8-bit.
+									{
+										rowRed = append(rowRed, T(ConvertColor8bitTo16bit(uint8(r_straight))))
+										rowGreen = append(rowGreen, T(ConvertColor8bitTo16bit(uint8(g_straight))))
+										rowBlue = append(rowBlue, T(ConvertColor8bitTo16bit(uint8(b_straight))))
+										rowAlpha = append(rowAlpha, T(ConvertColor8bitTo16bit(uint8(alpha))))
+									}
+								default: // 16-bit.
+									{
+										rowRed = append(rowRed, T(r_straight))
+										rowGreen = append(rowGreen, T(g_straight))
+										rowBlue = append(rowBlue, T(b_straight))
+										rowAlpha = append(rowAlpha, T(alpha))
+									}
+								}
 							}
 
 						case AlphaChannelMode_Premultiplied:
 							{
-								rowRed = append(rowRed, T(ConvertColor8bitTo16bit(uint16(r_premultiplied))))
-								rowGreen = append(rowGreen, T(ConvertColor8bitTo16bit(uint16(g_premultiplied))))
-								rowBlue = append(rowBlue, T(ConvertColor8bitTo16bit(uint16(b_premultiplied))))
-								rowAlpha = append(rowAlpha, T(ConvertColor8bitTo16bit(uint16(alpha))))
+								switch srcColourModel {
+								case c.ColourModelType_RGBA, // 8-bit.
+									c.ColourModelType_NRGBA: // 8-bit.
+									{
+										rowRed = append(rowRed, T(ConvertColor8bitTo16bit(uint8(r_premultiplied))))
+										rowGreen = append(rowGreen, T(ConvertColor8bitTo16bit(uint8(g_premultiplied))))
+										rowBlue = append(rowBlue, T(ConvertColor8bitTo16bit(uint8(b_premultiplied))))
+										rowAlpha = append(rowAlpha, T(ConvertColor8bitTo16bit(uint8(alpha))))
+									}
+								default: // 16-bit.
+									{
+										rowRed = append(rowRed, T(r_premultiplied))
+										rowGreen = append(rowGreen, T(g_premultiplied))
+										rowBlue = append(rowBlue, T(b_premultiplied))
+										rowAlpha = append(rowAlpha, T(alpha))
+									}
+								}
 							}
 						}
 					}
