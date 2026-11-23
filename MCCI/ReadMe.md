@@ -37,6 +37,7 @@ order, some industries use formats other than `RGB`, such as `YCbCr`. So, a
 decision was made to create a single one unified format.
 
 > And one ring to rule them all. 
+
 *The Lord of the Rings. John Ronald Reuel Tolkien, 1937-1949.* 
 
 ## Functionality
