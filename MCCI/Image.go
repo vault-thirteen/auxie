@@ -11,9 +11,7 @@ import (
 )
 
 const (
-	Err_DimensionsError        = "dimensions error"
-	Err_UnsupportedImageFormat = "unsupported image format"
-	Err_InvalidPixelFormat     = "invalid pixel format"
+	Err_DimensionsError = "dimensions error"
 
 	Errf_ChannelIsNotFound = "channel is not found, name=%s, waveLength=%v"
 )
@@ -148,36 +146,28 @@ func (img *Image[T]) findChannelIndex(name string, waveLengthNm float32) (idx in
 }
 func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 	srcColourModel := c.GetColourModelType(src.ColorModel())
+	switch srcColourModel {
+	case c.ColourModelType_RGBA: // Pre-multiplied, 8-bit.
+		return img.fillChannelData_RGBA(src)
 
-	channelData := make([]ChannelDatum[T], 0, 4)
+	case c.ColourModelType_NRGBA: // Straight, 8-bit.
+		return img.fillChannelData_NRGBA(src)
 
-	cdRed := ChannelDatum[T]{
-		Channel: &img.Channels[img.ChannelIndex.Red],
-		Canvas:  make([]Row[T], 0, img.Settings.Height),
+	default: // Pre-multiplied, 16-bit.
+		return img.fillChannelData_Common(src)
 	}
-	cdGreen := ChannelDatum[T]{
-		Channel: &img.Channels[img.ChannelIndex.Green],
-		Canvas:  make([]Row[T], 0, img.Settings.Height),
-	}
-	cdBlue := ChannelDatum[T]{
-		Channel: &img.Channels[img.ChannelIndex.Blue],
-		Canvas:  make([]Row[T], 0, img.Settings.Height),
-	}
-	cdAlpha := ChannelDatum[T]{
-		Channel: &img.Channels[img.ChannelIndex.Alpha],
-		Canvas:  make([]Row[T], 0, img.Settings.Height),
-	}
+}
+func (img *Image[T]) fillChannelData_RGBA(src image.Image) (err error) {
+	var cd []ChannelDatum[T]
+	var cdRed, cdGreen, cdBlue, cdAlpha ChannelDatum[T]
+	cd, cdRed, cdGreen, cdBlue, cdAlpha = img.prepareChannelData()
 
 	yLast := int(img.Settings.Height - 1)
 	xLast := int(img.Settings.Width - 1)
 	var rowRed, rowGreen, rowBlue, rowAlpha Row[T]
 	var abstractPixel color.Color
-	var ok bool
-	var pixel_NRGBA color.NRGBA
-	var pixel_RGBA color.RGBA
-	var r_straight, g_straight, b_straight float32
-	var r_premultiplied, g_premultiplied, b_premultiplied float32
-	var alpha, alpha_normalised float32
+	var pd *PixelData
+	var p Pixel[T]
 
 	// Read rows from bottom to top.
 	for y := yLast; y >= 0; y-- {
@@ -189,203 +179,26 @@ func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 		for x := 0; x <= xLast; x++ {
 			abstractPixel = src.At(x, y)
 
-			// Part I. Get colour values (straight and pre-multiplied).
-			{
-				switch srcColourModel {
-				case c.ColourModelType_RGBA: // Pre-multiplied, 8-bit.
-					{
-						pixel_RGBA, ok = abstractPixel.(color.RGBA)
-						if !ok {
-							return errors.ErrorFromText(Err_InvalidPixelFormat)
-						}
-
-						r_premultiplied = float32(pixel_RGBA.R)
-						g_premultiplied = float32(pixel_RGBA.G)
-						b_premultiplied = float32(pixel_RGBA.B)
-
-						alpha = float32(pixel_RGBA.A)
-						alpha_normalised = alpha / float32(math.MaxUint8) // 8-bit.
-
-						if alpha_normalised != 0 {
-							r_straight = r_premultiplied / alpha_normalised
-							g_straight = g_premultiplied / alpha_normalised
-							b_straight = b_premultiplied / alpha_normalised
-						} else {
-							r_straight = 0
-							g_straight = 0
-							b_straight = 0
-						}
-					}
-
-				case c.ColourModelType_NRGBA: // Straight, 8-bit.
-					{
-						pixel_NRGBA, ok = abstractPixel.(color.NRGBA)
-						if !ok {
-							return errors.ErrorFromText(Err_InvalidPixelFormat)
-						}
-
-						r_straight = float32(pixel_NRGBA.R)
-						g_straight = float32(pixel_NRGBA.G)
-						b_straight = float32(pixel_NRGBA.B)
-
-						alpha = float32(pixel_NRGBA.A)
-						alpha_normalised = alpha / float32(math.MaxUint8) // 8-bit.
-
-						r_premultiplied = r_straight * alpha_normalised
-						g_premultiplied = g_straight * alpha_normalised
-						b_premultiplied = b_straight * alpha_normalised
-					}
-
-				default: // Pre-multiplied, 16-bit.
-					{
-						r_premultiplied, g_premultiplied, b_premultiplied, alpha = GetRgbaAsFloat32(abstractPixel)
-						alpha_normalised = alpha / float32(math.MaxUint16) // 16-bit.
-
-						if alpha_normalised != 0 {
-							r_straight = r_premultiplied / alpha_normalised
-							g_straight = g_premultiplied / alpha_normalised
-							b_straight = b_premultiplied / alpha_normalised
-						} else {
-							r_straight = 0
-							g_straight = 0
-							b_straight = 0
-						}
-					}
-				}
+			pd, err = GetPixelData_RGBA(abstractPixel)
+			if err != nil {
+				return err
 			}
 
-			// Part II. Store pixels into selected format.
-			{
-				switch img.Settings.ChannelPixelFormat {
-				case PixelFormat_Float_4B:
-					{
-						// Normalise values before storing.
-						var divider float32
-						switch srcColourModel {
-						case c.ColourModelType_RGBA: // 8-bit.
-							divider = math.MaxUint8
-						case c.ColourModelType_NRGBA: // 8-bit.
-							divider = math.MaxUint8
-						default: // 16-bit.
-							divider = math.MaxUint16
-						}
+			switch img.Settings.ChannelPixelFormat {
+			case PixelFormat_Integer_1B:
+				p = MakePixel_I1B_8bit[T](pd, img.Settings.AlphaChannelMode)
 
-						switch img.Settings.AlphaChannelMode {
-						case AlphaChannelMode_Straight:
-							{
-								rowRed = append(rowRed, T(r_straight/divider))
-								rowGreen = append(rowGreen, T(g_straight/divider))
-								rowBlue = append(rowBlue, T(b_straight/divider))
-								rowAlpha = append(rowAlpha, T(alpha_normalised))
-							}
+			case PixelFormat_Integer_2B:
+				p = MakePixel_I2B_8bit[T](pd, img.Settings.AlphaChannelMode)
 
-						case AlphaChannelMode_Premultiplied:
-							{
-								rowRed = append(rowRed, T(r_premultiplied/divider))
-								rowGreen = append(rowGreen, T(g_premultiplied/divider))
-								rowBlue = append(rowBlue, T(b_premultiplied/divider))
-								rowAlpha = append(rowAlpha, T(alpha_normalised))
-							}
-						}
-					}
-
-				case PixelFormat_Integer_1B:
-					{
-						// Store values directly.
-						switch img.Settings.AlphaChannelMode {
-						case AlphaChannelMode_Straight:
-							{
-								switch srcColourModel {
-								case c.ColourModelType_RGBA, // 8-bit.
-									c.ColourModelType_NRGBA: // 8-bit.
-									{
-										rowRed = append(rowRed, T(r_straight))
-										rowGreen = append(rowGreen, T(g_straight))
-										rowBlue = append(rowBlue, T(b_straight))
-										rowAlpha = append(rowAlpha, T(alpha))
-									}
-								default: // 16-bit.
-									{
-										rowRed = append(rowRed, T(ConvertColor16bitTo8bit(uint16(r_straight))))
-										rowGreen = append(rowGreen, T(ConvertColor16bitTo8bit(uint16(g_straight))))
-										rowBlue = append(rowBlue, T(ConvertColor16bitTo8bit(uint16(b_straight))))
-										rowAlpha = append(rowAlpha, T(ConvertColor16bitTo8bit(uint16(alpha))))
-									}
-								}
-							}
-
-						case AlphaChannelMode_Premultiplied:
-							{
-								switch srcColourModel {
-								case c.ColourModelType_RGBA, // 8-bit.
-									c.ColourModelType_NRGBA: // 8-bit.
-									{
-										rowRed = append(rowRed, T(r_premultiplied))
-										rowGreen = append(rowGreen, T(g_premultiplied))
-										rowBlue = append(rowBlue, T(b_premultiplied))
-										rowAlpha = append(rowAlpha, T(alpha))
-									}
-								default: // 16-bit.
-									{
-										rowRed = append(rowRed, T(ConvertColor16bitTo8bit(uint16(r_premultiplied))))
-										rowGreen = append(rowGreen, T(ConvertColor16bitTo8bit(uint16(g_premultiplied))))
-										rowBlue = append(rowBlue, T(ConvertColor16bitTo8bit(uint16(b_premultiplied))))
-										rowAlpha = append(rowAlpha, T(ConvertColor16bitTo8bit(uint16(alpha))))
-									}
-								}
-							}
-						}
-					}
-
-				case PixelFormat_Integer_2B:
-					{
-						// Store 16-bit values.
-						switch img.Settings.AlphaChannelMode {
-						case AlphaChannelMode_Straight:
-							{
-								switch srcColourModel {
-								case c.ColourModelType_RGBA, // 8-bit.
-									c.ColourModelType_NRGBA: // 8-bit.
-									{
-										rowRed = append(rowRed, T(ConvertColor8bitTo16bit(uint8(r_straight))))
-										rowGreen = append(rowGreen, T(ConvertColor8bitTo16bit(uint8(g_straight))))
-										rowBlue = append(rowBlue, T(ConvertColor8bitTo16bit(uint8(b_straight))))
-										rowAlpha = append(rowAlpha, T(ConvertColor8bitTo16bit(uint8(alpha))))
-									}
-								default: // 16-bit.
-									{
-										rowRed = append(rowRed, T(r_straight))
-										rowGreen = append(rowGreen, T(g_straight))
-										rowBlue = append(rowBlue, T(b_straight))
-										rowAlpha = append(rowAlpha, T(alpha))
-									}
-								}
-							}
-
-						case AlphaChannelMode_Premultiplied:
-							{
-								switch srcColourModel {
-								case c.ColourModelType_RGBA, // 8-bit.
-									c.ColourModelType_NRGBA: // 8-bit.
-									{
-										rowRed = append(rowRed, T(ConvertColor8bitTo16bit(uint8(r_premultiplied))))
-										rowGreen = append(rowGreen, T(ConvertColor8bitTo16bit(uint8(g_premultiplied))))
-										rowBlue = append(rowBlue, T(ConvertColor8bitTo16bit(uint8(b_premultiplied))))
-										rowAlpha = append(rowAlpha, T(ConvertColor8bitTo16bit(uint8(alpha))))
-									}
-								default: // 16-bit.
-									{
-										rowRed = append(rowRed, T(r_premultiplied))
-										rowGreen = append(rowGreen, T(g_premultiplied))
-										rowBlue = append(rowBlue, T(b_premultiplied))
-										rowAlpha = append(rowAlpha, T(alpha))
-									}
-								}
-							}
-						}
-					}
-				}
+			case PixelFormat_Float_4B:
+				p = MakePixel_F4B_8bit[T](pd, img.Settings.AlphaChannelMode)
 			}
+
+			rowRed = append(rowRed, p.R)
+			rowGreen = append(rowGreen, p.G)
+			rowBlue = append(rowBlue, p.B)
+			rowAlpha = append(rowAlpha, p.A)
 		}
 
 		cdRed.Canvas = append(cdRed.Canvas, rowRed)
@@ -394,8 +207,140 @@ func (img *Image[T]) fillChannelData(src image.Image) (err error) {
 		cdAlpha.Canvas = append(cdAlpha.Canvas, rowAlpha)
 	}
 
-	channelData = append(channelData, cdRed, cdGreen, cdBlue, cdAlpha)
-	img.ChannelData = channelData
+	cd = append(cd, cdRed, cdGreen, cdBlue, cdAlpha)
+	img.ChannelData = cd
 
 	return
+}
+func (img *Image[T]) fillChannelData_NRGBA(src image.Image) (err error) {
+	var cd []ChannelDatum[T]
+	var cdRed, cdGreen, cdBlue, cdAlpha ChannelDatum[T]
+	cd, cdRed, cdGreen, cdBlue, cdAlpha = img.prepareChannelData()
+
+	yLast := int(img.Settings.Height - 1)
+	xLast := int(img.Settings.Width - 1)
+	var rowRed, rowGreen, rowBlue, rowAlpha Row[T]
+	var abstractPixel color.Color
+	var pd *PixelData
+	var p Pixel[T]
+
+	// Read rows from bottom to top.
+	for y := yLast; y >= 0; y-- {
+		rowRed = make(Row[T], 0, img.Settings.Width)
+		rowGreen = make(Row[T], 0, img.Settings.Width)
+		rowBlue = make(Row[T], 0, img.Settings.Width)
+		rowAlpha = make(Row[T], 0, img.Settings.Width)
+
+		for x := 0; x <= xLast; x++ {
+			abstractPixel = src.At(x, y)
+
+			pd, err = GetPixelData_NRGBA(abstractPixel)
+			if err != nil {
+				return err
+			}
+
+			switch img.Settings.ChannelPixelFormat {
+			case PixelFormat_Integer_1B:
+				p = MakePixel_I1B_8bit[T](pd, img.Settings.AlphaChannelMode)
+
+			case PixelFormat_Integer_2B:
+				p = MakePixel_I2B_8bit[T](pd, img.Settings.AlphaChannelMode)
+
+			case PixelFormat_Float_4B:
+				p = MakePixel_F4B_8bit[T](pd, img.Settings.AlphaChannelMode)
+			}
+
+			rowRed = append(rowRed, p.R)
+			rowGreen = append(rowGreen, p.G)
+			rowBlue = append(rowBlue, p.B)
+			rowAlpha = append(rowAlpha, p.A)
+		}
+
+		cdRed.Canvas = append(cdRed.Canvas, rowRed)
+		cdGreen.Canvas = append(cdGreen.Canvas, rowGreen)
+		cdBlue.Canvas = append(cdBlue.Canvas, rowBlue)
+		cdAlpha.Canvas = append(cdAlpha.Canvas, rowAlpha)
+	}
+
+	cd = append(cd, cdRed, cdGreen, cdBlue, cdAlpha)
+	img.ChannelData = cd
+
+	return
+}
+func (img *Image[T]) fillChannelData_Common(src image.Image) (err error) {
+	var cd []ChannelDatum[T]
+	var cdRed, cdGreen, cdBlue, cdAlpha ChannelDatum[T]
+	cd, cdRed, cdGreen, cdBlue, cdAlpha = img.prepareChannelData()
+
+	yLast := int(img.Settings.Height - 1)
+	xLast := int(img.Settings.Width - 1)
+	var rowRed, rowGreen, rowBlue, rowAlpha Row[T]
+	var abstractPixel color.Color
+	var pd *PixelData
+	var p Pixel[T]
+
+	// Read rows from bottom to top.
+	for y := yLast; y >= 0; y-- {
+		rowRed = make(Row[T], 0, img.Settings.Width)
+		rowGreen = make(Row[T], 0, img.Settings.Width)
+		rowBlue = make(Row[T], 0, img.Settings.Width)
+		rowAlpha = make(Row[T], 0, img.Settings.Width)
+
+		for x := 0; x <= xLast; x++ {
+			abstractPixel = src.At(x, y)
+
+			pd, err = GetPixelData_Abstract(abstractPixel)
+			if err != nil {
+				return err
+			}
+
+			switch img.Settings.ChannelPixelFormat {
+			case PixelFormat_Integer_1B:
+				p = MakePixel_I1B_16bit[T](pd, img.Settings.AlphaChannelMode)
+
+			case PixelFormat_Integer_2B:
+				p = MakePixel_I2B_16bit[T](pd, img.Settings.AlphaChannelMode)
+
+			case PixelFormat_Float_4B:
+				p = MakePixel_F4B_16bit[T](pd, img.Settings.AlphaChannelMode)
+			}
+
+			rowRed = append(rowRed, p.R)
+			rowGreen = append(rowGreen, p.G)
+			rowBlue = append(rowBlue, p.B)
+			rowAlpha = append(rowAlpha, p.A)
+		}
+
+		cdRed.Canvas = append(cdRed.Canvas, rowRed)
+		cdGreen.Canvas = append(cdGreen.Canvas, rowGreen)
+		cdBlue.Canvas = append(cdBlue.Canvas, rowBlue)
+		cdAlpha.Canvas = append(cdAlpha.Canvas, rowAlpha)
+	}
+
+	cd = append(cd, cdRed, cdGreen, cdBlue, cdAlpha)
+	img.ChannelData = cd
+
+	return
+}
+func (img *Image[T]) prepareChannelData() (cd []ChannelDatum[T], cdRed, cdGreen, cdBlue, cdAlpha ChannelDatum[T]) {
+	cd = make([]ChannelDatum[T], 0, 4)
+
+	cdRed = ChannelDatum[T]{
+		Channel: &img.Channels[img.ChannelIndex.Red],
+		Canvas:  make([]Row[T], 0, img.Settings.Height),
+	}
+	cdGreen = ChannelDatum[T]{
+		Channel: &img.Channels[img.ChannelIndex.Green],
+		Canvas:  make([]Row[T], 0, img.Settings.Height),
+	}
+	cdBlue = ChannelDatum[T]{
+		Channel: &img.Channels[img.ChannelIndex.Blue],
+		Canvas:  make([]Row[T], 0, img.Settings.Height),
+	}
+	cdAlpha = ChannelDatum[T]{
+		Channel: &img.Channels[img.ChannelIndex.Alpha],
+		Canvas:  make([]Row[T], 0, img.Settings.Height),
+	}
+
+	return cd, cdRed, cdGreen, cdBlue, cdAlpha
 }
