@@ -2,6 +2,7 @@ package mcci
 
 const (
 	Err_UnsupportedAlphaChannelMode = "unsupported alpha channel mode"
+	Err_NoChangeIsNeeded            = "no change is needed"
 )
 
 type AlphaChannelMode byte

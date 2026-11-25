@@ -2,6 +2,10 @@ package mcci
 
 import "math"
 
+const (
+	Err_UnsupportedPixelFormat = "unsupported pixel format"
+)
+
 type Pixel[T IPixel] struct {
 	R T
 	G T
@@ -41,18 +45,18 @@ func MakePixel_I1B_16bit[T IPixel](pd *PixelData, alphaChannelMode AlphaChannelM
 	switch alphaChannelMode {
 	case AlphaChannelMode_Straight:
 		p = Pixel[T]{
-			R: T(ConvertColor16bitTo8bit(uint16(pd.R_straight))),
-			G: T(ConvertColor16bitTo8bit(uint16(pd.G_straight))),
-			B: T(ConvertColor16bitTo8bit(uint16(pd.B_straight))),
-			A: T(ConvertColor16bitTo8bit(uint16(pd.Alpha))),
+			R: T(ConvertColour_16bitTo8bit(uint16(pd.R_straight))),
+			G: T(ConvertColour_16bitTo8bit(uint16(pd.G_straight))),
+			B: T(ConvertColour_16bitTo8bit(uint16(pd.B_straight))),
+			A: T(ConvertColour_16bitTo8bit(uint16(pd.Alpha))),
 		}
 
 	case AlphaChannelMode_Premultiplied:
 		p = Pixel[T]{
-			R: T(ConvertColor16bitTo8bit(uint16(pd.R_premultiplied))),
-			G: T(ConvertColor16bitTo8bit(uint16(pd.G_premultiplied))),
-			B: T(ConvertColor16bitTo8bit(uint16(pd.B_premultiplied))),
-			A: T(ConvertColor16bitTo8bit(uint16(pd.Alpha))),
+			R: T(ConvertColour_16bitTo8bit(uint16(pd.R_premultiplied))),
+			G: T(ConvertColour_16bitTo8bit(uint16(pd.G_premultiplied))),
+			B: T(ConvertColour_16bitTo8bit(uint16(pd.B_premultiplied))),
+			A: T(ConvertColour_16bitTo8bit(uint16(pd.Alpha))),
 		}
 	}
 
@@ -66,18 +70,18 @@ func MakePixel_I2B_8bit[T IPixel](pd *PixelData, alphaChannelMode AlphaChannelMo
 	switch alphaChannelMode {
 	case AlphaChannelMode_Straight:
 		p = Pixel[T]{
-			R: T(ConvertColor8bitTo16bit(uint8(pd.R_straight))),
-			G: T(ConvertColor8bitTo16bit(uint8(pd.G_straight))),
-			B: T(ConvertColor8bitTo16bit(uint8(pd.B_straight))),
-			A: T(ConvertColor8bitTo16bit(uint8(pd.Alpha))),
+			R: T(ConvertColour_8bitTo16bit(uint8(pd.R_straight))),
+			G: T(ConvertColour_8bitTo16bit(uint8(pd.G_straight))),
+			B: T(ConvertColour_8bitTo16bit(uint8(pd.B_straight))),
+			A: T(ConvertColour_8bitTo16bit(uint8(pd.Alpha))),
 		}
 
 	case AlphaChannelMode_Premultiplied:
 		p = Pixel[T]{
-			R: T(ConvertColor8bitTo16bit(uint8(pd.R_premultiplied))),
-			G: T(ConvertColor8bitTo16bit(uint8(pd.G_premultiplied))),
-			B: T(ConvertColor8bitTo16bit(uint8(pd.B_premultiplied))),
-			A: T(ConvertColor8bitTo16bit(uint8(pd.Alpha))),
+			R: T(ConvertColour_8bitTo16bit(uint8(pd.R_premultiplied))),
+			G: T(ConvertColour_8bitTo16bit(uint8(pd.G_premultiplied))),
+			B: T(ConvertColour_8bitTo16bit(uint8(pd.B_premultiplied))),
+			A: T(ConvertColour_8bitTo16bit(uint8(pd.Alpha))),
 		}
 	}
 

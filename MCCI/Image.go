@@ -1,6 +1,7 @@
 package mcci
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"math"
@@ -8,6 +9,7 @@ import (
 
 	c "github.com/vault-thirteen/auxie/colour"
 	"github.com/vault-thirteen/auxie/errors"
+	e "github.com/vault-thirteen/auxie/os/win32/enum"
 )
 
 const (
@@ -343,4 +345,521 @@ func (img *Image[T]) prepareChannelData() (cd []ChannelDatum[T], cdRed, cdGreen,
 	}
 
 	return cd, cdRed, cdGreen, cdBlue, cdAlpha
+}
+
+func (img *Image[T]) ChangeAlphaMode(alphaMode AlphaChannelMode) (err error) {
+	if img.Settings.AlphaChannelMode == alphaMode {
+		return errors.ErrorFromText(Err_NoChangeIsNeeded)
+	}
+
+	switch alphaMode {
+	case AlphaChannelMode_Straight:
+		{
+			switch img.Settings.ChannelPixelFormat {
+			case PixelFormat_Integer_1B: // 8-bit, 0..255.
+				return img.changeAlphaModeToStraight_I1B()
+
+			case PixelFormat_Integer_2B: // 16-bit, 0..65535.
+				return img.changeAlphaModeToStraight_I2B()
+
+			case PixelFormat_Float_4B: // 32-bit, 0..1.
+				return img.changeAlphaModeToStraight_F4B()
+
+			default:
+				return errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+			}
+		}
+
+	case AlphaChannelMode_Premultiplied:
+		{
+			switch img.Settings.ChannelPixelFormat {
+			case PixelFormat_Integer_1B: // 8-bit, 0..255.
+				return img.changeAlphaModeToPremultiplied_I1B()
+
+			case PixelFormat_Integer_2B: // 16-bit, 0..65535.
+				return img.changeAlphaModeToPremultiplied_I2B()
+
+			case PixelFormat_Float_4B: // 32-bit, 0..1.
+				return img.changeAlphaModeToPremultiplied_F4B()
+
+			default:
+				return errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+			}
+		}
+
+	default:
+		return errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+}
+func (img *Image[T]) changeAlphaModeToStraight_I1B() (err error) {
+	if img.Settings.AlphaChannelMode != AlphaChannelMode_Premultiplied {
+		return errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+
+	alphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	redChannel := img.ChannelData[img.ChannelIndex.Red]
+	greenChannel := img.ChannelData[img.ChannelIndex.Green]
+	blueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	var pixelMaxValue = any(uint8(math.MaxUint8)).(T)
+
+	var alpha_norm float32
+	for y, alpha_row := range alphaChannel.Canvas {
+		for x, alpha_value := range alpha_row {
+			if alpha_value == 0 {
+				// Important note ! Frankly speaking, such operation is not
+				// possible when alpha channel value is zero, as we can not
+				// "resurrect" information which is already lost. For
+				// compatibility purposes we simply return junk. If you need
+				// to use colours with extremely low alpha values, never use
+				// premultiplied format, as it will destroy your source data !
+				redChannel.Canvas[y][x] = pixelMaxValue
+				greenChannel.Canvas[y][x] = pixelMaxValue
+				blueChannel.Canvas[y][x] = pixelMaxValue
+			} else {
+				alpha_norm = float32(alpha_value) / float32(math.MaxUint8)
+				redChannel.Canvas[y][x] = T(float32(redChannel.Canvas[y][x]) / alpha_norm)
+				greenChannel.Canvas[y][x] = T(float32(greenChannel.Canvas[y][x]) / alpha_norm)
+				blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) / alpha_norm)
+			}
+		}
+	}
+
+	return nil
+}
+func (img *Image[T]) changeAlphaModeToStraight_I2B() (err error) {
+	if img.Settings.AlphaChannelMode != AlphaChannelMode_Premultiplied {
+		return errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+
+	alphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	redChannel := img.ChannelData[img.ChannelIndex.Red]
+	greenChannel := img.ChannelData[img.ChannelIndex.Green]
+	blueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	var pixelMaxValue = any(uint16(math.MaxUint16)).(T)
+
+	var alpha_norm float32
+	for y, alpha_row := range alphaChannel.Canvas {
+		for x, alpha_value := range alpha_row {
+			if alpha_value == 0 {
+				// Important note ! Frankly speaking, such operation is not
+				// possible when alpha channel value is zero, as we can not
+				// "resurrect" information which is already lost. For
+				// compatibility purposes we simply return junk. If you need
+				// to use colours with extremely low alpha values, never use
+				// premultiplied format, as it will destroy your source data !
+				redChannel.Canvas[y][x] = pixelMaxValue
+				greenChannel.Canvas[y][x] = pixelMaxValue
+				blueChannel.Canvas[y][x] = pixelMaxValue
+			} else {
+				alpha_norm = float32(alpha_value) / float32(math.MaxUint16)
+				redChannel.Canvas[y][x] = T(float32(redChannel.Canvas[y][x]) / alpha_norm)
+				greenChannel.Canvas[y][x] = T(float32(greenChannel.Canvas[y][x]) / alpha_norm)
+				blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) / alpha_norm)
+			}
+		}
+	}
+
+	return nil
+}
+func (img *Image[T]) changeAlphaModeToStraight_F4B() (err error) {
+	if img.Settings.AlphaChannelMode != AlphaChannelMode_Premultiplied {
+		return errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+
+	alphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	redChannel := img.ChannelData[img.ChannelIndex.Red]
+	greenChannel := img.ChannelData[img.ChannelIndex.Green]
+	blueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	var alpha_norm float32
+	for y, alpha_row := range alphaChannel.Canvas {
+		for x, alpha_value := range alpha_row {
+			if alpha_value == 0 {
+				// Important note ! Frankly speaking, such operation is not
+				// possible when alpha channel value is zero, as we can not
+				// "resurrect" information which is already lost. For
+				// compatibility purposes we simply return junk. If you need
+				// to use colours with extremely low alpha values, never use
+				// premultiplied format, as it will destroy your source data !
+				redChannel.Canvas[y][x] = T(float32(1.0))
+				greenChannel.Canvas[y][x] = T(float32(1.0))
+				blueChannel.Canvas[y][x] = T(float32(1.0))
+			} else {
+				alpha_norm = float32(alpha_value) // Alpha is already normalised.
+				redChannel.Canvas[y][x] = T(float32(redChannel.Canvas[y][x]) / alpha_norm)
+				greenChannel.Canvas[y][x] = T(float32(greenChannel.Canvas[y][x]) / alpha_norm)
+				blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) / alpha_norm)
+			}
+		}
+	}
+
+	return nil
+}
+func (img *Image[T]) changeAlphaModeToPremultiplied_I1B() (err error) {
+	if img.Settings.AlphaChannelMode != AlphaChannelMode_Straight {
+		return errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+
+	alphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	redChannel := img.ChannelData[img.ChannelIndex.Red]
+	greenChannel := img.ChannelData[img.ChannelIndex.Green]
+	blueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	var alpha_norm float32
+	for y, alpha_row := range alphaChannel.Canvas {
+		for x, alpha_value := range alpha_row {
+			// Important note ! Never use premultiplied format with low
+			// alpha channel values, as it will destroy your source data !
+			alpha_norm = float32(alpha_value) / float32(math.MaxUint8)
+			redChannel.Canvas[y][x] = T(float32(redChannel.Canvas[y][x]) * alpha_norm)
+			greenChannel.Canvas[y][x] = T(float32(greenChannel.Canvas[y][x]) * alpha_norm)
+			blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) * alpha_norm)
+		}
+	}
+
+	return nil
+}
+func (img *Image[T]) changeAlphaModeToPremultiplied_I2B() (err error) {
+	if img.Settings.AlphaChannelMode != AlphaChannelMode_Straight {
+		return errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+
+	alphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	redChannel := img.ChannelData[img.ChannelIndex.Red]
+	greenChannel := img.ChannelData[img.ChannelIndex.Green]
+	blueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	var alpha_norm float32
+	for y, alpha_row := range alphaChannel.Canvas {
+		for x, alpha_value := range alpha_row {
+			// Important note ! Never use premultiplied format with low
+			// alpha channel values, as it will destroy your source data !
+			alpha_norm = float32(alpha_value) / float32(math.MaxUint16)
+			redChannel.Canvas[y][x] = T(float32(redChannel.Canvas[y][x]) * alpha_norm)
+			greenChannel.Canvas[y][x] = T(float32(greenChannel.Canvas[y][x]) * alpha_norm)
+			blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) * alpha_norm)
+		}
+	}
+
+	return nil
+}
+func (img *Image[T]) changeAlphaModeToPremultiplied_F4B() (err error) {
+	if img.Settings.AlphaChannelMode != AlphaChannelMode_Straight {
+		return errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+
+	alphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	redChannel := img.ChannelData[img.ChannelIndex.Red]
+	greenChannel := img.ChannelData[img.ChannelIndex.Green]
+	blueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	var alpha_norm float32
+	for y, alpha_row := range alphaChannel.Canvas {
+		for x, alpha_value := range alpha_row {
+			// Important note ! Never use premultiplied format with low
+			// alpha channel values, as it will destroy your source data !
+			alpha_norm = float32(alpha_value) // Alpha is already normalised.
+			redChannel.Canvas[y][x] = T(float32(redChannel.Canvas[y][x]) * alpha_norm)
+			greenChannel.Canvas[y][x] = T(float32(greenChannel.Canvas[y][x]) * alpha_norm)
+			blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) * alpha_norm)
+		}
+	}
+
+	return nil
+}
+
+func (img *Image[T]) ChangePixelFormatT[T2 IPixel](channelPixelFormat ChannelPixelFormat) (copy *Image[T2], err error) {
+	switch img.Settings.ChannelPixelFormat { // Source format.
+	case PixelFormat_Integer_1B: // 8-bit, 0..255.
+		{
+			switch channelPixelFormat { // Destination format.
+			case PixelFormat_Integer_1B: // 8-bit, 0..255.
+				return nil, errors.ErrorFromText(Err_NoChangeIsNeeded)
+
+			case PixelFormat_Integer_2B: // 16-bit, 0..65535.
+				return img.changePixelFormat_I1B_to_I2B[T2]()
+
+			case PixelFormat_Float_4B: // 32-bit, 0..1.
+				return img.changePixelFormat_I1B_to_F4B[T2]()
+
+			default:
+				return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+			}
+		}
+
+	case PixelFormat_Integer_2B: // 16-bit, 0..65535.
+		{
+			switch channelPixelFormat { // Destination format.
+			case PixelFormat_Integer_1B: // 8-bit, 0..255.
+				return img.changePixelFormat_I2B_to_I1B[T2]()
+
+			case PixelFormat_Integer_2B: // 16-bit, 0..65535.
+				return nil, errors.ErrorFromText(Err_NoChangeIsNeeded)
+
+			case PixelFormat_Float_4B: // 32-bit, 0..1.
+				return img.changePixelFormat_I2B_to_F4B[T2]()
+
+			default:
+				return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+			}
+		}
+
+	case PixelFormat_Float_4B: // 32-bit, 0..1.
+		{
+			switch channelPixelFormat { // Destination format.
+			case PixelFormat_Integer_1B: // 8-bit, 0..255.
+				return img.changePixelFormat_F4B_to_I1B[T2]()
+
+			case PixelFormat_Integer_2B: // 16-bit, 0..65535.
+				return img.changePixelFormat_F4B_to_I2B[T2]()
+
+			case PixelFormat_Float_4B: // 32-bit, 0..1.
+				return nil, errors.ErrorFromText(Err_NoChangeIsNeeded)
+
+			default:
+				return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+			}
+		}
+
+	default:
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+}
+func (img *Image[T]) changePixelFormat_I1B_to_I2B[T2 IPixel]() (copy *Image[T2], err error) {
+	if img.Settings.ChannelPixelFormat != PixelFormat_Integer_1B {
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+
+	copy, err = img.MakeCopyT[T2]()
+	if err != nil {
+		return nil, err
+	}
+
+	srcAlphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	srcRedChannel := img.ChannelData[img.ChannelIndex.Red]
+	srcGreenChannel := img.ChannelData[img.ChannelIndex.Green]
+	srcBlueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	dstAlphaChannel := copy.ChannelData[copy.ChannelIndex.Alpha]
+	dstRedChannel := copy.ChannelData[copy.ChannelIndex.Red]
+	dstGreenChannel := copy.ChannelData[copy.ChannelIndex.Green]
+	dstBlueChannel := copy.ChannelData[copy.ChannelIndex.Blue]
+
+	for y, alpha_row := range srcAlphaChannel.Canvas {
+		for x, _ := range alpha_row {
+			dstAlphaChannel.Canvas[y][x] = T2(ConvertColour_8bitTo16bit(uint8(srcAlphaChannel.Canvas[y][x])))
+			dstRedChannel.Canvas[y][x] = T2(ConvertColour_8bitTo16bit(uint8(srcRedChannel.Canvas[y][x])))
+			dstGreenChannel.Canvas[y][x] = T2(ConvertColour_8bitTo16bit(uint8(srcGreenChannel.Canvas[y][x])))
+			dstBlueChannel.Canvas[y][x] = T2(ConvertColour_8bitTo16bit(uint8(srcBlueChannel.Canvas[y][x])))
+		}
+	}
+
+	return copy, nil
+}
+func (img *Image[T]) changePixelFormat_I1B_to_F4B[T2 IPixel]() (copy *Image[T2], err error) {
+	if img.Settings.ChannelPixelFormat != PixelFormat_Integer_1B {
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+
+	divider := float32(math.MaxUint8) // 8-bit.
+
+	return img.changePixelFormat_Integer_to_F4B[T2](divider)
+}
+func (img *Image[T]) changePixelFormat_I2B_to_I1B[T2 IPixel]() (copy *Image[T2], err error) {
+	if img.Settings.ChannelPixelFormat != PixelFormat_Integer_2B {
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+
+	copy, err = img.MakeCopyT[T2]()
+	if err != nil {
+		return nil, err
+	}
+
+	srcAlphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	srcRedChannel := img.ChannelData[img.ChannelIndex.Red]
+	srcGreenChannel := img.ChannelData[img.ChannelIndex.Green]
+	srcBlueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	dstAlphaChannel := copy.ChannelData[copy.ChannelIndex.Alpha]
+	dstRedChannel := copy.ChannelData[copy.ChannelIndex.Red]
+	dstGreenChannel := copy.ChannelData[copy.ChannelIndex.Green]
+	dstBlueChannel := copy.ChannelData[copy.ChannelIndex.Blue]
+
+	for y, alpha_row := range srcAlphaChannel.Canvas {
+		for x, _ := range alpha_row {
+			dstAlphaChannel.Canvas[y][x] = T2(ConvertColour_16bitTo8bit(uint16(srcAlphaChannel.Canvas[y][x])))
+			dstRedChannel.Canvas[y][x] = T2(ConvertColour_16bitTo8bit(uint16(srcRedChannel.Canvas[y][x])))
+			dstGreenChannel.Canvas[y][x] = T2(ConvertColour_16bitTo8bit(uint16(srcGreenChannel.Canvas[y][x])))
+			dstBlueChannel.Canvas[y][x] = T2(ConvertColour_16bitTo8bit(uint16(srcBlueChannel.Canvas[y][x])))
+		}
+	}
+
+	return copy, nil
+}
+func (img *Image[T]) changePixelFormat_I2B_to_F4B[T2 IPixel]() (copy *Image[T2], err error) {
+	if img.Settings.ChannelPixelFormat != PixelFormat_Integer_2B {
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+
+	divider := float32(math.MaxUint16) // 16-bit.
+
+	return img.changePixelFormat_Integer_to_F4B[T2](divider)
+}
+func (img *Image[T]) changePixelFormat_Integer_to_F4B[T2 IPixel](divider float32) (copy *Image[T2], err error) {
+	copy, err = img.MakeCopyT[T2]()
+	if err != nil {
+		return nil, err
+	}
+
+	srcAlphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	srcRedChannel := img.ChannelData[img.ChannelIndex.Red]
+	srcGreenChannel := img.ChannelData[img.ChannelIndex.Green]
+	srcBlueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	dstAlphaChannel := copy.ChannelData[copy.ChannelIndex.Alpha]
+	dstRedChannel := copy.ChannelData[copy.ChannelIndex.Red]
+	dstGreenChannel := copy.ChannelData[copy.ChannelIndex.Green]
+	dstBlueChannel := copy.ChannelData[copy.ChannelIndex.Blue]
+
+	for y, alpha_row := range srcAlphaChannel.Canvas {
+		for x, _ := range alpha_row {
+			dstAlphaChannel.Canvas[y][x] = T2(float32(srcAlphaChannel.Canvas[y][x]) / divider)
+			dstRedChannel.Canvas[y][x] = T2(float32(srcRedChannel.Canvas[y][x]) / divider)
+			dstGreenChannel.Canvas[y][x] = T2(float32(srcGreenChannel.Canvas[y][x]) / divider)
+			dstBlueChannel.Canvas[y][x] = T2(float32(srcBlueChannel.Canvas[y][x]) / divider)
+		}
+	}
+
+	return copy, nil
+}
+func (img *Image[T]) changePixelFormat_F4B_to_I1B[T2 IPixel]() (copy *Image[T2], err error) {
+	if img.Settings.ChannelPixelFormat != PixelFormat_Float_4B {
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+
+	multiplier := float32(math.MaxUint8) // 8-bit.
+
+	return img.changePixelFormat_F4B_to_Integer[T2](multiplier)
+}
+func (img *Image[T]) changePixelFormat_F4B_to_I2B[T2 IPixel]() (copy *Image[T2], err error) {
+	if img.Settings.ChannelPixelFormat != PixelFormat_Float_4B {
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+
+	multiplier := float32(math.MaxUint16) // 16-bit.
+
+	return img.changePixelFormat_F4B_to_Integer[T2](multiplier)
+}
+func (img *Image[T]) changePixelFormat_F4B_to_Integer[T2 IPixel](multiplier float32) (copy *Image[T2], err error) {
+	copy, err = img.MakeCopyT[T2]()
+	if err != nil {
+		return nil, err
+	}
+
+	srcAlphaChannel := img.ChannelData[img.ChannelIndex.Alpha]
+	srcRedChannel := img.ChannelData[img.ChannelIndex.Red]
+	srcGreenChannel := img.ChannelData[img.ChannelIndex.Green]
+	srcBlueChannel := img.ChannelData[img.ChannelIndex.Blue]
+
+	dstAlphaChannel := copy.ChannelData[copy.ChannelIndex.Alpha]
+	dstRedChannel := copy.ChannelData[copy.ChannelIndex.Red]
+	dstGreenChannel := copy.ChannelData[copy.ChannelIndex.Green]
+	dstBlueChannel := copy.ChannelData[copy.ChannelIndex.Blue]
+
+	for y, alpha_row := range srcAlphaChannel.Canvas {
+		for x, _ := range alpha_row {
+			dstAlphaChannel.Canvas[y][x] = T2(ConvertColour_NormalisedToInteger(float32(srcAlphaChannel.Canvas[y][x]), multiplier))
+			dstRedChannel.Canvas[y][x] = T2(ConvertColour_NormalisedToInteger(float32(srcRedChannel.Canvas[y][x]), multiplier))
+			dstGreenChannel.Canvas[y][x] = T2(ConvertColour_NormalisedToInteger(float32(srcGreenChannel.Canvas[y][x]), multiplier))
+			dstBlueChannel.Canvas[y][x] = T2(ConvertColour_NormalisedToInteger(float32(srcBlueChannel.Canvas[y][x]), multiplier))
+		}
+	}
+
+	return copy, nil
+}
+
+func (img *Image[T]) ExportToDirect2D(pixelFormat e.DXGI_FORMAT, alphaMode e.D2D1_ALPHA_MODE) (out []byte, err error) {
+	// Formats supported by Direct2D bitmaps, i.e. the ID2D1Bitmap type, are listed at the following link:
+	// https: //learn.microsoft.com/en-gb/windows/win32/direct2d/supported-pixel-formats-and-alpha-modes#specifying-a-pixel-format-for-an-id2d1bitmap
+	// From all those formats only the DXGI_FORMAT_B8G8R8A8_UNORM seems to be acceptable by Go language.
+	switch pixelFormat {
+	case e.DXGI_FORMAT_B8G8R8A8_UNORM:
+		{
+			switch alphaMode {
+			case e.D2D1_ALPHA_MODE_PREMULTIPLIED:
+				return img.exportToDirect2D_BGRA_Premultiplied()
+
+			default:
+				return nil, fmt.Errorf(Err_UnsupportedAlphaChannelMode)
+			}
+		}
+
+	default:
+		return nil, fmt.Errorf(Err_UnsupportedPixelFormat)
+	}
+}
+func (img *Image[T]) exportToDirect2D_BGRA_Premultiplied() (out []byte, err error) {
+	// To export for Direct2D we must:
+	// - make an exact copy of the object to save original data;
+	// - change alpha channel mode (if needed);
+	// - change pixel format (if needed);
+	// - reverse rows order;
+	// - swap colour channels for BGRA;
+	// - convert the 2D canvas pixel array into a 1D array of bytes.
+
+	var cópy *Image[T]
+	cópy, err = img.MakeCopy()
+	if err != nil {
+		return nil, err
+	}
+
+	if cópy.Settings.AlphaChannelMode != AlphaChannelMode_Premultiplied {
+		err = cópy.ChangeAlphaMode(AlphaChannelMode_Premultiplied)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	var cópy2 *Image[uint8]
+	if cópy.Settings.ChannelPixelFormat != PixelFormat_Integer_1B {
+		cópy2, err = img.ChangePixelFormatT[uint8](PixelFormat_Integer_1B)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		// Pixel format is PixelFormat_Integer_1B => T is uint8.
+		var probe T
+		switch any(probe).(type) {
+		case uint8:
+			cópy2 = any(cópy).(*Image[uint8])
+		default:
+			return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+		}
+	}
+
+	// Collect bytes.
+	alphaChannel := cópy2.ChannelData[cópy2.ChannelIndex.Alpha]
+	redChannel := cópy2.ChannelData[cópy2.ChannelIndex.Red]
+	greenChannel := cópy2.ChannelData[cópy2.ChannelIndex.Green]
+	blueChannel := cópy2.ChannelData[cópy2.ChannelIndex.Blue]
+
+	width := cópy2.Settings.Width
+	height := cópy2.Settings.Height
+
+	out = make([]byte, 0, width*height*4*1) // Four 8-bit channels per pixel.
+	var yFirst = int(height - 1)            // Y: Read rows in reverse order.
+	var xLast = int(width - 1)              // X: Left to Right.
+	for y := yFirst; y >= 0; y-- {
+		for x := 0; x <= xLast; x++ {
+			// Swap channels to get BGRA sequence.
+			out = append(out, blueChannel.Canvas[y][x])
+			out = append(out, greenChannel.Canvas[y][x])
+			out = append(out, redChannel.Canvas[y][x])
+			out = append(out, alphaChannel.Canvas[y][x])
+		}
+	}
+
+	return out, nil
 }
