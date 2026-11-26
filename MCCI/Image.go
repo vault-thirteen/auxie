@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"os"
 	"strings"
 
 	c "github.com/vault-thirteen/auxie/colour"
@@ -25,6 +26,32 @@ type Image[T IPixel] struct {
 	ChannelData  []ChannelDatum[T]
 }
 
+// NewImageFromFile creates a new image from file.
+// Both 'channelPixelFormat' and 'alphaChannelMode' arguments set the desired
+// format into which the source image will be converted.
+func NewImageFromFile(filePath string, channelPixelFormat ChannelPixelFormat, alphaChannelMode AlphaChannelMode) (img any, err error) {
+	var f *os.File
+	f, err = os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		derr := f.Close()
+		err = errors.Combine(err, derr)
+	}()
+
+	var goImg image.Image
+	goImg, _, err = image.Decode(f)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewImageFromImage(goImg, channelPixelFormat, alphaChannelMode)
+}
+
+// NewImageFromImage creates a new image from Go 'image.Image' type object.
+// Both 'channelPixelFormat' and 'alphaChannelMode' arguments set the desired
+// format into which the source image will be converted.
 func NewImageFromImage(src image.Image, channelPixelFormat ChannelPixelFormat, alphaChannelMode AlphaChannelMode) (img any, err error) {
 	if !channelPixelFormat.IsValid() {
 		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
