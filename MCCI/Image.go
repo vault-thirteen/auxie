@@ -425,6 +425,8 @@ func (img *Image[T]) changeAlphaModeToStraight_I1B() (err error) {
 		}
 	}
 
+	img.Settings.AlphaChannelMode = AlphaChannelMode_Straight
+
 	return nil
 }
 func (img *Image[T]) changeAlphaModeToStraight_I2B() (err error) {
@@ -461,6 +463,8 @@ func (img *Image[T]) changeAlphaModeToStraight_I2B() (err error) {
 		}
 	}
 
+	img.Settings.AlphaChannelMode = AlphaChannelMode_Straight
+
 	return nil
 }
 func (img *Image[T]) changeAlphaModeToStraight_F4B() (err error) {
@@ -495,6 +499,8 @@ func (img *Image[T]) changeAlphaModeToStraight_F4B() (err error) {
 		}
 	}
 
+	img.Settings.AlphaChannelMode = AlphaChannelMode_Straight
+
 	return nil
 }
 func (img *Image[T]) changeAlphaModeToPremultiplied_I1B() (err error) {
@@ -518,6 +524,8 @@ func (img *Image[T]) changeAlphaModeToPremultiplied_I1B() (err error) {
 			blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) * alpha_norm)
 		}
 	}
+
+	img.Settings.AlphaChannelMode = AlphaChannelMode_Premultiplied
 
 	return nil
 }
@@ -543,6 +551,8 @@ func (img *Image[T]) changeAlphaModeToPremultiplied_I2B() (err error) {
 		}
 	}
 
+	img.Settings.AlphaChannelMode = AlphaChannelMode_Premultiplied
+
 	return nil
 }
 func (img *Image[T]) changeAlphaModeToPremultiplied_F4B() (err error) {
@@ -566,6 +576,8 @@ func (img *Image[T]) changeAlphaModeToPremultiplied_F4B() (err error) {
 			blueChannel.Canvas[y][x] = T(float32(blueChannel.Canvas[y][x]) * alpha_norm)
 		}
 	}
+
+	img.Settings.AlphaChannelMode = AlphaChannelMode_Premultiplied
 
 	return nil
 }
@@ -656,6 +668,8 @@ func (img *Image[T]) changePixelFormat_I1B_to_I2B[T2 IPixel]() (copy *Image[T2],
 		}
 	}
 
+	img.Settings.ChannelPixelFormat = PixelFormat_Integer_2B
+
 	return copy, nil
 }
 func (img *Image[T]) changePixelFormat_I1B_to_F4B[T2 IPixel]() (copy *Image[T2], err error) {
@@ -696,6 +710,8 @@ func (img *Image[T]) changePixelFormat_I2B_to_I1B[T2 IPixel]() (copy *Image[T2],
 		}
 	}
 
+	img.Settings.ChannelPixelFormat = PixelFormat_Integer_1B
+
 	return copy, nil
 }
 func (img *Image[T]) changePixelFormat_I2B_to_F4B[T2 IPixel]() (copy *Image[T2], err error) {
@@ -732,6 +748,8 @@ func (img *Image[T]) changePixelFormat_Integer_to_F4B[T2 IPixel](divider float32
 		}
 	}
 
+	img.Settings.ChannelPixelFormat = PixelFormat_Float_4B
+
 	return copy, nil
 }
 func (img *Image[T]) changePixelFormat_F4B_to_I1B[T2 IPixel]() (copy *Image[T2], err error) {
@@ -741,7 +759,14 @@ func (img *Image[T]) changePixelFormat_F4B_to_I1B[T2 IPixel]() (copy *Image[T2],
 
 	multiplier := float32(math.MaxUint8) // 8-bit.
 
-	return img.changePixelFormat_F4B_to_Integer[T2](multiplier)
+	copy, err = img.changePixelFormat_F4B_to_Integer[T2](multiplier)
+	if err != nil {
+		return nil, err
+	}
+
+	img.Settings.ChannelPixelFormat = PixelFormat_Integer_1B
+
+	return copy, nil
 }
 func (img *Image[T]) changePixelFormat_F4B_to_I2B[T2 IPixel]() (copy *Image[T2], err error) {
 	if img.Settings.ChannelPixelFormat != PixelFormat_Float_4B {
@@ -750,7 +775,14 @@ func (img *Image[T]) changePixelFormat_F4B_to_I2B[T2 IPixel]() (copy *Image[T2],
 
 	multiplier := float32(math.MaxUint16) // 16-bit.
 
-	return img.changePixelFormat_F4B_to_Integer[T2](multiplier)
+	copy, err = img.changePixelFormat_F4B_to_Integer[T2](multiplier)
+	if err != nil {
+		return nil, err
+	}
+
+	img.Settings.ChannelPixelFormat = PixelFormat_Integer_2B
+
+	return copy, nil
 }
 func (img *Image[T]) changePixelFormat_F4B_to_Integer[T2 IPixel](multiplier float32) (copy *Image[T2], err error) {
 	copy, err = img.MakeCopyT[T2]()
