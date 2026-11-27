@@ -99,6 +99,16 @@ func (img *Image[T]) createChannelDataT[T2 IPixel](obj *Image[T2]) (err error) {
 	return nil
 }
 
+// Resize changes canvas size of the image.
+func (img *Image[T]) Resize(width, height uint16) {
+	for _, cd := range img.ChannelData {
+		cd.ResizeCanvas(width, height)
+	}
+
+	img.Settings.Width = width
+	img.Settings.Height = height
+}
+
 // CloneArrayOfNumbers clones an array of numbers into an array of a new type.
 // New type must be compatible with the old one. Do not use this function if
 // the target type is narrower than original type.
@@ -113,14 +123,4 @@ func CloneArrayOfNumbers[T1 Number, T2 Number](in []T1) (out []T2) {
 	}
 
 	return out
-}
-
-// Resize changes canvas size of the image.
-func (img *Image[T]) Resize(width, height uint16) {
-	for _, cd := range img.ChannelData {
-		cd.ResizeCanvas(width, height)
-	}
-
-	img.Settings.Width = width
-	img.Settings.Height = height
 }
