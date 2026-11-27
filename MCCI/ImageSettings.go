@@ -5,10 +5,10 @@ type ImageSettings struct {
 	FileFormatRevision string
 
 	// Width in pixels.
-	Width uint16
+	Width Size
 
 	// Height in pixels.
-	Height uint16
+	Height Size
 
 	// Number of colour channels, including alpha channel if present.
 	ChannelCount byte

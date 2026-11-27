@@ -100,7 +100,7 @@ func (img *Image[T]) createChannelDataT[T2 IPixel](obj *Image[T2]) (err error) {
 }
 
 // Resize changes canvas size of the image.
-func (img *Image[T]) Resize(width, height uint16) {
+func (img *Image[T]) Resize(width, height Size) {
 	for _, cd := range img.ChannelData {
 		cd.ResizeCanvas(width, height)
 	}

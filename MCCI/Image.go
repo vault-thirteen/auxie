@@ -3,7 +3,6 @@ package mcci
 import (
 	"image"
 	"image/color"
-	"math"
 	"os"
 	"strings"
 
@@ -38,14 +37,14 @@ func NewImageFromImage(src image.Image, channelPixelFormat ChannelPixelFormat, a
 	width := src.Bounds().Dx()
 	height := src.Bounds().Dy()
 
-	if (width > math.MaxUint16) || (height > math.MaxUint16) {
+	if (width > int(SizeMax)) || (height > int(SizeMax)) {
 		return nil, errors.ErrorFromText(Err_DimensionsError)
 	}
 
 	settings := &ImageSettings{
 		FileFormatRevision: FileFormatRevision_1,
-		Width:              uint16(width),
-		Height:             uint16(height),
+		Width:              Size(width),
+		Height:             Size(height),
 		ChannelCount:       4,
 		ChannelPixelFormat: channelPixelFormat,
 		AlphaChannelMode:   alphaChannelMode,
@@ -370,4 +369,8 @@ func NewImageFromFile(filePath string, channelPixelFormat ChannelPixelFormat, al
 	}
 
 	return NewImageFromImage(goImg, channelPixelFormat, alphaChannelMode)
+}
+
+func (img *Image[T]) Area() *Area[Size] {
+	return NewAreaFromDimensions[Size](img.Settings.Width, img.Settings.Height)
 }

@@ -34,7 +34,7 @@ func (cd *ChannelDatum[T]) CreateCanvasT[T2 IPixel]() (newCanvas []Row[T2]) {
 // ResizeCanvas resizes the canvas.
 // Old pixels within the new dimensions are not destroyed.
 // This method, as opposed to standard Go language resizing, frees the memory.
-func (cd *ChannelDatum[T]) ResizeCanvas(width, height uint16) {
+func (cd *ChannelDatum[T]) ResizeCanvas(width, height Size) {
 	if (width <= 0) || (height <= 0) {
 		cd.Canvas = nil
 		return
@@ -56,8 +56,8 @@ func (cd *ChannelDatum[T]) ResizeCanvas(width, height uint16) {
 	}
 
 	// Copy old pixels within new dimensions.
-	var yMax = int(min(height, uint16(len(cd.Canvas))) - 1)
-	var xMax = int(min(width, uint16(len(cd.Canvas[0]))) - 1)
+	var yMax = int(min(height, Size(len(cd.Canvas))) - 1)
+	var xMax = int(min(width, Size(len(cd.Canvas[0]))) - 1)
 
 	for y := 0; y <= yMax; y++ {
 		for x := 0; x <= xMax; x++ {
