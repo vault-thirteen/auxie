@@ -2,6 +2,7 @@ package mcci
 
 import (
 	"image"
+	"image/color"
 	"os"
 	"path/filepath"
 	"testing"
@@ -21,6 +22,67 @@ import (
 const (
 	TestFolder = "test"
 )
+
+func Test_NewImageWithSizeAndColour_NRGBA(t *testing.T) {
+	aTest := tester.New(t)
+
+	var width Size = 3
+	var height Size = 2
+	var colour = color.NRGBA{R: 0x00, G: 0xFF, B: 0x00, A: 0x01}
+
+	var x any
+	var err error
+	var ok bool
+	var dstImgI1B *Image[uint8]
+	var dstImgI2B *Image[uint16]
+	var dstImgF4B *Image[float32]
+
+	// Straight.
+	{
+		cio.PrintMessage("Straight")
+
+		x, err = NewImageWithSizeAndColour(width, height, colour, PixelFormat_Integer_1B, AlphaChannelMode_Straight)
+		aTest.MustBeNoError(err)
+		dstImgI1B, ok = x.(*Image[uint8])
+		aTest.MustBeEqual(ok, true)
+		cio.PrintMessage(dstImgI1B)
+
+		x, err = NewImageWithSizeAndColour(width, height, colour, PixelFormat_Integer_2B, AlphaChannelMode_Straight)
+		aTest.MustBeNoError(err)
+		dstImgI2B, ok = x.(*Image[uint16])
+		aTest.MustBeEqual(ok, true)
+		cio.PrintMessage(dstImgI2B)
+
+		x, err = NewImageWithSizeAndColour(width, height, colour, PixelFormat_Float_4B, AlphaChannelMode_Straight)
+		aTest.MustBeNoError(err)
+		dstImgF4B, ok = x.(*Image[float32])
+		aTest.MustBeEqual(ok, true)
+		cio.PrintMessage(dstImgF4B)
+	}
+
+	// Pre-multiplied.
+	{
+		cio.PrintMessage("Pre-multiplied")
+
+		x, err = NewImageWithSizeAndColour(width, height, colour, PixelFormat_Integer_1B, AlphaChannelMode_Premultiplied)
+		aTest.MustBeNoError(err)
+		dstImgI1B, ok = x.(*Image[uint8])
+		aTest.MustBeEqual(ok, true)
+		cio.PrintMessage(dstImgI1B)
+
+		x, err = NewImageWithSizeAndColour(width, height, colour, PixelFormat_Integer_2B, AlphaChannelMode_Premultiplied)
+		aTest.MustBeNoError(err)
+		dstImgI2B, ok = x.(*Image[uint16])
+		aTest.MustBeEqual(ok, true)
+		cio.PrintMessage(dstImgI2B)
+
+		x, err = NewImageWithSizeAndColour(width, height, colour, PixelFormat_Float_4B, AlphaChannelMode_Premultiplied)
+		aTest.MustBeNoError(err)
+		dstImgF4B, ok = x.(*Image[float32])
+		aTest.MustBeEqual(ok, true)
+		cio.PrintMessage(dstImgF4B)
+	}
+}
 
 func Test_NewImageFromImage_NRGBA(t *testing.T) {
 	aTest := tester.New(t)

@@ -106,7 +106,7 @@ func (img *Image[T]) ReplaceWithImageAt(srcImage *Image[T], at Point[Size]) (err
 }
 
 // FillWithColour fill selected area with selected colour.
-func (img *Image[T]) FillWithColour(c color.Color, dstArea *Area[Size]) (err error) {
+func (img *Image[T]) FillWithColour(colour color.Color, dstArea *Area[Size]) (err error) {
 	if dstArea.IsMalformed() {
 		return errors.ErrorFromText(Err_AreaIsMalformed)
 	}
@@ -116,26 +116,9 @@ func (img *Image[T]) FillWithColour(c color.Color, dstArea *Area[Size]) (err err
 
 	// Prepare the pixel.
 	var p Pixel[T]
-	{
-		var pd *PixelData
-		pd, err = GetPixelData_Abstract(c)
-		if err != nil {
-			return err
-		}
-
-		switch img.Settings.ChannelPixelFormat {
-		case PixelFormat_Integer_1B:
-			p = MakePixel_I1B_16bit[T](pd, img.Settings.AlphaChannelMode)
-
-		case PixelFormat_Integer_2B:
-			p = MakePixel_I2B_16bit[T](pd, img.Settings.AlphaChannelMode)
-
-		case PixelFormat_Float_4B:
-			p = MakePixel_F4B_16bit[T](pd, img.Settings.AlphaChannelMode)
-
-		default:
-			return errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
-		}
+	err = img.PreparePixel(colour, &p)
+	if err != nil {
+		return err
 	}
 
 	// Draw pixels.
@@ -156,6 +139,30 @@ func (img *Image[T]) FillWithColour(c color.Color, dstArea *Area[Size]) (err err
 			dstChannelBlue.Canvas[dstY][dstX] = p.B
 			dstChannelAlpha.Canvas[dstY][dstX] = p.A
 		}
+	}
+
+	return nil
+}
+
+func (img *Image[T]) PreparePixel(colour color.Color, p *Pixel[T]) (err error) {
+	var pd *PixelData
+	pd, err = GetPixelData_Abstract(colour)
+	if err != nil {
+		return err
+	}
+
+	switch img.Settings.ChannelPixelFormat {
+	case PixelFormat_Integer_1B:
+		*p = MakePixel_I1B_16bit[T](pd, img.Settings.AlphaChannelMode)
+
+	case PixelFormat_Integer_2B:
+		*p = MakePixel_I2B_16bit[T](pd, img.Settings.AlphaChannelMode)
+
+	case PixelFormat_Float_4B:
+		*p = MakePixel_F4B_16bit[T](pd, img.Settings.AlphaChannelMode)
+
+	default:
+		return errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
 	}
 
 	return nil

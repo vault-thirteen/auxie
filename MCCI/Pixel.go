@@ -1,6 +1,8 @@
 package mcci
 
-import "math"
+import (
+	"math"
+)
 
 const (
 	Err_UnsupportedPixelFormat = "unsupported pixel format"

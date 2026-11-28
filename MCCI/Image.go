@@ -23,6 +23,100 @@ type Image[T IPixel] struct {
 	ChannelData  []ChannelDatum[T]
 }
 
+// NewImageWithSizeAndColour creates a new image with specified dimensions and
+// colour.
+func NewImageWithSizeAndColour(width Size, height Size, colour color.Color, channelPixelFormat ChannelPixelFormat, alphaChannelMode AlphaChannelMode) (img any, err error) {
+	if !channelPixelFormat.IsValid() {
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+	if !alphaChannelMode.IsValid() {
+		return nil, errors.ErrorFromText(Err_UnsupportedAlphaChannelMode)
+	}
+
+	settings := &ImageSettings{
+		FileFormatRevision: FileFormatRevision_1,
+		Width:              width,
+		Height:             height,
+		ChannelCount:       4,
+		ChannelPixelFormat: channelPixelFormat,
+		AlphaChannelMode:   alphaChannelMode,
+	}
+
+	switch channelPixelFormat {
+	case PixelFormat_Float_4B:
+		return newImageWithSizeAndColour[float32](colour, settings)
+
+	case PixelFormat_Integer_2B:
+		return newImageWithSizeAndColour[uint16](colour, settings)
+
+	case PixelFormat_Integer_1B:
+		return newImageWithSizeAndColour[uint8](colour, settings)
+
+	default:
+		return nil, errors.ErrorFromText(Err_UnsupportedChannelPixelFormat)
+	}
+}
+func newImageWithSizeAndColour[T IPixel](colour color.Color, settings *ImageSettings) (img *Image[T], err error) {
+	img = &Image[T]{
+		Settings: settings,
+	}
+
+	img.initRgbaChannels()
+
+	err = img.initRgbaChannelIndices()
+	if err != nil {
+		return nil, err
+	}
+
+	err = img.fillChannelDataWithSizeAndColour(colour)
+	if err != nil {
+		return nil, err
+	}
+
+	return img, nil
+}
+func (img *Image[T]) fillChannelDataWithSizeAndColour(colour color.Color) (err error) {
+	var cd []ChannelDatum[T]
+	var cdRed, cdGreen, cdBlue, cdAlpha ChannelDatum[T]
+	cd, cdRed, cdGreen, cdBlue, cdAlpha = img.prepareChannelData()
+
+	yLast := int(img.Settings.Height - 1)
+	xLast := int(img.Settings.Width - 1)
+	var rowRed, rowGreen, rowBlue, rowAlpha Row[T]
+
+	// Prepare the pixel.
+	var p Pixel[T]
+	err = img.PreparePixel(colour, &p)
+	if err != nil {
+		return err
+	}
+
+	// Read rows from bottom to top.
+	for y := yLast; y >= 0; y-- {
+		rowRed = make(Row[T], 0, img.Settings.Width)
+		rowGreen = make(Row[T], 0, img.Settings.Width)
+		rowBlue = make(Row[T], 0, img.Settings.Width)
+		rowAlpha = make(Row[T], 0, img.Settings.Width)
+
+		for x := 0; x <= xLast; x++ {
+			rowRed = append(rowRed, p.R)
+			rowGreen = append(rowGreen, p.G)
+			rowBlue = append(rowBlue, p.B)
+			rowAlpha = append(rowAlpha, p.A)
+		}
+
+		cdRed.Canvas = append(cdRed.Canvas, rowRed)
+		cdGreen.Canvas = append(cdGreen.Canvas, rowGreen)
+		cdBlue.Canvas = append(cdBlue.Canvas, rowBlue)
+		cdAlpha.Canvas = append(cdAlpha.Canvas, rowAlpha)
+	}
+
+	cd = append(cd, cdRed, cdGreen, cdBlue, cdAlpha)
+	img.ChannelData = cd
+
+	return
+}
+
 // NewImageFromImage creates a new image from Go 'image.Image' type object.
 // Both 'channelPixelFormat' and 'alphaChannelMode' arguments set the desired
 // format into which the source image will be converted.
@@ -278,8 +372,6 @@ func (img *Image[T]) fillChannelData_Common(src image.Image) (err error) {
 	yLast := int(img.Settings.Height - 1)
 	xLast := int(img.Settings.Width - 1)
 	var rowRed, rowGreen, rowBlue, rowAlpha Row[T]
-	var abstractPixel color.Color
-	var pd *PixelData
 	var p Pixel[T]
 
 	// Read rows from bottom to top.
@@ -290,22 +382,10 @@ func (img *Image[T]) fillChannelData_Common(src image.Image) (err error) {
 		rowAlpha = make(Row[T], 0, img.Settings.Width)
 
 		for x := 0; x <= xLast; x++ {
-			abstractPixel = src.At(x, y)
-
-			pd, err = GetPixelData_Abstract(abstractPixel)
+			// Prepare the pixel.
+			err = img.PreparePixel(src.At(x, y), &p)
 			if err != nil {
 				return err
-			}
-
-			switch img.Settings.ChannelPixelFormat {
-			case PixelFormat_Integer_1B:
-				p = MakePixel_I1B_16bit[T](pd, img.Settings.AlphaChannelMode)
-
-			case PixelFormat_Integer_2B:
-				p = MakePixel_I2B_16bit[T](pd, img.Settings.AlphaChannelMode)
-
-			case PixelFormat_Float_4B:
-				p = MakePixel_F4B_16bit[T](pd, img.Settings.AlphaChannelMode)
 			}
 
 			rowRed = append(rowRed, p.R)
